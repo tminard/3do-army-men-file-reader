@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Buffers.Binary;
 
 namespace AMMEdit.amm
 {
@@ -51,23 +52,38 @@ namespace AMMEdit.amm
                         }
 
                         // there seems to be a bug in the OATT field length int
-                        if (new string(fieldID) == "OATT")
-                        {
-                            bool longerObjectHeader = major > 5;
-                            fields.Add(new OATTBlock(r, longerObjectHeader));
-                        } else if (new string(fieldID) == "VERS")
-                        {
-                            _ = r.ReadInt32(); // length of version field. Always 8.
-                            // this field always occurs either first or after CNUM. CNUM doesnt always appear.
-                            major = r.ReadInt32();
-                            minor = r.ReadInt32();
-                        }
-                        else
-                        {
-                            Int32 size = r.ReadInt32(); ;
-                            byte[] content = r.ReadBytes(size);
+                        string id = new string(fieldID);
+                        Int32 size;
 
-                            fields.Add(new GenericFieldBlock(fieldID, size, content));
+                        switch (id)
+                        {
+                            case "OATT":
+                                fields.Add(new OATTBlock(r, major > 5));
+                                break;
+                            case "SCEN":
+                                fields.Add(new SCENBlock(r));
+                                break;
+                            case "VERS":
+                                size = r.ReadInt32(); // length of version field. Always 8.
+                                                            // this field always occurs either first or after CNUM. CNUM doesnt always appear.
+                                major = r.ReadInt32();
+                                minor = r.ReadInt32();
+
+                                Span<byte> content = stackalloc byte[size];
+
+                                BinaryPrimitives.WriteInt32LittleEndian(content.Slice(0, 4), major);
+                                BinaryPrimitives.WriteInt32LittleEndian(content.Slice(4, 4), minor);
+
+                                fields.Add(new GenericFieldBlock(fieldID, size, content.ToArray()));
+                                break;
+                            default:
+                                size = r.ReadInt32();
+                                {
+                                    byte[] c = r.ReadBytes(size);
+
+                                    fields.Add(new GenericFieldBlock(fieldID, size, c));
+                                }
+                                break;
                         }
                     }
                 }

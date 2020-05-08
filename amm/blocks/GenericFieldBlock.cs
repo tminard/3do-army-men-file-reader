@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,36 @@ namespace AMMEdit.amm
 
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
+        }
+
+        public byte[] toBytes()
+        {
+            List<byte> list = new List<byte>();
+            Span<byte> buff = stackalloc byte[1024];
+
+            // ID
+            list.AddRange(ASCIIEncoding.ASCII.GetBytes(fieldName));
+
+            // length
+            BinaryPrimitives.WriteInt32LittleEndian(buff.Slice(0), content.Length);
+            list.AddRange(buff.Slice(0, 4).ToArray());
+
+            // content
+            list.AddRange(this.content);
+
+            return list.ToArray();
+        }
+
+        public string[] toFormattedPreview()
+        {
+            List<string> lines = new List<string>();
+
+            lines.Add(string.Format("Field: {0}", DisplayFieldName));
+            lines.Add(string.Format("Size (in bytes): {0}", sizeInBytes));
+            lines.Add(string.Empty);
+            lines.Add("No preview is available for this block");
+
+            return lines.ToArray();
         }
     }
 }
