@@ -8,18 +8,21 @@ namespace AMMEdit.amm
 {
     class MapFile
     {
-        private readonly Uri file;
+        private List<IGenericFieldBlock> m_fields;
 
-        private Dictionary<FractionBlock, List<UnitBlock>> armies; // ordered list of fractions and their units. Order: Green, Tan, Blue, Grey
+        //private Dictionary<FractionBlock, List<UnitBlock>> m_armies; // ordered list of fractions and their units. Order: Green, Tan, Blue, Grey
 
-        public MapFile(Uri file)
+        public MapFile(List<IGenericFieldBlock> fields)
         {
-            this.file = file ?? throw new ArgumentNullException(nameof(file));
+            this.m_fields = fields;
+
+            // TODO: header fields
+            // TODO: pull out armies?
         }
 
-        private void loadFile()
+        public List<IGenericFieldBlock> GetGenericFields()
         {
-            // Load the given file, seek to the end, and populate fractions block
+            return this.m_fields;
         }
     }
 }
