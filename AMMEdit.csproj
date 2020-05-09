@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="amm\blocks\FractionBlock.cs" />
+    <Compile Include="amm\blocks\subfields\Fraction.cs" />
     <Compile Include="amm\blocks\GenericFieldBlock.cs" />
     <Compile Include="amm\blocks\IGenericFieldBlock.cs" />
     <Compile Include="amm\blocks\OATTBlock.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="amm\blocks\subfields\Scenario.cs" />
     <Compile Include="amm\MapFile.cs" />
     <Compile Include="amm\loaders\MapFileLoader.cs" />
-    <Compile Include="amm\blocks\UnitBlock.cs" />
+    <Compile Include="amm\blocks\subfields\FractionUnit.cs" />
     <Compile Include="Editor.cs">
       <SubType>Form</SubType>
     </Compile>

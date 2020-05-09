@@ -9,11 +9,17 @@ namespace AMMEdit.amm.blocks.subfields
 {
     class Scenario
     {
-        private const byte EOB_MARKER = 0x8; // used by AM to indicate end of fractions for given scenario
         private string m_nameCstring;
-        private Int32 m_numFractions;
 
-        private List<FractionBlock> m_fractions;
+        private List<Fraction> m_fractions;
+
+        public enum FractionOrder : int
+        {
+            Green = 0,
+            Tan = 1,
+            Blue = 2,
+            Grey = 3
+        }
 
         public Scenario(BinaryReader r)
         {
@@ -21,7 +27,33 @@ namespace AMMEdit.amm.blocks.subfields
 
             // order is Green > Tan > Blue > Grey. Min 1, max 4 present in file.
             // read until EOF, or until EOB marker is read where a fraction was expected.
-            byte[] fractionData = r.ReadBytes(84);
+            m_fractions = new List<Fraction>(4);
+
+            for (int f = 0; f < 4; f++)
+            {
+                // read fraction and unit block
+                this.m_fractions.Add(new Fraction((FractionOrder)f, r));
+            }
+
+        }
+
+        public byte[] toBytes()
+        {
+            List<byte> content = new List<byte>();
+
+            content.AddRange(ASCIIEncoding.ASCII.GetBytes(m_nameCstring));
+
+            m_fractions.ForEach(f => content.AddRange(f.toBytes()));
+
+            return content.ToArray();
+        }
+
+        public string[] toFormattedPreview()
+        {
+            return new string[] {
+                string.Format("Scenario Name:\t{0}", m_nameCstring.Replace("\0", "")),
+                string.Format("Number of fractions defined:\t{0}", m_fractions.Count)
+            };
         }
     }
 }

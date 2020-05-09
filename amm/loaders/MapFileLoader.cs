@@ -51,7 +51,7 @@ namespace AMMEdit.amm
                             break;
                         }
 
-                        // there seems to be a bug in the OATT field length int
+                        // there seems to be a bug in the OATT field length int, so we need to parse it bit by bit
                         string id = new string(fieldID);
                         Int32 size;
 
