@@ -53,6 +53,8 @@ namespace AMMEdit
             IGenericFieldBlock block = (IGenericFieldBlock)lb.SelectedItem;
 
             rawBinaryOutput.Lines = block.ToFormattedPreview();
+
+            buttonEditProps.Enabled = block.CanEditProperties;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -61,6 +63,18 @@ namespace AMMEdit
             {
                 currentMap.SaveAs(saveAMMFileDialog.FileName);
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            IGenericFieldBlock block = (IGenericFieldBlock)listBox1.SelectedItem;
+
+            block.ShowPropertyEditor(this);
+        }
+
+        private void Editor_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

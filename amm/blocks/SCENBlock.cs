@@ -1,4 +1,5 @@
 ﻿using AMMEdit.amm.blocks.subfields;
+using AMMEdit.PropertyEditors;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
 {
@@ -18,7 +20,7 @@ namespace AMMEdit.amm.blocks
      * 
      * You can add multiple scenarios to a map file. Multiplayer maps contain only one scenario.
      */
-    class SCENBlock : IGenericFieldBlock
+    public class SCENBlock : IGenericFieldBlock
     {
         private readonly Int32 m_blockLength;
         private readonly byte[] m_origData;
@@ -41,6 +43,15 @@ namespace AMMEdit.amm.blocks
         public string DisplayFieldName { get; }
 
         public string FieldID { get; }
+
+        public bool CanEditProperties => true;
+
+        public void ShowPropertyEditor(IWin32Window current)
+        {
+            ScenarioEditor ed = new ScenarioEditor(m_scenarios);
+
+            ed.ShowDialog(current); // TODO: capture results, and load the returned list
+        }
 
         public byte[] ToBytes()
         {

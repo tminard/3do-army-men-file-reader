@@ -34,9 +34,10 @@
             this.openAMMFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.currentAMMFile = new System.Windows.Forms.Label();
             this.rawBinaryOutput = new System.Windows.Forms.TextBox();
-            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.saveAMMFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.buttonEditProps = new System.Windows.Forms.Button();
+            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,10 +87,6 @@
             this.rawBinaryOutput.Size = new System.Drawing.Size(794, 446);
             this.rawBinaryOutput.TabIndex = 3;
             // 
-            // mapFileBindingSource
-            // 
-            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
-            // 
             // button2
             // 
             this.button2.Enabled = false;
@@ -105,11 +102,27 @@
             // 
             this.saveAMMFileDialog.DefaultExt = "AMM";
             // 
+            // buttonEditProps
+            // 
+            this.buttonEditProps.Enabled = false;
+            this.buttonEditProps.Location = new System.Drawing.Point(377, 164);
+            this.buttonEditProps.Name = "buttonEditProps";
+            this.buttonEditProps.Size = new System.Drawing.Size(108, 23);
+            this.buttonEditProps.TabIndex = 5;
+            this.buttonEditProps.Text = "Edit properties";
+            this.buttonEditProps.UseVisualStyleBackColor = true;
+            this.buttonEditProps.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // mapFileBindingSource
+            // 
+            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1327, 662);
+            this.Controls.Add(this.buttonEditProps);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.rawBinaryOutput);
             this.Controls.Add(this.currentAMMFile);
@@ -117,6 +130,7 @@
             this.Controls.Add(this.listBox1);
             this.Name = "Editor";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Editor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -133,6 +147,7 @@
         private System.Windows.Forms.TextBox rawBinaryOutput;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.SaveFileDialog saveAMMFileDialog;
+        private System.Windows.Forms.Button buttonEditProps;
     }
 }
 

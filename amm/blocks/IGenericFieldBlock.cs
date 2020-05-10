@@ -1,4 +1,6 @@
-﻿namespace AMMEdit.amm
+﻿using System.Windows.Forms;
+
+namespace AMMEdit.amm
 {
     interface IGenericFieldBlock
     {
@@ -8,5 +10,9 @@
         byte[] ToBytes();
 
         string[] ToFormattedPreview();
+
+        bool CanEditProperties { get; }
+
+        void ShowPropertyEditor(IWin32Window current);
     }
 }

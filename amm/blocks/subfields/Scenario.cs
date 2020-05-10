@@ -1,17 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AMMEdit.amm.blocks.subfields
 {
-    class Scenario
+    public class Scenario : INotifyPropertyChanged
     {
         private readonly string m_nameCstring;
 
-        private readonly List<Fraction> m_fractions;
+        public List<Fraction> m_fractions { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string name;
+
+        public string Name
+        {
+            get
+            {
+                return this.name;
+            }
+
+            set
+            {
+                name = value;
+
+                // TODO: set the cstring
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
+            }
+        }
+ 
+
+        public string FieldID { get; }
 
         public enum FractionOrder : int
         {
@@ -35,6 +61,8 @@ namespace AMMEdit.amm.blocks.subfields
                 this.m_fractions.Add(new Fraction((FractionOrder)f, r));
             }
 
+            this.name = (m_nameCstring.Replace("\0", ""));
+            FieldID = Guid.NewGuid().ToString();
         }
 
         public byte[] ToBytes()

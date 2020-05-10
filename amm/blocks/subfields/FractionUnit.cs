@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AMMEdit.amm
 {
-    class FractionUnit
+    public class FractionUnit
     {
         enum GroundUnitType : byte
         {
@@ -44,7 +44,8 @@ namespace AMMEdit.amm
         private bool autoDeployed;
         private byte numMenInUnit; // max 9
         private byte lenName;
-        private string unitName;
+        public string unitName { get; }
+
         private string unitNameCString;
 
 

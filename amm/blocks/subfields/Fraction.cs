@@ -9,7 +9,7 @@ using static AMMEdit.amm.blocks.subfields.Scenario;
 
 namespace AMMEdit.amm
 {
-    class Fraction
+    public class Fraction
     {
         private FractionOrder order;
         UInt32 paddingFieldValue;
@@ -34,7 +34,7 @@ namespace AMMEdit.amm
         UInt32 numStartAirSupports;
         UInt32 numTotalUnits; // total number of squads in the fraction
 
-        private List<FractionUnit> m_units;
+        public List<FractionUnit> m_units { get; }
 
         public Fraction(FractionOrder order, BinaryReader r)
         {

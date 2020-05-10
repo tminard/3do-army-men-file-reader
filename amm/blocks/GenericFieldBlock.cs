@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AMMEdit.amm
 {
@@ -55,5 +56,12 @@ namespace AMMEdit.amm
 
             return lines.ToArray();
         }
+
+        public void ShowPropertyEditor(IWin32Window current)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanEditProperties => false;
     }
 }

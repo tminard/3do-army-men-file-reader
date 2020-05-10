@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
 {
@@ -80,6 +81,13 @@ namespace AMMEdit.amm.blocks
         public string DisplayFieldName { get; }
 
         public string FieldID { get; }
+
+        public bool CanEditProperties => false;
+
+        public void ShowPropertyEditor(IWin32Window current)
+        {
+            throw new NotImplementedException();
+        }
 
         public byte[] ToBytes()
         {
