@@ -9,9 +9,9 @@ namespace AMMEdit.amm.blocks.subfields
 {
     class Scenario
     {
-        private string m_nameCstring;
+        private readonly string m_nameCstring;
 
-        private List<Fraction> m_fractions;
+        private readonly List<Fraction> m_fractions;
 
         public enum FractionOrder : int
         {
@@ -37,7 +37,7 @@ namespace AMMEdit.amm.blocks.subfields
 
         }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             List<byte> content = new List<byte>();
 
@@ -48,7 +48,7 @@ namespace AMMEdit.amm.blocks.subfields
             return content.ToArray();
         }
 
-        public string[] toFormattedPreview()
+        public string[] ToFormattedPreview()
         {
             return new string[] {
                 string.Format("Scenario Name:\t{0}", m_nameCstring.Replace("\0", "")),

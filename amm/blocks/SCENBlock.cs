@@ -20,8 +20,8 @@ namespace AMMEdit.amm.blocks
      */
     class SCENBlock : IGenericFieldBlock
     {
-        private Int32 m_blockLength;
-        private byte[] m_origData;
+        private readonly Int32 m_blockLength;
+        private readonly byte[] m_origData;
         private Int32 m_numScenarios;
 
         private List<Scenario> m_scenarios;
@@ -35,7 +35,7 @@ namespace AMMEdit.amm.blocks
 
             m_origData = r.ReadBytes(m_blockLength);
 
-            reconstructScenarios();
+            ReconstructScenarios();
         }
 
         public string DisplayFieldName { get; }
@@ -47,12 +47,12 @@ namespace AMMEdit.amm.blocks
             List<byte> content = new List<byte>();
             Span<byte> buff = stackalloc byte[4];
 
-            BinaryPrimitives.WriteInt32LittleEndian(buff, getContentByteSize());
+            BinaryPrimitives.WriteInt32LittleEndian(buff, GetContentByteSize());
 
             BinaryPrimitives.WriteInt32LittleEndian(buff, m_scenarios.Count);
             content.AddRange(buff.Slice(0, 4).ToArray());
 
-            m_scenarios.ForEach(s => content.AddRange(s.toBytes()));
+            m_scenarios.ForEach(s => content.AddRange(s.ToBytes()));
 
             content.Add(0x0); // eof marker
 
@@ -63,7 +63,7 @@ namespace AMMEdit.amm.blocks
         {
             List<string> lines = new List<string> {
                 string.Format("Size of loaded:\t{0}", m_blockLength),
-                string.Format("Size of current:\t{0}", getContentByteSize()),
+                string.Format("Size of current:\t{0}", GetContentByteSize()),
                 string.Format("Number scenarios:\t{0}", m_numScenarios)
             };
 
@@ -71,7 +71,7 @@ namespace AMMEdit.amm.blocks
             m_scenarios.ToList().ForEach(sc =>
             {
                 lines.Add("[");
-                foreach (var line in sc.toFormattedPreview())
+                foreach (var line in sc.ToFormattedPreview())
                 {
                     lines.Add(string.Format("\t{0}", line));
                 }
@@ -81,16 +81,16 @@ namespace AMMEdit.amm.blocks
             return lines.ToArray();
         }
 
-        private int getContentByteSize()
+        private int GetContentByteSize()
         {
-            int numBytes = m_scenarios.Sum(s => s.toBytes().Length);
+            int numBytes = m_scenarios.Sum(s => s.ToBytes().Length);
             numBytes += 4; // include scenario count
             numBytes += 1; // eof byte - not always present...
 
             return numBytes;
         }
 
-        private void reconstructScenarios()
+        private void ReconstructScenarios()
         {
             using (MemoryStream ms = new MemoryStream(m_origData))
             {
