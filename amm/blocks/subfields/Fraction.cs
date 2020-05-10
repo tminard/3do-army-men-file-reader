@@ -134,7 +134,7 @@ namespace AMMEdit.amm
             content.AddRange(buff.Slice(0, 4).ToArray());
 
             // units
-            m_units.ForEach(u => content.AddRange(u.toBytes()));
+            m_units.ForEach(u => content.AddRange(u.ToBytes()));
 
             return content.ToArray();
         }

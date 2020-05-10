@@ -63,7 +63,7 @@ namespace AMMEdit.amm.blocks
                     readBytes += 1;
                 }
                 Int32 nameLength = r.ReadInt32();
-                string name = "Unnamed\0"; // TODO: let Placeable handle this
+                string name = "";
                 readBytes += 4;
 
                 if (nameLength > 0)
@@ -81,7 +81,7 @@ namespace AMMEdit.amm.blocks
 
         public string FieldID { get; }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             // Im sure theres a better way to do this (perhaps using structs with explicit layout, or custom serializers), but lets just get this done for now
             // This is one of the more complex blocks in the file spec.
@@ -108,6 +108,9 @@ namespace AMMEdit.amm.blocks
                 list.AddRange(val);
             });
 
+            BinaryPrimitives.WriteInt32LittleEndian(buff.Slice(0), Convert.ToInt32(m_placeables.Count));
+            list.AddRange(buff.Slice(0, 4).ToArray());
+
             // placements
             m_placeables.ForEach(x => list.AddRange(x.toBytes()));
 
@@ -115,19 +118,20 @@ namespace AMMEdit.amm.blocks
             return list.ToArray();
         }
 
-        public string[] toFormattedPreview()
+        public string[] ToFormattedPreview()
         {
-            List<string> lines = new List<string>();
-
-            lines.Add(string.Format("Field: {0}", DisplayFieldName));
-            lines.Add(string.Format("Actual size (in bytes): {0}", m_correctedBlockLength));
-            lines.Add(string.Format("Original size in file header: {0}", m_blockLength));
-            lines.Add(string.Empty);
-            lines.Add(string.Format("Key-Values: {0}", m_keyValuePairs.Count));
-            lines.Add(string.Format("Placeables defined: {0}", m_placeables.Count));
-            lines.Add(string.Format("Using longer header: {0}", m_useLongerHeader));
-            lines.Add(string.Empty);
-            lines.Add("== Key-Values defined ==");
+            List<string> lines = new List<string>
+            {
+                string.Format("Field: {0}", DisplayFieldName),
+                string.Format("Actual size (in bytes): {0}", m_correctedBlockLength),
+                string.Format("Original size in file header: {0}", m_blockLength),
+                string.Empty,
+                string.Format("Key-Values: {0}", m_keyValuePairs.Count),
+                string.Format("Placeables defined: {0}", m_placeables.Count),
+                string.Format("Using longer header: {0}", m_useLongerHeader),
+                string.Empty,
+                "== Key-Values defined =="
+            };
             m_keyValuePairs.ToList().ForEach(kv => lines.Add(string.Format("{0}\t=\t`{1}`", kv.Key, kv.Value)));
             lines.Add(string.Empty);
             lines.Add("== Placeables defined ==");

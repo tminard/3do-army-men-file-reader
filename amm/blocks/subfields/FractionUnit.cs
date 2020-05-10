@@ -86,19 +86,18 @@ namespace AMMEdit.amm
             unitName = this.unitNameCString.Substring(0, this.unitNameCString.Length - 1); // get outta here with that nil
         }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             List<byte> content = new List<byte>();
             Span<byte> buff = stackalloc byte[1024];
 
-            // write all content in the correct order
             content.Add(unitTypeID);
             content.Add(unitTypeClass);
-            content.AddRange(shortToBytes(padding1));
-            content.AddRange(shortToBytes(startPosX));
-            content.AddRange(shortToBytes(padding2));
-            content.AddRange(shortToBytes(startPosY));
-            content.AddRange(shortToBytes(padding3));
+            content.AddRange(ShortToBytes(padding1));
+            content.AddRange(ShortToBytes(startPosX));
+            content.AddRange(ShortToBytes(padding2));
+            content.AddRange(ShortToBytes(startPosY));
+            content.AddRange(ShortToBytes(padding3));
 
             content.Add(rotation);
             content.Add(Convert.ToByte(autoDeployed));
@@ -109,7 +108,7 @@ namespace AMMEdit.amm
             return content.ToArray();
         }
 
-        private byte[] shortToBytes(ushort val)
+        private byte[] ShortToBytes(ushort val)
         {
             Span<byte> buff = stackalloc byte[2];
             BinaryPrimitives.WriteUInt16LittleEndian(buff, val);

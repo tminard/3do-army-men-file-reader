@@ -42,12 +42,18 @@ namespace AMMEdit.amm.blocks
 
         public string FieldID { get; }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             List<byte> content = new List<byte>();
             Span<byte> buff = stackalloc byte[4];
 
+            content.AddRange(new byte[]
+            {
+                0x53, 0x43, 0x45, 0x4E // SCEN
+            });
+
             BinaryPrimitives.WriteInt32LittleEndian(buff, GetContentByteSize());
+            content.AddRange(buff.Slice(0, 4).ToArray());
 
             BinaryPrimitives.WriteInt32LittleEndian(buff, m_scenarios.Count);
             content.AddRange(buff.Slice(0, 4).ToArray());
@@ -59,7 +65,7 @@ namespace AMMEdit.amm.blocks
             return content.ToArray();
         }
 
-        public string[] toFormattedPreview()
+        public string[] ToFormattedPreview()
         {
             List<string> lines = new List<string> {
                 string.Format("Size of loaded:\t{0}", m_blockLength),

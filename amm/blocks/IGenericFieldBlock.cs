@@ -5,8 +5,8 @@
         string DisplayFieldName { get; }
         string FieldID { get; }
 
-        byte[] toBytes();
+        byte[] ToBytes();
 
-        string[] toFormattedPreview();
+        string[] ToFormattedPreview();
     }
 }

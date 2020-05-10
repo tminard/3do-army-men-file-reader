@@ -12,7 +12,7 @@ namespace AMMEdit.amm.blocks.subfields
         private Int32 m_index;
         private Int32 m_unknownA;
         private byte m_unknownB;
-        private string m_name; // nil terminated when written
+        private string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
         private bool m_includeUnknownB;
 
         public PlaceableObject(int index, int unknownA, byte unknownB, string name, bool includeUnknownB)

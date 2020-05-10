@@ -20,7 +20,7 @@ namespace AMMEdit.amm
             this.infile = infile ?? throw new ArgumentNullException(nameof(infile));
         }
 
-        public MapFile read()
+        public MapFile Read()
         {
             List<IGenericFieldBlock> fields = new List<IGenericFieldBlock>();
 

@@ -26,7 +26,7 @@ namespace AMMEdit.amm
             this.FieldID = Guid.NewGuid().ToString();
         }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             List<byte> list = new List<byte>();
             Span<byte> buff = stackalloc byte[1024];
@@ -44,7 +44,7 @@ namespace AMMEdit.amm
             return list.ToArray();
         }
 
-        public string[] toFormattedPreview()
+        public string[] ToFormattedPreview()
         {
             List<string> lines = new List<string>();
 
