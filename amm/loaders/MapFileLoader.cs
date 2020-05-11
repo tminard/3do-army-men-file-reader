@@ -58,7 +58,7 @@ namespace AMMEdit.amm
                         switch (id)
                         {
                             case "OATT":
-                                fields.Add(new OATTBlock(r, major > 5));
+                                fields.Add(new OATTBlock(r));
                                 break;
                             case "SCEN":
                                 fields.Add(new SCENBlock(r));

@@ -17,9 +17,8 @@ namespace AMMEdit.amm.blocks
         private Int32 m_blockLength; // untrustworthy. Appears to be off by one in several files in unpredictable ways
         private Int32 m_correctedBlockLength;
         private List<PlaceableObject> m_placeables;
-        private bool m_useLongerHeader;
 
-        public OATTBlock(BinaryReader r, bool longerHeader)
+        public OATTBlock(BinaryReader r)
         {
             if (r is null)
             {
@@ -31,7 +30,6 @@ namespace AMMEdit.amm.blocks
 
             m_keyValuePairs = new Dictionary<string, int>();
             m_placeables = new List<PlaceableObject>();
-            m_useLongerHeader = longerHeader;
 
             // read the stream to extract all the key-values
             m_blockLength = r.ReadInt32();
@@ -52,29 +50,8 @@ namespace AMMEdit.amm.blocks
 
             for (int i = 0; i < numPlacements; i++)
             {
-                // TODO: review assembly to determine how fields are parsed
-                Int32 index = r.ReadInt32();
-                Int32 unknownA = r.ReadInt32(); // unknown
-                Int32 readBytes = 8;
-
-                byte unknownB = 0;
-                if (this.m_useLongerHeader)
-                {
-                    unknownB = r.ReadByte(); // read an extra byte - no idea what it is yet
-                    readBytes += 1;
-                }
-                Int32 nameLength = r.ReadInt32();
-                string name = "";
-                readBytes += 4;
-
-                if (nameLength > 0)
-                {
-                    name = new string(r.ReadChars(nameLength));
-                    readBytes += nameLength;
-                }
-
-                m_placeables.Add(new PlaceableObject(index, unknownA, unknownB, name, m_useLongerHeader));
-                m_correctedBlockLength += readBytes;
+                m_placeables.Add(new PlaceableObject(m_keyValuePairs, r));
+                m_correctedBlockLength += m_placeables.Last().toBytes().Length;
             }
         }
 
@@ -108,6 +85,7 @@ namespace AMMEdit.amm.blocks
             list.AddRange(buff.Slice(0, 4).ToArray());
 
             // key-value pairs
+            // key is the field name. Value is the number of bytes in the data
             m_keyValuePairs.ToList().ForEach(kv => {
                 list.AddRange(ASCIIEncoding.ASCII.GetBytes(kv.Key.ToArray()));
 
@@ -136,7 +114,7 @@ namespace AMMEdit.amm.blocks
                 string.Empty,
                 string.Format("Key-Values: {0}", m_keyValuePairs.Count),
                 string.Format("Placeables defined: {0}", m_placeables.Count),
-                string.Format("Using longer header: {0}", m_useLongerHeader),
+                //string.Format("Using longer header: {0}", m_useLongerHeader),
                 string.Empty,
                 "== Key-Values defined =="
             };

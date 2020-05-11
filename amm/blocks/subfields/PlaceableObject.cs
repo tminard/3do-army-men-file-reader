@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,45 +10,55 @@ namespace AMMEdit.amm.blocks.subfields
 {
     class PlaceableObject
     {
-        private Int32 m_index;
-        private Int32 m_unknownA;
-        private byte m_unknownB;
+        private Dictionary<string, Int32> m_fields; // field name, and byte length
+        private Dictionary<string, List<byte>> m_values;
         private string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
-        private bool m_includeUnknownB;
 
-        public PlaceableObject(int index, int unknownA, byte unknownB, string name, bool includeUnknownB)
+        public PlaceableObject(Dictionary<string, Int32> fields, BinaryReader r)
         {
-            m_index = index;
-            m_unknownA = unknownA;
-            m_unknownB = unknownB;
-            m_name = name;
-            m_includeUnknownB = includeUnknownB;
+            m_fields = fields;
+            m_values = new Dictionary<string, List<byte>>();
+
+            m_fields.ToList().ForEach(kv =>
+            {
+                List<byte> d;
+                switch (kv.Value)
+                {
+                    case 1:
+                        d = new List<byte>(1)
+                        {
+                            r.ReadByte()
+                        };
+
+                        m_values.Add(kv.Key, d);
+                        break;
+                    default:
+                        d = new List<byte>(kv.Value);
+                        d.AddRange(r.ReadBytes(kv.Value));
+
+                        m_values.Add(kv.Key, d);
+                        break;
+                }
+            });
+
+            int nameLen = BinaryPrimitives.ReadInt32LittleEndian(m_values["SCRI"].ToArray());
+            if (nameLen > 0)
+            {
+                m_name = new string(r.ReadChars(nameLen));
+            } else
+            {
+                m_name = "";
+            }
         }
 
         public byte[] toBytes()
         {
-            int size = 8 + (m_includeUnknownB ? 1 : 0) + m_name.Length; // strings are already nil terminated
+            int contentSize = m_values.Sum(kv => kv.Value.Count);
+            int size = contentSize + m_name.Length; // strings are already nil terminated
             List<byte> content = new List<byte>(size);
-            Span<byte> buff = stackalloc byte[1024];
 
-            // index
-            BinaryPrimitives.WriteInt32LittleEndian(buff, Convert.ToInt32(m_index));
-            content.AddRange(buff.Slice(0, 4).ToArray());
-
-            // unknown
-            BinaryPrimitives.WriteInt32LittleEndian(buff, Convert.ToInt32(m_unknownA));
-            content.AddRange(buff.Slice(0, 4).ToArray());
-
-            // optional byte
-            if (m_includeUnknownB)
-            {
-                content.Add(m_unknownB);
-            }
-
-            // name length
-            BinaryPrimitives.WriteInt32LittleEndian(buff, Convert.ToInt32(m_name.Length));
-            content.AddRange(buff.Slice(0, 4).ToArray());
-
+            m_values.ToList().ForEach(kv => content.AddRange(kv.Value));
+            
             // nil terminated name (ASCII)
             if (m_name.Length > 0)
             {
@@ -62,11 +73,11 @@ namespace AMMEdit.amm.blocks.subfields
         public string[] toFormattedDescription()
         {
             return new string[] {
-                string.Format("Name:\t{0}", getFormattedName()),
-                string.Format("Index:\t{0}", m_index),
+                string.Format("Name:\t{0}", getFormattedName())
+                /*string.Format("Index:\t{0}", m_index),
                 string.Format("Unknown A:\t{0}", m_unknownA),
                 string.Format("Unknown B:\t{0}", m_unknownB),
-                string.Format("Include extra byte?:\t{0}", m_includeUnknownB)
+                string.Format("Include extra byte?:\t{0}", m_includeUnknownB)*/
             };
         }
 
