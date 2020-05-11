@@ -114,7 +114,6 @@ namespace AMMEdit.amm.blocks
                 string.Empty,
                 string.Format("Key-Values: {0}", m_keyValuePairs.Count),
                 string.Format("Placeables defined: {0}", m_placeables.Count),
-                //string.Format("Using longer header: {0}", m_useLongerHeader),
                 string.Empty,
                 "== Key-Values defined =="
             };

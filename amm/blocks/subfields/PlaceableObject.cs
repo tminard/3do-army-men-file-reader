@@ -72,13 +72,30 @@ namespace AMMEdit.amm.blocks.subfields
 
         public string[] toFormattedDescription()
         {
-            return new string[] {
+            List<string> lines = new List<string> {
                 string.Format("Name:\t{0}", getFormattedName())
-                /*string.Format("Index:\t{0}", m_index),
-                string.Format("Unknown A:\t{0}", m_unknownA),
-                string.Format("Unknown B:\t{0}", m_unknownB),
-                string.Format("Include extra byte?:\t{0}", m_includeUnknownB)*/
             };
+
+            m_fields.ToList().ForEach(kv =>
+            {
+                lines.Add(string.Format("{0}:\t{1}", kv.Key, GetFieldValue(kv.Key)));
+            });
+
+            return lines.ToArray();
+        }
+
+        private int GetFieldValue(string key)
+        {
+            byte[] data = m_values[key].ToArray();
+
+            if (data.Length == 1)
+            {
+                return data[0] << 8;
+            }
+            else
+            {
+                return BinaryPrimitives.ReadInt32LittleEndian(m_values[key].ToArray());
+            }
         }
 
         private string getFormattedName()
