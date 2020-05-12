@@ -36,6 +36,12 @@ namespace AMMEdit.amm
 
         public List<FractionUnit> m_units { get; }
 
+        public string Name { get
+            {
+                return this.order.ToString();
+            }
+        }
+
         public Fraction(FractionOrder order, BinaryReader r)
         {
             this.order = order;

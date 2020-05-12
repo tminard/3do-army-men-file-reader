@@ -101,6 +101,7 @@
             // saveAMMFileDialog
             // 
             this.saveAMMFileDialog.DefaultExt = "AMM";
+            this.saveAMMFileDialog.Filter = "Army Men 1 Maps|*.amm";
             // 
             // buttonEditProps
             // 

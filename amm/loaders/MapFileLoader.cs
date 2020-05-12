@@ -57,8 +57,12 @@ namespace AMMEdit.amm
 
                         switch (id)
                         {
+                            case "OLAY":
+                                fields.Add(new OLAYBlock(r));
+                                break;
                             case "OATT":
-                                fields.Add(new OATTBlock(r));
+                                OLAYBlock lastOLAY = (OLAYBlock)fields.FindLast(x => x.DisplayFieldName == OLAYBlock.FIELD_NAME);
+                                fields.Add(new OATTBlock(r, lastOLAY));
                                 break;
                             case "SCEN":
                                 fields.Add(new SCENBlock(r));

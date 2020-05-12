@@ -1,4 +1,5 @@
-﻿using AMMEdit.amm.blocks;
+﻿using AMMEdit.amm;
+using AMMEdit.amm.blocks;
 using AMMEdit.amm.blocks.subfields;
 using System;
 using System.Collections.Generic;
@@ -51,8 +52,27 @@ namespace AMMEdit.PropertyEditors
             listGreyFractions.DisplayMember = "unitName";
 
             textBox1.DataBindings.Clear();
-            // TODO: bind to each separate item
             textBox1.DataBindings.Add("Text", (Scenario)scenarioList.SelectedItem, "Name", false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        private void listGreenFractions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+        }
+
+        private void listTanFractions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+        }
+
+        private void listBlueFractions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+        }
+
+        private void listGreyFractions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
         }
     }
 }

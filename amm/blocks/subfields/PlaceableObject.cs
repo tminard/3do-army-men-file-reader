@@ -12,7 +12,13 @@ namespace AMMEdit.amm.blocks.subfields
     {
         private Dictionary<string, Int32> m_fields; // field name, and byte length
         private Dictionary<string, List<byte>> m_values;
-        private string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
+        private readonly string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
+
+        public int ObjectIndex { get
+            {
+                return GetFieldValue("INDX");
+            }
+        }
 
         public PlaceableObject(Dictionary<string, Int32> fields, BinaryReader r)
         {
@@ -51,14 +57,14 @@ namespace AMMEdit.amm.blocks.subfields
             }
         }
 
-        public byte[] toBytes()
+        public byte[] ToBytes()
         {
             int contentSize = m_values.Sum(kv => kv.Value.Count);
             int size = contentSize + m_name.Length; // strings are already nil terminated
             List<byte> content = new List<byte>(size);
 
             m_values.ToList().ForEach(kv => content.AddRange(kv.Value));
-            
+
             // nil terminated name (ASCII)
             if (m_name.Length > 0)
             {
@@ -70,11 +76,15 @@ namespace AMMEdit.amm.blocks.subfields
             return content.ToArray();
         }
 
-        public string[] toFormattedDescription()
+        public string[] ToFormattedDescription(OLAYObject obj)
         {
             List<string> lines = new List<string> {
-                string.Format("Name:\t{0}", getFormattedName())
+                string.Format("Script Name:\t{0}", GetFormattedName())
             };
+
+            lines.Add(string.Empty);
+            lines.AddRange(obj.ToFormattedPreview());
+            lines.Add(string.Empty);
 
             m_fields.ToList().ForEach(kv =>
             {
@@ -90,7 +100,7 @@ namespace AMMEdit.amm.blocks.subfields
 
             if (data.Length == 1)
             {
-                return data[0] << 8;
+                return Convert.ToInt32(data[0]);
             }
             else
             {
@@ -98,7 +108,7 @@ namespace AMMEdit.amm.blocks.subfields
             }
         }
 
-        private string getFormattedName()
+        private string GetFormattedName()
         {
             char[] cstring = m_name.ToArray();
 
@@ -110,7 +120,7 @@ namespace AMMEdit.amm.blocks.subfields
                 return new string(str);
             } else
             {
-                return "(empty)";
+                return "(unnamed)";
             }
         }
     }

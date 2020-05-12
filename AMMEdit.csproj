@@ -33,6 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Core" />
@@ -48,11 +57,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="amm\blocks\OLAYBlock.cs" />
     <Compile Include="amm\blocks\subfields\Fraction.cs" />
     <Compile Include="amm\blocks\GenericFieldBlock.cs" />
     <Compile Include="amm\blocks\IGenericFieldBlock.cs" />
     <Compile Include="amm\blocks\OATTBlock.cs" />
     <Compile Include="amm\blocks\SCENBlock.cs" />
+    <Compile Include="amm\blocks\subfields\OLAYObject.cs" />
     <Compile Include="amm\blocks\subfields\PlaceableObject.cs" />
     <Compile Include="amm\blocks\subfields\Scenario.cs" />
     <Compile Include="amm\MapFile.cs" />
@@ -72,6 +83,7 @@
     <Compile Include="PropertyEditors\ScenarioEditor.Designer.cs">
       <DependentUpon>ScenarioEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditors\SceneRenderer.cs" />
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -87,6 +99,7 @@
     <EmbeddedResource Include="PropertyEditors\ScenarioEditor.resx">
       <DependentUpon>ScenarioEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

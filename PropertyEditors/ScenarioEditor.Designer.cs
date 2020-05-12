@@ -32,13 +32,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listGreenFractions = new System.Windows.Forms.ListBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listTanFractions = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.listGreyFractions = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.listBlueFractions = new System.Windows.Forms.ListBox();
+            this.propertyGridFractionUnit = new System.Windows.Forms.PropertyGrid();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -82,6 +83,15 @@
             this.groupBox1.Text = "Green";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // listGreenFractions
+            // 
+            this.listGreenFractions.FormattingEnabled = true;
+            this.listGreenFractions.Location = new System.Drawing.Point(7, 20);
+            this.listGreenFractions.Name = "listGreenFractions";
+            this.listGreenFractions.Size = new System.Drawing.Size(301, 277);
+            this.listGreenFractions.TabIndex = 0;
+            this.listGreenFractions.SelectedIndexChanged += new System.EventHandler(this.listGreenFractions_SelectedIndexChanged);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.listTanFractions);
@@ -92,14 +102,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tan";
             // 
-            // listGreenFractions
-            // 
-            this.listGreenFractions.FormattingEnabled = true;
-            this.listGreenFractions.Location = new System.Drawing.Point(7, 20);
-            this.listGreenFractions.Name = "listGreenFractions";
-            this.listGreenFractions.Size = new System.Drawing.Size(301, 277);
-            this.listGreenFractions.TabIndex = 0;
-            // 
             // listTanFractions
             // 
             this.listTanFractions.FormattingEnabled = true;
@@ -107,6 +109,7 @@
             this.listTanFractions.Name = "listTanFractions";
             this.listTanFractions.Size = new System.Drawing.Size(301, 277);
             this.listTanFractions.TabIndex = 1;
+            this.listTanFractions.SelectedIndexChanged += new System.EventHandler(this.listTanFractions_SelectedIndexChanged);
             // 
             // groupBox3
             // 
@@ -125,6 +128,7 @@
             this.listGreyFractions.Name = "listGreyFractions";
             this.listGreyFractions.Size = new System.Drawing.Size(301, 277);
             this.listGreyFractions.TabIndex = 1;
+            this.listGreyFractions.SelectedIndexChanged += new System.EventHandler(this.listGreyFractions_SelectedIndexChanged);
             // 
             // groupBox4
             // 
@@ -143,13 +147,22 @@
             this.listBlueFractions.Name = "listBlueFractions";
             this.listBlueFractions.Size = new System.Drawing.Size(301, 277);
             this.listBlueFractions.TabIndex = 0;
+            this.listBlueFractions.SelectedIndexChanged += new System.EventHandler(this.listBlueFractions_SelectedIndexChanged);
+            // 
+            // propertyGridFractionUnit
+            // 
+            this.propertyGridFractionUnit.Location = new System.Drawing.Point(895, 54);
+            this.propertyGridFractionUnit.Name = "propertyGridFractionUnit";
+            this.propertyGridFractionUnit.Size = new System.Drawing.Size(297, 628);
+            this.propertyGridFractionUnit.TabIndex = 7;
             // 
             // ScenarioEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
-            this.ClientSize = new System.Drawing.Size(905, 709);
+            this.ClientSize = new System.Drawing.Size(1215, 709);
+            this.Controls.Add(this.propertyGridFractionUnit);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox2);
@@ -182,5 +195,6 @@
         private System.Windows.Forms.ListBox listGreyFractions;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ListBox listBlueFractions;
+        private System.Windows.Forms.PropertyGrid propertyGridFractionUnit;
     }
 }

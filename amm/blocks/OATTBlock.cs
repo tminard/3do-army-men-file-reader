@@ -18,15 +18,24 @@ namespace AMMEdit.amm.blocks
         private Int32 m_correctedBlockLength;
         private List<PlaceableObject> m_placeables;
 
-        public OATTBlock(BinaryReader r)
+        private OLAYBlock m_olay;
+
+        public OATTBlock(BinaryReader r, OLAYBlock olay)
         {
             if (r is null)
             {
                 throw new ArgumentNullException(nameof(r));
             }
 
+            if (olay is null)
+            {
+                throw new ArgumentNullException(nameof(olay));
+            }
+
             DisplayFieldName = "Objects (OATT)";
             FieldID = Guid.NewGuid().ToString();
+
+            m_olay = olay; // needed to map indexes to objects
 
             m_keyValuePairs = new Dictionary<string, int>();
             m_placeables = new List<PlaceableObject>();
@@ -51,7 +60,7 @@ namespace AMMEdit.amm.blocks
             for (int i = 0; i < numPlacements; i++)
             {
                 m_placeables.Add(new PlaceableObject(m_keyValuePairs, r));
-                m_correctedBlockLength += m_placeables.Last().toBytes().Length;
+                m_correctedBlockLength += m_placeables.Last().ToBytes().Length;
             }
         }
 
@@ -98,7 +107,7 @@ namespace AMMEdit.amm.blocks
             list.AddRange(buff.Slice(0, 4).ToArray());
 
             // placements
-            m_placeables.ForEach(x => list.AddRange(x.toBytes()));
+            m_placeables.ForEach(x => list.AddRange(x.ToBytes()));
 
             // return the byte array
             return list.ToArray();
@@ -122,8 +131,10 @@ namespace AMMEdit.amm.blocks
             lines.Add("== Placeables defined ==");
             m_placeables.ToList().ForEach(kv =>
             {
+                int objInx = kv.ObjectIndex;
+
                 lines.Add("[");
-                foreach (var line in kv.toFormattedDescription())
+                foreach (var line in kv.ToFormattedDescription(m_olay.GetObjectByIndex(objInx)))
                 {
                     lines.Add(string.Format("\t{0}", line));
                 }
