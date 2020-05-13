@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 
 namespace AMMEdit.amm.blocks.subfields
 {
-    class PlaceableObject
+    /**
+     * Appears to contain metadata for <see cref="OLAYObject"/>.
+     */
+    public class PlaceableObject : IPlaceableObject
     {
         private Dictionary<string, Int32> m_fields; // field name, and byte length
         private Dictionary<string, List<byte>> m_values;
         private readonly string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
 
-        public int ObjectIndex { get
+        public int ObjectIndex
+        {
+            get
             {
                 return GetFieldValue("INDX");
             }
@@ -51,7 +56,8 @@ namespace AMMEdit.amm.blocks.subfields
             if (nameLen > 0)
             {
                 m_name = new string(r.ReadChars(nameLen));
-            } else
+            }
+            else
             {
                 m_name = "";
             }
@@ -118,7 +124,8 @@ namespace AMMEdit.amm.blocks.subfields
                 Array.Copy(cstring, str, m_name.Length - 1);
 
                 return new string(str);
-            } else
+            }
+            else
             {
                 return "(unnamed)";
             }

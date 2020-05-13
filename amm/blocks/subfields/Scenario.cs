@@ -71,7 +71,7 @@ namespace AMMEdit.amm.blocks.subfields
 
             content.AddRange(ASCIIEncoding.ASCII.GetBytes(m_nameCstring));
 
-            m_fractions.ForEach(f => content.AddRange(f.toBytes()));
+            m_fractions.ForEach(f => content.AddRange(f.ToBytes()));
 
             return content.ToArray();
         }

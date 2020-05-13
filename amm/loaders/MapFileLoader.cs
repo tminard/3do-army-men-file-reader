@@ -57,6 +57,9 @@ namespace AMMEdit.amm
 
                         switch (id)
                         {
+                            case "TNAM":
+                                fields.Add(new TNAMBlock(r, Directory.GetParent(this.infile).FullName));
+                                break;
                             case "OLAY":
                                 fields.Add(new OLAYBlock(r));
                                 break;

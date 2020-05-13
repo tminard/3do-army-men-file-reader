@@ -1,90 +1,88 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
 
 namespace AMMEdit.amm
 {
-    public class FractionUnit
+    public abstract class FractionUnit
     {
-        public enum GroundUnitType : byte
-        {
-            Rifle = 0,
-            Grenader = 1,
-            Flamer = 2,
-            Bazooka = 3,
-            Engineer = 4,
-            Morter = 5,
-            Miner = 6,
-            Special1 = 7
-        }
-        public enum VehicleUnitType : byte
-        {
-            Jeep = 1,
-            Tank = 2,
-            HalfTrack = 3,
-            TransportTruck = 4
-        }
-
         public enum UnitClass : byte
         {
             GroundUnit = 0,
             VehicleUnit = 128
         }
- 
-        public UInt16 padding1 { get; }
-        public Int32 startPosX { get; }
-        public Int32 startPosY { get; }
-        public byte rotation { get; } // 0 = North, counter-clockwise to 255 = N 360d. 64 = 90 degrees, = West. Does not apply to sarge.
-        private byte lenName;
 
-        public byte unitTypeID { get; }
-        public byte unitTypeClass { get; }
+        [Description("Appears to be empty padding. Report if this contains data")]
+        public UInt16 Padding { get; }
 
-        public bool autoDeployed { get; }
-        public byte numMenInUnit { get; set; } // max 9
-        public string unitName { get; }
-        public UnitClass unitClassField { get { return (UnitClass)Convert.ToInt32(unitTypeClass); } }
+        [Category("Placement"), Description("The default X position for this unit. Note maps are 256 tiles wide, with each tile being 16 pixels. The stratmap is 6 segments. Each segment is about 42 pixels.")]
+        public Int32 StartPosX { get; set; }
+
+        [Category("Placement"), Description("The default Y position for this unit. Note maps are 256 tiles tall, with each tile being 16 pixels. The stratmap is 6 segments. Each segment is about 42 pixels.")]
+        public Int32 StartPosY { get; set; }
+
+        [Category("Placement"), Description("The starting rotation for the unit. Starts at 0 = North, and goes counter-clockwise up to the max value of a byte (255) as a complete 360 degrees. I.e. 64 = 90 degrees = West.")]
+        public byte Rotation { get; set; } // 0 = North, counter-clockwise to 255 = N 360d. 64 = 90 degrees, = West. Does not apply to sarge.
+
+        [Category("Classification")]
+        public byte UnitTypeID { get; }
+
+        [Category("Classification")]
+        public byte UnitTypeClass { get; }
+
+        [Category("Classification")]
+        public UnitClass UnitClassField { get { return (UnitClass)Convert.ToInt32(UnitTypeClass); } }
+
+        [Category("Deployment"), Description("If false, unit is automatically deployed at the starting position when the Scenario begins. Otherwise, unit must be deployed via DEPLOY in scripts. Exception: For Multi-Player, setting this to True allows user to manually place units. If AI, the unit will be placed at the starting positions.")]
+        public bool NotDeployed { get; set; }
+
+        [Category("Deployment"), Description("Number of men in the unit. 0 is the same as 1. No more than 9 is allowed for AM1.")]
+        public byte NumMenInUnit { get; set; } // max 9
+
+        [Category("Scripting"), Description("The name of the unit for scripting. The name is used to reference in unit in scripts.")]
+        public string UnitName { get; set; }
+
+        abstract public string UnitTypeLabel { get; }
 
         private string unitNameCString;
+        private byte lenName;
 
-
-        public FractionUnit(byte unitTypeID, byte unitTypeClass, int startPosX, int startPosY, byte rotation, bool autoDeployed, byte numMenInUnit, string unitName)
+        protected FractionUnit(byte unitTypeID, byte unitTypeClass, int startPosX, int startPosY, byte rotation, bool autoDeployed, byte numMenInUnit, string unitName)
         {
             if (unitName.Length + 1 > Byte.MaxValue) { throw new ArgumentException("Unit name cannot exceed byte length"); }
             if (numMenInUnit > 9) { throw new ArgumentException("Num units cannot exceed 9"); };
 
-            this.unitTypeID = unitTypeID;
-            this.unitTypeClass = unitTypeClass;
-            this.padding1 = 0;
-            this.startPosX = startPosX;
-            this.startPosY = startPosY;
-            this.rotation = rotation;
-            this.autoDeployed = autoDeployed;
-            this.numMenInUnit = numMenInUnit;
-            this.unitName = unitName;
+            this.UnitTypeID = unitTypeID;
+            this.UnitTypeClass = unitTypeClass;
+            this.Padding = 0;
+            this.StartPosX = startPosX;
+            this.StartPosY = startPosY;
+            this.Rotation = rotation;
+            this.NotDeployed = autoDeployed;
+            this.NumMenInUnit = numMenInUnit;
+            this.UnitName = unitName;
             this.unitNameCString = unitName + "\0";
             this.lenName = Convert.ToByte(unitNameCString.Length);
         }
 
-        public FractionUnit(BinaryReader r)
+        protected FractionUnit(BinaryReader r)
         {
-            unitTypeID = r.ReadByte();
-            unitTypeClass = r.ReadByte();
-            padding1 = r.ReadUInt16();
-            startPosX = r.ReadInt32();
-            startPosY = r.ReadInt32();
-            rotation = r.ReadByte();
-            autoDeployed = Convert.ToBoolean(r.ReadByte());
-            numMenInUnit = r.ReadByte();
+            UnitTypeID = r.ReadByte();
+            UnitTypeClass = r.ReadByte();
+            Padding = r.ReadUInt16();
+            StartPosX = r.ReadInt32();
+            StartPosY = r.ReadInt32();
+            Rotation = r.ReadByte();
+            NotDeployed = Convert.ToBoolean(r.ReadByte());
+            NumMenInUnit = r.ReadByte();
             lenName = r.ReadByte();
             unitNameCString = new string(r.ReadChars(Convert.ToInt16(this.lenName)));
 
-            unitName = this.unitNameCString.Substring(0, this.unitNameCString.Length - 1); // get outta here with that nil
+            UnitName = this.unitNameCString.Substring(0, this.unitNameCString.Length - 1); // get outta here with that nil
         }
 
         public byte[] ToBytes()
@@ -92,16 +90,19 @@ namespace AMMEdit.amm
             List<byte> content = new List<byte>();
             Span<byte> buff = stackalloc byte[1024];
 
-            content.Add(unitTypeID);
-            content.Add(unitTypeClass);
-            content.AddRange(ShortToBytes(padding1));
-            content.AddRange(IntToBytes(startPosX));
-            content.AddRange(IntToBytes(startPosY));
+            content.Add(UnitTypeID);
+            content.Add(UnitTypeClass);
+            content.AddRange(ShortToBytes(Padding));
+            content.AddRange(IntToBytes(StartPosX));
+            content.AddRange(IntToBytes(StartPosY));
 
-            content.Add(rotation);
-            content.Add(Convert.ToByte(autoDeployed));
-            content.Add(numMenInUnit);
-            content.Add(lenName);
+            content.Add(Rotation);
+            content.Add(Convert.ToByte(NotDeployed));
+            content.Add(NumMenInUnit);
+
+            unitNameCString = UnitName + "\0";
+
+            content.Add(Convert.ToByte(unitNameCString.Length));
             content.AddRange(ASCIIEncoding.ASCII.GetBytes(unitNameCString.ToArray()));
 
             return content.ToArray();

@@ -1,11 +1,14 @@
-﻿using System;
+﻿using AMMEdit.amm.blocks.subfields.units;
+using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static AMMEdit.amm.blocks.subfields.Scenario;
+using static AMMEdit.amm.FractionUnit;
 
 namespace AMMEdit.amm
 {
@@ -29,12 +32,15 @@ namespace AMMEdit.amm
         UInt32 numHalfTrackUnits;
         UInt32 numUnknownVehicleUnits; // truck?
         UInt32 unknownField1; // no impact on high value. Crash on low. Either padding, or reserved for specific maps. Perhaps for special vehicles (heli?)
-        UInt32 numStartAirstrikes;
-        UInt32 numStartParas;
-        UInt32 numStartAirSupports;
+
+
+        public UInt32 NumStartAirstrikes { get; set; }
+        public UInt32 NumStartParas { get; set; }
+        public UInt32 NumStartAirSupports { get; set; }
+
         UInt32 numTotalUnits; // total number of squads in the fraction
 
-        public List<FractionUnit> m_units { get; }
+        public List<FractionUnit> Units { get; }
 
         public string Name { get
             {
@@ -70,20 +76,50 @@ namespace AMMEdit.amm
             this.numUnknownVehicleUnits = r.ReadUInt32();
             this.unknownField1 = r.ReadUInt32();
 
-            this.numStartAirstrikes = r.ReadUInt32();
-            this.numStartParas = r.ReadUInt32();
-            this.numStartAirSupports = r.ReadUInt32();
+            this.NumStartAirstrikes = r.ReadUInt32();
+            this.NumStartParas = r.ReadUInt32();
+            this.NumStartAirSupports = r.ReadUInt32();
 
             this.numTotalUnits = r.ReadUInt32();
 
-            m_units = new List<FractionUnit>(Convert.ToInt32(numTotalUnits));
+            Units = new List<FractionUnit>(Convert.ToInt32(numTotalUnits));
             for (int u = 0; u < this.numTotalUnits; u++)
             {
-                this.m_units.Add(new FractionUnit(r));
+                long cp = r.BaseStream.Position;
+                r.BaseStream.Seek(1, SeekOrigin.Current);
+
+                byte peekClass = r.ReadByte();
+                UnitClass c = (UnitClass)peekClass;
+
+                r.BaseStream.Position = cp;
+
+                switch (c)
+                {
+                    case UnitClass.VehicleUnit:
+                        Units.Add(new VehicleFractionUnit(r));
+                        break;
+                    default:
+                        Units.Add(new GenericFractionUnit(r));
+                        break;
+                }
             }
         }
 
-        public byte[] toBytes()
+        public int GetUnitCountByType(byte unitClass, byte unitType)
+        {
+            return Units.FindAll(u => u.UnitTypeClass == unitClass && u.UnitTypeID == unitType).Count;
+        }
+
+        public void AddUnit(FractionUnit unit) {
+            Units.Add(unit);
+
+            if (numCountFields == 7 && unit.UnitTypeClass == (byte)UnitClass.GroundUnit && unit.UnitTypeID == (byte)GenericFractionUnit.UnitType.Special1)
+            {
+                numCountFields = 8;
+            }
+        }
+
+        public byte[] ToBytes()
         {
             List<byte> content = new List<byte>();
             Span<byte> buff = stackalloc byte[1024];
@@ -93,24 +129,24 @@ namespace AMMEdit.amm
             content.AddRange(buff.Slice(0, 4).ToArray());
             BinaryPrimitives.WriteUInt32LittleEndian(buff, this.paddingFieldValue);
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numRifleSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Rifleman)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numGrenaderSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Grenader)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numFlamerSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Flamer)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numBazookaSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Bazooka)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numEngineerSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Engineer)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numMorterSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Morter)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numMinerSquads);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Miner)));
             content.AddRange(buff.Slice(0, 4).ToArray());
 
             if (numCountFields == 8)
             {
-                BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numSpecial2Squads);
+                BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.GroundUnit, (byte)GenericFractionUnit.UnitType.Special1)));
                 content.AddRange(buff.Slice(0, 4).ToArray());
             }
 
@@ -119,28 +155,35 @@ namespace AMMEdit.amm
             BinaryPrimitives.WriteUInt32LittleEndian(buff, this.unknownPadding3);
             content.AddRange(buff.Slice(0, 4).ToArray());
 
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numJeepUnits);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.VehicleUnit, (byte)VehicleFractionUnit.VehicleUnitType.Jeep)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numTankUnits);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.VehicleUnit, (byte)VehicleFractionUnit.VehicleUnitType.Tank)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numHalfTrackUnits);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.VehicleUnit, (byte)VehicleFractionUnit.VehicleUnitType.HalfTrack)));
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numUnknownVehicleUnits);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, Convert.ToUInt32(GetUnitCountByType((byte)UnitClass.VehicleUnit, (byte)VehicleFractionUnit.VehicleUnitType.TransportTruck)));
             content.AddRange(buff.Slice(0, 4).ToArray());
             BinaryPrimitives.WriteUInt32LittleEndian(buff, this.unknownField1);
 
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numStartAirstrikes);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.NumStartAirstrikes);
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numStartParas);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.NumStartParas);
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.numStartAirSupports);
+            BinaryPrimitives.WriteUInt32LittleEndian(buff, this.NumStartAirSupports);
             content.AddRange(buff.Slice(0, 4).ToArray());
-            BinaryPrimitives.WriteInt32LittleEndian(buff, this.m_units.Count);
+            BinaryPrimitives.WriteInt32LittleEndian(buff, this.Units.Count);
             content.AddRange(buff.Slice(0, 4).ToArray());
 
-            // units
-            m_units.ForEach(u => content.AddRange(u.ToBytes()));
+            // units, reordered to be safe. Note that there is no defined order in the spec.
+            List<FractionUnit> genericUnitsOrdered = Units.FindAll(u => u.UnitTypeClass == (byte)UnitClass.GroundUnit);
+            genericUnitsOrdered.Sort((a, b) => a.UnitTypeID.CompareTo(b.UnitTypeID));
+
+            List<FractionUnit> vehicleUnitsOrdered = Units.FindAll(u => u.UnitTypeClass == (byte)UnitClass.VehicleUnit);
+            vehicleUnitsOrdered.Sort((a, b) => a.UnitTypeID.CompareTo(b.UnitTypeID));
+
+            genericUnitsOrdered.ForEach(u => content.AddRange(u.ToBytes()));
+            vehicleUnitsOrdered.ForEach(u => content.AddRange(u.ToBytes()));
 
             return content.ToArray();
         }

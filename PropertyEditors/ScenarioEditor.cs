@@ -1,6 +1,7 @@
 ﻿using AMMEdit.amm;
 using AMMEdit.amm.blocks;
 using AMMEdit.amm.blocks.subfields;
+using AMMEdit.PropertyEditors.dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,16 +40,16 @@ namespace AMMEdit.PropertyEditors
 
         private void scenarioList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            listGreenFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[0].m_units;
+            listGreenFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[0].Units;
             listGreenFractions.DisplayMember = "unitName";
 
-            listTanFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[1].m_units;
+            listTanFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[1].Units;
             listTanFractions.DisplayMember = "unitName";
 
-            listBlueFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[2].m_units;
+            listBlueFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[2].Units;
             listBlueFractions.DisplayMember = "unitName";
 
-            listGreyFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[3].m_units;
+            listGreyFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[3].Units;
             listGreyFractions.DisplayMember = "unitName";
 
             textBox1.DataBindings.Clear();
@@ -58,21 +59,95 @@ namespace AMMEdit.PropertyEditors
         private void listGreenFractions_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+            buttonRemoveGreenUnit.Enabled = true;
         }
 
         private void listTanFractions_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+            buttonRemoveTanUnit.Enabled = true;
         }
 
         private void listBlueFractions_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+            buttonRemoveBlueUnit.Enabled = true;
         }
 
         private void listGreyFractions_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
+            buttonRemoveGreyUnit.Enabled = true;
+        }
+
+        private void AddUnitDialog(int fractionIndex, ListBox fractionList)
+        {
+            AddUnit addUnitDialog = new AddUnit(((Scenario)scenarioList.SelectedItem).m_fractions[fractionIndex]);
+
+            if (addUnitDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                // TODO: handle validations
+                ((Scenario)scenarioList.SelectedItem).m_fractions[fractionIndex].AddUnit(addUnitDialog.NewUnit);
+
+                fractionList.DataSource = null;
+                fractionList.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[fractionIndex].Units;
+                fractionList.DisplayMember = "unitName";
+            }
+        }
+
+        private void RemoveUnitDialog(int fractionIndex, ListBox fractionList, string fractionName)
+        {
+            int targetIndx = fractionList.SelectedIndex;
+            FractionUnit target = (FractionUnit)(fractionList).SelectedItem;
+
+            if (MessageBox.Show(this, string.Format("Are you sure you wish to remove {0} from the {1} fraction? This can break existing scripts. Please make a backup of your map!", target.UnitName, fractionName), "Remove unit", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                ((Scenario)scenarioList.SelectedItem).m_fractions[fractionIndex].Units.RemoveAt(targetIndx);
+
+                fractionList.DataSource = null;
+                fractionList.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[fractionIndex].Units;
+                fractionList.DisplayMember = "unitName";
+            }
+        }
+
+        private void buttonAddGreenUnit_Click(object sender, EventArgs e)
+        {
+            AddUnitDialog(0, listGreenFractions);
+        }
+
+        private void buttonRemoveGreenUnit_Click(object sender, EventArgs e)
+        {
+            RemoveUnitDialog(0, listGreenFractions, "Green");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            AddUnitDialog(1, listTanFractions);
+        }
+
+        private void buttonRemoveTanUnit_Click(object sender, EventArgs e)
+        {
+            RemoveUnitDialog(1, listTanFractions, "Tan");
+        }
+
+        private void buttonAddBlueUnit_Click(object sender, EventArgs e)
+        {
+            AddUnitDialog(2, listBlueFractions);
+        }
+
+        private void buttonAddGreyUnit_Click(object sender, EventArgs e)
+        {
+            AddUnitDialog(3, listGreyFractions);
+        }
+
+        private void buttonRemoveBlueUnit_Click(object sender, EventArgs e)
+        {
+            RemoveUnitDialog(2, listBlueFractions, "Blue");
+        }
+
+        private void buttonRemoveGreyUnit_Click(object sender, EventArgs e)
+        {
+            RemoveUnitDialog(3, listGreyFractions, "Grey");
         }
     }
 }

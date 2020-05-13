@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AMMEdit.amm.blocks.subfields
 {
-    class OLAYObject
+    public class OLAYObject
     {
         private Int32 m_itemCategory;
         private Int32 m_itemSubType;

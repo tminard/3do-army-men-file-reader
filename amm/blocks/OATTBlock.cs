@@ -16,7 +16,7 @@ namespace AMMEdit.amm.blocks
         private Dictionary<string, Int32> m_keyValuePairs;
         private Int32 m_blockLength; // untrustworthy. Appears to be off by one in several files in unpredictable ways
         private Int32 m_correctedBlockLength;
-        private List<PlaceableObject> m_placeables;
+        private List<IPlaceableObject> m_placeables;
 
         private OLAYBlock m_olay;
 
@@ -38,7 +38,7 @@ namespace AMMEdit.amm.blocks
             m_olay = olay; // needed to map indexes to objects
 
             m_keyValuePairs = new Dictionary<string, int>();
-            m_placeables = new List<PlaceableObject>();
+            m_placeables = new List<IPlaceableObject>();
 
             // read the stream to extract all the key-values
             m_blockLength = r.ReadInt32();

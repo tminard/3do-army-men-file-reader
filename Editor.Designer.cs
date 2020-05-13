@@ -46,7 +46,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(49, 60);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(322, 446);
+            this.listBox1.Size = new System.Drawing.Size(322, 368);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -78,13 +78,13 @@
             // rawBinaryOutput
             // 
             this.rawBinaryOutput.CausesValidation = false;
-            this.rawBinaryOutput.Location = new System.Drawing.Point(491, 60);
+            this.rawBinaryOutput.Location = new System.Drawing.Point(491, 48);
             this.rawBinaryOutput.MaxLength = 99999999;
             this.rawBinaryOutput.Multiline = true;
             this.rawBinaryOutput.Name = "rawBinaryOutput";
             this.rawBinaryOutput.ReadOnly = true;
             this.rawBinaryOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.rawBinaryOutput.Size = new System.Drawing.Size(794, 446);
+            this.rawBinaryOutput.Size = new System.Drawing.Size(548, 380);
             this.rawBinaryOutput.TabIndex = 3;
             // 
             // button2
@@ -122,7 +122,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1327, 662);
+            this.ClientSize = new System.Drawing.Size(1054, 459);
             this.Controls.Add(this.buttonEditProps);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.rawBinaryOutput);
@@ -130,7 +130,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox1);
             this.Name = "Editor";
-            this.Text = "Form1";
+            this.Text = "AMM Editor";
             this.Load += new System.EventHandler(this.Editor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).EndInit();
             this.ResumeLayout(false);
