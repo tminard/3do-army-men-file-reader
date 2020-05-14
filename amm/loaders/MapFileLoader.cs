@@ -57,6 +57,10 @@ namespace AMMEdit.amm
 
                         switch (id)
                         {
+                            case "TLAY":
+                                TNAMBlock tNAMBlock = (TNAMBlock)fields.FindLast(x => x.DisplayFieldName == "Textures");
+                                fields.Add(new TLAYBlock(r, tNAMBlock));
+                                break;
                             case "TNAM":
                                 fields.Add(new TNAMBlock(r, Directory.GetParent(this.infile).FullName));
                                 break;

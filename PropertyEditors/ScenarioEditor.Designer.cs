@@ -36,7 +36,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listTanFractions = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.listGreyFractions = new System.Windows.Forms.ListBox();
+            this.listGrayFractions = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.listBlueFractions = new System.Windows.Forms.ListBox();
             this.propertyGridFractionUnit = new System.Windows.Forms.PropertyGrid();
@@ -47,8 +47,8 @@
             this.buttonAddTanUnit = new System.Windows.Forms.Button();
             this.buttonRemoveBlueUnit = new System.Windows.Forms.Button();
             this.buttonAddBlueUnit = new System.Windows.Forms.Button();
-            this.buttonRemoveGreyUnit = new System.Windows.Forms.Button();
-            this.buttonAddGreyUnit = new System.Windows.Forms.Button();
+            this.buttonRemoveGrayUnit = new System.Windows.Forms.Button();
+            this.buttonAddGrayUnit = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -126,24 +126,24 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.buttonRemoveGreyUnit);
-            this.groupBox3.Controls.Add(this.listGreyFractions);
-            this.groupBox3.Controls.Add(this.buttonAddGreyUnit);
+            this.groupBox3.Controls.Add(this.buttonRemoveGrayUnit);
+            this.groupBox3.Controls.Add(this.listGrayFractions);
+            this.groupBox3.Controls.Add(this.buttonAddGrayUnit);
             this.groupBox3.Location = new System.Drawing.Point(575, 371);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(314, 311);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Grey";
+            this.groupBox3.Text = "Gray";
             // 
-            // listGreyFractions
+            // listGrayFractions
             // 
-            this.listGreyFractions.FormattingEnabled = true;
-            this.listGreyFractions.Location = new System.Drawing.Point(7, 17);
-            this.listGreyFractions.Name = "listGreyFractions";
-            this.listGreyFractions.Size = new System.Drawing.Size(301, 251);
-            this.listGreyFractions.TabIndex = 1;
-            this.listGreyFractions.SelectedIndexChanged += new System.EventHandler(this.listGreyFractions_SelectedIndexChanged);
+            this.listGrayFractions.FormattingEnabled = true;
+            this.listGrayFractions.Location = new System.Drawing.Point(7, 17);
+            this.listGrayFractions.Name = "listGrayFractions";
+            this.listGrayFractions.Size = new System.Drawing.Size(301, 251);
+            this.listGrayFractions.TabIndex = 1;
+            this.listGrayFractions.SelectedIndexChanged += new System.EventHandler(this.listGrayFractions_SelectedIndexChanged);
             // 
             // groupBox4
             // 
@@ -246,26 +246,26 @@
             this.buttonAddBlueUnit.UseVisualStyleBackColor = true;
             this.buttonAddBlueUnit.Click += new System.EventHandler(this.buttonAddBlueUnit_Click);
             // 
-            // buttonRemoveGreyUnit
+            // buttonRemoveGrayUnit
             // 
-            this.buttonRemoveGreyUnit.Enabled = false;
-            this.buttonRemoveGreyUnit.Location = new System.Drawing.Point(232, 274);
-            this.buttonRemoveGreyUnit.Name = "buttonRemoveGreyUnit";
-            this.buttonRemoveGreyUnit.Size = new System.Drawing.Size(75, 23);
-            this.buttonRemoveGreyUnit.TabIndex = 10;
-            this.buttonRemoveGreyUnit.Text = "Remove Unit";
-            this.buttonRemoveGreyUnit.UseVisualStyleBackColor = true;
-            this.buttonRemoveGreyUnit.Click += new System.EventHandler(this.buttonRemoveGreyUnit_Click);
+            this.buttonRemoveGrayUnit.Enabled = false;
+            this.buttonRemoveGrayUnit.Location = new System.Drawing.Point(232, 274);
+            this.buttonRemoveGrayUnit.Name = "buttonRemoveGrayUnit";
+            this.buttonRemoveGrayUnit.Size = new System.Drawing.Size(75, 23);
+            this.buttonRemoveGrayUnit.TabIndex = 10;
+            this.buttonRemoveGrayUnit.Text = "Remove Unit";
+            this.buttonRemoveGrayUnit.UseVisualStyleBackColor = true;
+            this.buttonRemoveGrayUnit.Click += new System.EventHandler(this.buttonRemoveGrayUnit_Click);
             // 
-            // buttonAddGreyUnit
+            // buttonAddGrayUnit
             // 
-            this.buttonAddGreyUnit.Location = new System.Drawing.Point(7, 274);
-            this.buttonAddGreyUnit.Name = "buttonAddGreyUnit";
-            this.buttonAddGreyUnit.Size = new System.Drawing.Size(75, 23);
-            this.buttonAddGreyUnit.TabIndex = 9;
-            this.buttonAddGreyUnit.Text = "Add +";
-            this.buttonAddGreyUnit.UseVisualStyleBackColor = true;
-            this.buttonAddGreyUnit.Click += new System.EventHandler(this.buttonAddGreyUnit_Click);
+            this.buttonAddGrayUnit.Location = new System.Drawing.Point(7, 274);
+            this.buttonAddGrayUnit.Name = "buttonAddGrayUnit";
+            this.buttonAddGrayUnit.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddGrayUnit.TabIndex = 9;
+            this.buttonAddGrayUnit.Text = "Add +";
+            this.buttonAddGrayUnit.UseVisualStyleBackColor = true;
+            this.buttonAddGrayUnit.Click += new System.EventHandler(this.buttonAddGrayUnit_Click);
             // 
             // ScenarioEditor
             // 
@@ -306,7 +306,7 @@
         private System.Windows.Forms.ListBox listGreenFractions;
         private System.Windows.Forms.ListBox listTanFractions;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ListBox listGreyFractions;
+        private System.Windows.Forms.ListBox listGrayFractions;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ListBox listBlueFractions;
         private System.Windows.Forms.PropertyGrid propertyGridFractionUnit;
@@ -315,8 +315,8 @@
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.Button buttonRemoveTanUnit;
         private System.Windows.Forms.Button buttonAddTanUnit;
-        private System.Windows.Forms.Button buttonRemoveGreyUnit;
-        private System.Windows.Forms.Button buttonAddGreyUnit;
+        private System.Windows.Forms.Button buttonRemoveGrayUnit;
+        private System.Windows.Forms.Button buttonAddGrayUnit;
         private System.Windows.Forms.Button buttonRemoveBlueUnit;
         private System.Windows.Forms.Button buttonAddBlueUnit;
     }

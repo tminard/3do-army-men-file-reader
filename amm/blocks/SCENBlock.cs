@@ -15,7 +15,7 @@ namespace AMMEdit.amm.blocks
      * A Scenario represents a single mission setup.
      * A map may contain multiple scenario setups.
      * 
-     * Each scenario provides configurations for each of the 4 fractions: green, tan, grey and blue.
+     * Each scenario provides configurations for each of the 4 fractions: green, tan, Gray and blue.
      * Each fraction contains the layout of all units, their names, and locations.
      * 
      * You can add multiple scenarios to a map file. Multiplayer maps contain only one scenario.

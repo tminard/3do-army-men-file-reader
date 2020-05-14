@@ -44,14 +44,14 @@ namespace AMMEdit.amm.blocks.subfields
             Green = 0,
             Tan = 1,
             Blue = 2,
-            Grey = 3
+            Gray = 3
         }
 
         public Scenario(BinaryReader r)
         {
             m_nameCstring = new string(r.ReadChars(16));
 
-            // order is Green > Tan > Blue > Grey. Min 1, max 4 present in file.
+            // order is Green > Tan > Blue > Gray. Min 1, max 4 present in file.
             // read until EOF, or until EOB marker is read where a fraction was expected.
             m_fractions = new List<Fraction>(4);
 

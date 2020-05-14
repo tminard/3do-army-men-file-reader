@@ -49,8 +49,8 @@ namespace AMMEdit.PropertyEditors
             listBlueFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[2].Units;
             listBlueFractions.DisplayMember = "unitName";
 
-            listGreyFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[3].Units;
-            listGreyFractions.DisplayMember = "unitName";
+            listGrayFractions.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions[3].Units;
+            listGrayFractions.DisplayMember = "unitName";
 
             textBox1.DataBindings.Clear();
             textBox1.DataBindings.Add("Text", (Scenario)scenarioList.SelectedItem, "Name", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -74,10 +74,10 @@ namespace AMMEdit.PropertyEditors
             buttonRemoveBlueUnit.Enabled = true;
         }
 
-        private void listGreyFractions_SelectedIndexChanged(object sender, EventArgs e)
+        private void listGrayFractions_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGridFractionUnit.SelectedObject = ((ListBox)sender).SelectedItem;
-            buttonRemoveGreyUnit.Enabled = true;
+            buttonRemoveGrayUnit.Enabled = true;
         }
 
         private void AddUnitDialog(int fractionIndex, ListBox fractionList)
@@ -135,9 +135,9 @@ namespace AMMEdit.PropertyEditors
             AddUnitDialog(2, listBlueFractions);
         }
 
-        private void buttonAddGreyUnit_Click(object sender, EventArgs e)
+        private void buttonAddGrayUnit_Click(object sender, EventArgs e)
         {
-            AddUnitDialog(3, listGreyFractions);
+            AddUnitDialog(3, listGrayFractions);
         }
 
         private void buttonRemoveBlueUnit_Click(object sender, EventArgs e)
@@ -145,9 +145,9 @@ namespace AMMEdit.PropertyEditors
             RemoveUnitDialog(2, listBlueFractions, "Blue");
         }
 
-        private void buttonRemoveGreyUnit_Click(object sender, EventArgs e)
+        private void buttonRemoveGrayUnit_Click(object sender, EventArgs e)
         {
-            RemoveUnitDialog(3, listGreyFractions, "Grey");
+            RemoveUnitDialog(3, listGrayFractions, "Gray");
         }
     }
 }

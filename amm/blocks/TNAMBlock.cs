@@ -29,6 +29,8 @@ namespace AMMEdit.amm.blocks
 
         public int NumTiles { get; private set; }
 
+        public int NumTilesPerRow { get; private set; }
+
         public TNAMBlock(BinaryReader r, string parentDirectory)
         {
             var cstringLen = r.ReadInt32();
@@ -41,7 +43,7 @@ namespace AMMEdit.amm.blocks
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            TextureMap tm = new TextureMap(this);
+            TextureMap tm = new TextureMap(this, null);
 
             tm.Show(current);
         }
@@ -75,6 +77,16 @@ namespace AMMEdit.amm.blocks
             };
         }
 
+        public Bitmap GetTileImage(UInt16 index)
+        {
+            int indx = Convert.ToInt32(index);
+            int x = (index % NumTilesPerRow)*TileSquareSize;
+            int y = (index / NumTilesPerRow)*TileSquareSize;
+            Rectangle bounds = new Rectangle(new Point(x, y), new Size(TileSquareSize, TileSquareSize));
+
+            return TextureImagesheet.Clone(bounds, TextureImagesheet.PixelFormat);
+        }
+
         private void LoadTextureFile(string filename)
         {
             if (!File.Exists(filename))
@@ -100,6 +112,7 @@ namespace AMMEdit.amm.blocks
 
                     TileSquareSize = tileHeight;
                     NumTiles = numTileSlots;
+                    NumTilesPerRow = numTileSlotsPerRow;
 
                     r.BaseStream.Seek(12, SeekOrigin.Current); // skip over DIB header stuff
                     byte[] imageBytes = r.ReadBytes(totalLength);
