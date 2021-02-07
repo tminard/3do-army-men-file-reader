@@ -30,7 +30,10 @@ namespace AMMEdit.PropertyEditors
             scenarioList.DisplayMember = "Name";
             scenarioList.ValueMember = "FieldID";
 
-            scenarioList.SelectedIndex = 0;
+            if (scenarioList.Items.Count > 0)
+            {
+                scenarioList.SelectedIndex = 0;
+            }
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)

@@ -52,10 +52,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>F40757E3314CD6FF3B50CD74AB65D0EE5136EE96</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>CDEA4A97A996F9AD2515A98256442F1B449380DB</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>AMMEdit_2_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>AMMEdit_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -89,6 +89,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="amm\blocks\CombinedTextureLayersBlock.cs" />
     <Compile Include="amm\blocks\OLAYBlock.cs" />
     <Compile Include="amm\blocks\subfields\Fraction.cs" />
     <Compile Include="amm\blocks\GenericFieldBlock.cs" />
@@ -158,6 +159,7 @@
       <DependentUpon>TextureMap.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="AMMEdit_2_TemporaryKey.pfx" />
+    <None Include="AMMEdit_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

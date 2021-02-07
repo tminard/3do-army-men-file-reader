@@ -100,6 +100,14 @@ namespace AMMEdit.amm
                 }
             }
 
+            fields.Add(
+                new CombinedTextureLayersBlock(
+                    fields
+                        .OfType<TLAYBlock>()
+                        .ToList()
+                )
+            );
+
             return new MapFile(fields);
         }
     }
