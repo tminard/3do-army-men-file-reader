@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AMMEdit.PropertyEditors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,11 @@ namespace AMMEdit.amm.blocks
     {
         private readonly List<TLAYBlock> textureBlocks;
 
-        public CombinedTextureLayersBlock(List<TLAYBlock> textureBlocks)
+        private TNAMBlock TextureNameBlock { get; set; }
+
+        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks)
         {
+            this.TextureNameBlock = textureNameBlock;
             this.textureBlocks = textureBlocks ?? throw new ArgumentNullException(nameof(textureBlocks));
         }
 
@@ -24,7 +28,9 @@ namespace AMMEdit.amm.blocks
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            throw new NotImplementedException();
+            TextureMap tm = new TextureMap(TextureNameBlock, textureBlocks.First(), textureBlocks.Last());
+
+            tm.Show(current);
         }
 
         /**

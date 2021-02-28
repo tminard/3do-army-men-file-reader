@@ -25,6 +25,8 @@ namespace AMMEdit.amm.blocks
 
         public Bitmap TextureImagesheet { get; private set; }
 
+        public int TileRunLength { get; private set; }
+
         public int TileSquareSize { get; private set; }
 
         public int NumTiles { get; private set; }
@@ -73,7 +75,10 @@ namespace AMMEdit.amm.blocks
             {
                 string.Format("File:\t{0}", TextureFileName),
                 string.Format("Tiles:\t{0}", NumTiles),
-                string.Format("Tile Size:\t{0}x{0}", TileSquareSize)
+                string.Format("Tile Size:\t{0}x{0}", TileSquareSize),
+                string.Format("Tile Run Width:\t{0}", TileRunLength),
+                string.Format("Raw Tile Slots:\t{0}", NumTiles),
+                string.Format("Raw Tiles Per Scan Line:\t{0}", NumTilesPerRow)
             };
         }
 
@@ -103,13 +108,15 @@ namespace AMMEdit.amm.blocks
                 {
                     r.BaseStream.Seek(4, SeekOrigin.Begin);
                     var totalLength = r.ReadInt32();
-                    r.BaseStream.Seek(28, SeekOrigin.Current); // skip version and header stuff
+                    r.BaseStream.Seek(24, SeekOrigin.Current); // skip version and header stuff
 
-                    var tileWidth = r.ReadInt32();
-                    var tileHeight = r.ReadInt32();
-                    var numTileSlots = r.ReadInt32();
-                    var numTileSlotsPerRow = r.ReadInt32();
+                    var tileRunLength = r.ReadInt32(); // this appears to be the number of tiles in a single span/category. Not important for the game but perhaps meaningful for the editor
+                    var tileWidth = r.ReadInt32(); // OR this may be the height of each span/category
+                    var tileHeight = r.ReadInt32(); // OR this may be the square size of a single tile
+                    var numTileSlots = r.ReadInt32(); // raw image slots
+                    var numTileSlotsPerRow = r.ReadInt32(); // raw image slots per row in the bitmap
 
+                    TileRunLength = tileRunLength;
                     TileSquareSize = tileHeight;
                     NumTiles = numTileSlots;
                     NumTilesPerRow = numTileSlotsPerRow;

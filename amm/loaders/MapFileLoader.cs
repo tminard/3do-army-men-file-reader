@@ -102,6 +102,7 @@ namespace AMMEdit.amm
 
             fields.Add(
                 new CombinedTextureLayersBlock(
+                    fields.OfType<TNAMBlock>().First(),
                     fields
                         .OfType<TLAYBlock>()
                         .ToList()
