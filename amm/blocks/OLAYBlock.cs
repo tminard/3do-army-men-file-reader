@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
 {
-    class OLAYBlock : IGenericFieldBlock
+    public class OLAYBlock : IGenericFieldBlock
     {
         public static string FIELD_NAME = "Object Definition Layer (OLAY)";
 
         private Dictionary<Int32, OLAYObject> m_indexedObjects;
         private Int32 m_blockLength;
-        private Int32 m_numObjects;
+        public Int32 m_numObjects { get; private set; }
 
         public OLAYBlock(BinaryReader r)
         {

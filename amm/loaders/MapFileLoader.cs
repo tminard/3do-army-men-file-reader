@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Buffers.Binary;
+using AMMEdit.objects;
 
 namespace AMMEdit.amm
 {
@@ -20,7 +21,7 @@ namespace AMMEdit.amm
             this.infile = infile ?? throw new ArgumentNullException(nameof(infile));
         }
 
-        public MapFile Read()
+        public MapFile Read(DatFile dataFileReference = null)
         {
             List<IGenericFieldBlock> fields = new List<IGenericFieldBlock>();
 
@@ -105,7 +106,9 @@ namespace AMMEdit.amm
                     fields.OfType<TNAMBlock>().First(),
                     fields
                         .OfType<TLAYBlock>()
-                        .ToList()
+                        .ToList(),
+                    fields.OfType<OLAYBlock>().ToList(),
+                    dataFileReference
                 )
             );
 

@@ -113,6 +113,9 @@
     <Compile Include="Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
+    <Compile Include="objects\AMObject.cs" />
+    <Compile Include="objects\DatFile.cs" />
+    <Compile Include="objects\loaders\DatFileLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEditors\Components\Scene.xaml.cs">

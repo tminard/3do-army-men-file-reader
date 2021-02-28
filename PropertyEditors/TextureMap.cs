@@ -1,4 +1,6 @@
 ﻿using AMMEdit.amm.blocks;
+using AMMEdit.amm.blocks.subfields;
+using AMMEdit.objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +18,10 @@ namespace AMMEdit.PropertyEditors
         public TLAYBlock LayerBlock { get; private set; }
         public TLAYBlock LayerBlock2 { get; private set; }
 
+        public List<OLAYBlock> ObjectLayerBlocks { get; private set; }
+
+        private DatFile DataFileReference;
+
         public SelectedTileDataSource SelectedTile { get; private set; }
 
         private Bitmap renderedMap = new Bitmap(256 * 16, 256 * 16);
@@ -23,12 +29,14 @@ namespace AMMEdit.PropertyEditors
         private Bitmap tileSheet;
         private TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null)
+        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<OLAYBlock> objectLayers = null, DatFile dataFile = null)
         {
             TNameBlock = textureBlock;
             LayerBlock = mapBlock;
             LayerBlock2 = mapBlock2;
             SelectedTile = new SelectedTileDataSource();
+            ObjectLayerBlocks = objectLayers;
+            DataFileReference = dataFile;
 
             InitializeComponent();
         }
@@ -113,6 +121,32 @@ namespace AMMEdit.PropertyEditors
                         }
                     }
                 }
+            }
+
+            if (ObjectLayerBlocks != null && DataFileReference != null)
+            {
+                ObjectLayerBlocks.ForEach(objectLayer =>
+                {
+                    for (int o = 0; o < objectLayer.m_numObjects; o++)
+                    {
+                        OLAYObject obj = objectLayer.GetObjectByIndex(o);
+
+                        if (DataFileReference.ObjectsByCatAndInstance.ContainsKey(obj.m_itemCategory) == false)
+                        {
+                            continue;
+                        } else if (DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory].ContainsKey(obj.m_itemSubType) == false)
+                        {
+                            continue;
+                        }
+
+                        AMObject aObj = DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory][obj.m_itemSubType];
+
+                        if (aObj != null && aObj.SpriteImage != null)
+                        {
+                            mapBuffer.Graphics.DrawImage(aObj.SpriteImage, new Rectangle(new Point(obj.m_itemPosX, obj.m_itemPosY), new Size(aObj.SpriteImage.Width, aObj.SpriteImage.Height)), 0, 0, aObj.SpriteImage.Width, aObj.SpriteImage.Height, GraphicsUnit.Pixel);
+                        }
+                    }
+                });
             }
 
             mapBuffer.Render();

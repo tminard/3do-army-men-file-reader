@@ -1,4 +1,5 @@
-﻿using AMMEdit.PropertyEditors;
+﻿using AMMEdit.objects;
+using AMMEdit.PropertyEditors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,17 @@ namespace AMMEdit.amm.blocks
     {
         private readonly List<TLAYBlock> textureBlocks;
 
+        private readonly DatFile dataFileRef;
+        private readonly List<OLAYBlock> objectBlocks;
+
         private TNAMBlock TextureNameBlock { get; set; }
 
-        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks)
+        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks, List<OLAYBlock> objectBlocks = null, DatFile dataFile = null)
         {
             this.TextureNameBlock = textureNameBlock;
             this.textureBlocks = textureBlocks ?? throw new ArgumentNullException(nameof(textureBlocks));
+            this.objectBlocks = objectBlocks;
+            this.dataFileRef = dataFile;
         }
 
         public string DisplayFieldName => "Final Map";
@@ -28,7 +34,7 @@ namespace AMMEdit.amm.blocks
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            TextureMap tm = new TextureMap(TextureNameBlock, textureBlocks.First(), textureBlocks.Last());
+            TextureMap tm = new TextureMap(TextureNameBlock, textureBlocks.First(), textureBlocks.Last(), objectBlocks, dataFileRef);
 
             tm.Show(current);
         }

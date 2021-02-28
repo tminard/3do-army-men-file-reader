@@ -1,4 +1,6 @@
 ﻿using AMMEdit.amm;
+using AMMEdit.objects;
+using AMMEdit.objects.loaders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +16,7 @@ namespace AMMEdit
     public partial class Editor : Form
     {
         private MapFile currentMap;
+        private DatFile currentDataFile;
         private List<byte> dataBytes;
 
         public Editor()
@@ -28,7 +31,7 @@ namespace AMMEdit
                 currentAMMFile.Text = openAMMFileDialog.FileName;
 
                 // TODO: load async. It is fast enough for now.
-                currentMap = new MapFileLoader(openAMMFileDialog.FileName).Read();
+                currentMap = new MapFileLoader(openAMMFileDialog.FileName).Read(currentDataFile);
 
                 listBox1.DataSource = currentMap.GetGenericFields();
                 listBox1.DisplayMember = "DisplayFieldName";
@@ -75,6 +78,14 @@ namespace AMMEdit
         private void Editor_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            if (openDATFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                currentDataFile = new DatFileLoader(openDATFileDialog.FileName).Read();
+            }
         }
     }
 }

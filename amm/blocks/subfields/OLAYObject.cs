@@ -10,10 +10,10 @@ namespace AMMEdit.amm.blocks.subfields
 {
     public class OLAYObject
     {
-        private Int32 m_itemCategory;
-        private Int32 m_itemSubType;
-        private Int32 m_itemPosX;
-        private Int32 m_itemPosY;
+        public Int32 m_itemCategory { get; private set; }
+        public Int32 m_itemSubType { get; private set; }
+        public Int32 m_itemPosX { get; private set; }
+        public Int32 m_itemPosY { get; private set; }
 
         public OLAYObject(BinaryReader r)
         {
