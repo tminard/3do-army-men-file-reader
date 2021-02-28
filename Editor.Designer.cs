@@ -46,7 +46,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(49, 60);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(322, 368);
+            this.listBox1.Size = new System.Drawing.Size(322, 563);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -84,7 +84,7 @@
             this.rawBinaryOutput.Name = "rawBinaryOutput";
             this.rawBinaryOutput.ReadOnly = true;
             this.rawBinaryOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.rawBinaryOutput.Size = new System.Drawing.Size(548, 380);
+            this.rawBinaryOutput.Size = new System.Drawing.Size(494, 583);
             this.rawBinaryOutput.TabIndex = 3;
             // 
             // button2
@@ -122,7 +122,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1054, 459);
+            this.ClientSize = new System.Drawing.Size(997, 643);
             this.Controls.Add(this.buttonEditProps);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.rawBinaryOutput);
