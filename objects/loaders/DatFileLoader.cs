@@ -159,11 +159,6 @@ namespace AMMEdit.objects.loaders
                             continue;
                         }
 
-                        if (decodedTypeKey == 17)
-                        {
-                            Debug.WriteLine("Found building of instance " + decodedInstance);
-                        }
-
                         // create image
                         Bitmap spriteBitmap = new Bitmap(Convert.ToInt32(widthPadded), Convert.ToInt32(height));
                         for (int x = 0; x < Convert.ToInt32(widthPadded); x++)
