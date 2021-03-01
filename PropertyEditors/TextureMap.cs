@@ -139,7 +139,7 @@ namespace AMMEdit.PropertyEditors
                             continue;
                         }
 
-                        AMObject aObj = DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory][obj.m_itemSubType];
+                        AMObject aObj = DataFileReference.GetObject(obj.m_itemCategory, obj.m_itemSubType);
 
                         if (aObj != null && aObj.SpriteImage != null)
                         {

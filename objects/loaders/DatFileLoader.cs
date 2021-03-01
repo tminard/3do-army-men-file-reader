@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace AMMEdit.objects.loaders
                         lookupPosition = r.BaseStream.Position;
 
                         UInt32 decodedTypeKey = (encodedCategoryKey & 0x7F8000) >> 15;
-                        UInt32 decodedInstance = (encodedCategoryKey & 0x1FE0) >> 5;
+                        UInt32 decodedInstance = (encodedCategoryKey & 0x7FE0) >> 5;
 
                         // jump to data location
                         r.BaseStream.Position = dataOffset + 4; // skip first field which is just the encoded key again
@@ -141,16 +142,26 @@ namespace AMMEdit.objects.loaders
                         } else if (rleEncodingMode == 0 && rleEncodingModeSecondPass == 32)
                         {
                             // skip cannot read this - use `?` image in renderer
+                            Debug.WriteLine("Could not load T" + decodedTypeKey + " i" + decodedInstance + ": Unsupported RLE mode.");
+
                             continue;
                         } else if (rleEncodingMode == 0)
                         {
+                            // these tend to be UI images
                             widthPadded = width + (4 - width % 4) % 4;
+                            decodedBitmapData = new byte[widthPadded * height];
                             decodedBitmapData = r.ReadBytes(Convert.ToInt32(widthPadded * height));
                         } else
                         {
                             // skip cannot read this - use `?` image in renderer
                             // TODO: ^
+                            Debug.WriteLine("Could not load T" + decodedTypeKey + " i" + decodedInstance + ": Unrecognized RLE mode.");
                             continue;
+                        }
+
+                        if (decodedTypeKey == 17)
+                        {
+                            Debug.WriteLine("Found building of instance " + decodedInstance);
                         }
 
                         // create image
