@@ -177,7 +177,7 @@ namespace AMMEdit.PropertyEditors
 
             if (LayerBlock != null)
             {
-                ushort textureID = LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y);
+                ushort textureID = (ushort)(LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y) + Convert.ToUInt16(1));
                 SelectedTile.UpdateRawValue(textureID);
                 numericUpDown1.Value = textureID;
             } else
