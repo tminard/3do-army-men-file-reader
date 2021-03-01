@@ -128,6 +128,7 @@ namespace AMMEdit.amm.blocks
                     ms.Seek(0, SeekOrigin.Begin);
 
                     TextureImagesheet = new Bitmap(ms);
+                    TextureImagesheet.MakeTransparent(TextureImagesheet.Palette.Entries[0]);
                 }
             }
         }

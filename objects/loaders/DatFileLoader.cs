@@ -169,6 +169,7 @@ namespace AMMEdit.objects.loaders
                                 spriteBitmap.SetPixel(x, y, colorPalette[decodedBitmapData[pos]]);
                             }
                         }
+                        spriteBitmap.MakeTransparent(colorPalette[0]);
 
                         amObjectsList.Add(new AMObject(decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone()));
                         spriteBitmap.Dispose();
