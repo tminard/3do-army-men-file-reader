@@ -4,6 +4,7 @@ using AMMEdit.objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -133,9 +134,13 @@ namespace AMMEdit.PropertyEditors
 
                         if (DataFileReference.ObjectsByCatAndInstance.ContainsKey(obj.m_itemCategory) == false)
                         {
+                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object not defined in loaded DAT file.");
+
                             continue;
                         } else if (DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory].ContainsKey(obj.m_itemSubType) == false)
                         {
+                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object defined, but type not defined in loaded DAT file.");
+
                             continue;
                         }
 
@@ -144,6 +149,9 @@ namespace AMMEdit.PropertyEditors
                         if (aObj != null && aObj.SpriteImage != null)
                         {
                             mapBuffer.Graphics.DrawImage(aObj.SpriteImage, new Rectangle(new Point(obj.m_itemPosX, obj.m_itemPosY), new Size(aObj.SpriteImage.Width, aObj.SpriteImage.Height)), 0, 0, aObj.SpriteImage.Width, aObj.SpriteImage.Height, GraphicsUnit.Pixel);
+                        } else
+                        {
+                            Debug.WriteLine("Image not loaded for object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + ")");
                         }
                     }
                 });
@@ -195,6 +203,21 @@ namespace AMMEdit.PropertyEditors
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void TextureMap_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
+            if (renderedMap != null) renderedMap.Dispose();
+            if (tileSheet != null) tileSheet.Dispose();
+        }
+
+        private void TextureMap_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (previewGenerationThread != null && previewGenerationThread.IsAlive)
+            {
+                previewGenerationThread.Abort();
+            }
         }
     }
 

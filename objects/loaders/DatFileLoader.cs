@@ -25,33 +25,41 @@ namespace AMMEdit.objects.loaders
 
         private delegate void updateListener();
 
+        private delegate void resetListener(int numberOfSprites);
+
         private void UpdateProgressListener()
         {
             if (ProgressBarControl != null)
             {
-                ProgressBarControl.Value += 1;
+                ProgressBarControl.PerformStep();
+            }
+        }
+
+        private void ResetProgressListener(int numberOfSprites)
+        {
+            if (ProgressBarControl != null)
+            {
+                ProgressBarControl.Maximum = numberOfSprites;
+                ProgressBarControl.Step = 1;
             }
         }
 
         public DatFile Read()
         {
-            //FileInfo fileSizeInfo = new FileInfo(infile);
-            //long size = fileSizeInfo.Length;
-
-            /* long incrementSize = (size / 100);
-            long currentSize = 0;
-            long lastReportedPosition = 0;
-            */
-
             List<AMObject> amObjectsList = new List<AMObject>();
 
             using (FileStream fs = new FileStream(this.infile, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader r = new BinaryReader(fs))
                 {
-                    char[] checkSum = r.ReadChars(4);
+                    UInt32 checkSum = r.ReadUInt32();
                     byte[] paletteData = r.ReadBytes(256 * 4); // BGRr in 4 bytes
                     UInt32 numSprites = r.ReadUInt32();
+
+                    if (ProgressBarControl != null)
+                    {
+                        ProgressBarControl.Invoke(new resetListener(this.ResetProgressListener), Convert.ToInt32(numSprites));
+                    }
 
                     // create the palette
                     List<Color> colorPalette = new List<Color>();
@@ -65,20 +73,15 @@ namespace AMMEdit.objects.loaders
                         colorPalette.Add(Color.FromArgb(rC, gC, bC));
                     }
 
-                    /*if (r.BaseStream.Position - lastReportedPosition >= incrementSize)
-                    {
-                        lastReportedPosition = r.BaseStream.Position;
-                        if (ProgressBarControl != null)
-                        {
-                            ProgressBarControl.Invoke(new updateListener(this.UpdateProgressListener));
-                        }
-                    }*/
-
                     long lookupPosition = r.BaseStream.Position;
 
                     // iterate over each sprite in the table and jump to content to read
                     for (long i = 0; i < numSprites; i++)
                     {
+                        if (ProgressBarControl != null)
+                        {
+                            ProgressBarControl.Invoke(new updateListener(this.UpdateProgressListener));
+                        }
                         // jump back
                         r.BaseStream.Position = lookupPosition;
                         UInt32 encodedCategoryKey = r.ReadUInt32();
@@ -87,6 +90,56 @@ namespace AMMEdit.objects.loaders
 
                         UInt32 decodedTypeKey = (encodedCategoryKey & 0x7F8000) >> 15;
                         UInt32 decodedInstance = (encodedCategoryKey & 0x7FE0) >> 5;
+
+                        if (checkSum == 2173830758)
+                        {
+                            // AM 2 +
+
+                            UInt32 am2Type = (encodedCategoryKey & 0b00000001111110000000000000000000) >> 19;
+                            decodedInstance = (encodedCategoryKey & 0b000001111111111110000000) >> 7;
+
+                            switch (am2Type)
+                            {
+                                case 0b010101:
+                                    decodedTypeKey = 1;
+                                    break;
+                                case 0b010110:
+                                    decodedTypeKey = 2;
+                                    break;
+                                case 0b010111:
+                                    decodedTypeKey = 3;
+                                    break;
+                                case 0b011001:
+                                    decodedTypeKey = 5;
+                                    break;
+                                case 0b011010:
+                                    decodedTypeKey = 6;
+                                    break;
+                                case 0b011101:
+                                    decodedTypeKey = 9;
+                                    break;
+                                case 0b011111:
+                                    decodedTypeKey = 11;
+                                    break;
+                                case 0b011011:
+                                    decodedTypeKey = 7;
+                                    break;
+                                case 0b100101:
+                                    decodedTypeKey = 17;
+                                    break;
+                                case 0b101011:
+                                    decodedTypeKey = 23;
+                                    break;
+                                case 0b101101:
+                                    decodedTypeKey = 25;
+                                    break;
+                                case 0b010100:
+                                    decodedTypeKey = 0;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
 
                         // jump to data location
                         r.BaseStream.Position = dataOffset + 4; // skip first field which is just the encoded key again
@@ -171,7 +224,7 @@ namespace AMMEdit.objects.loaders
                         }
                         spriteBitmap.MakeTransparent(colorPalette[0]);
 
-                        amObjectsList.Add(new AMObject(decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone()));
+                        amObjectsList.Add(new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone()));
                         spriteBitmap.Dispose();
                     }
 

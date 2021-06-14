@@ -29,17 +29,37 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.openAMMFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.currentAMMFile = new System.Windows.Forms.Label();
             this.rawBinaryOutput = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.saveAMMFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.buttonEditProps = new System.Windows.Forms.Button();
-            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button3 = new System.Windows.Forms.Button();
             this.openDATFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.statusLabel = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.animationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadAM1AXSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openAXSFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,19 +68,9 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(49, 60);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(322, 563);
+            this.listBox1.Size = new System.Drawing.Size(322, 511);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(386, 60);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Open AMM file...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // openAMMFileDialog
             // 
@@ -71,7 +81,7 @@
             // currentAMMFile
             // 
             this.currentAMMFile.AutoSize = true;
-            this.currentAMMFile.Location = new System.Drawing.Point(49, 26);
+            this.currentAMMFile.Location = new System.Drawing.Point(46, 587);
             this.currentAMMFile.Name = "currentAMMFile";
             this.currentAMMFile.Size = new System.Drawing.Size(131, 13);
             this.currentAMMFile.TabIndex = 2;
@@ -89,17 +99,6 @@
             this.rawBinaryOutput.Size = new System.Drawing.Size(494, 583);
             this.rawBinaryOutput.TabIndex = 3;
             // 
-            // button2
-            // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(386, 111);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Save as...";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // saveAMMFileDialog
             // 
             this.saveAMMFileDialog.DefaultExt = "AMM";
@@ -116,13 +115,9 @@
             this.buttonEditProps.UseVisualStyleBackColor = true;
             this.buttonEditProps.Click += new System.EventHandler(this.button3_Click);
             // 
-            // mapFileBindingSource
-            // 
-            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
-            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(377, 307);
+            this.button3.Location = new System.Drawing.Point(377, 334);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(99, 23);
             this.button3.TabIndex = 6;
@@ -135,21 +130,182 @@
             this.openDATFileDialog.DefaultExt = "dat";
             this.openDATFileDialog.Filter = "Army Men Data|*.dat";
             // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(13, 633);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(27, 13);
+            this.statusLabel.TabIndex = 7;
+            this.statusLabel.Text = "Idle.";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(885, 633);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.TabIndex = 8;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem1,
+            this.helpToolStripMenuItem,
+            this.objectsToolStripMenuItem,
+            this.animationsToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(997, 24);
+            this.menuStrip1.TabIndex = 9;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem1
+            // 
+            this.fileToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.toolStripSeparator,
+            this.saveAsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
+            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem1.Text = "&File";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
+            this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Text = "&Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Enabled = false;
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveAsToolStripMenuItem.Text = "Save &As";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contentsToolStripMenuItem,
+            this.indexToolStripMenuItem,
+            this.searchToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Enabled = false;
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            this.helpToolStripMenuItem.Visible = false;
+            // 
+            // contentsToolStripMenuItem
+            // 
+            this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.contentsToolStripMenuItem.Text = "&Contents";
+            // 
+            // indexToolStripMenuItem
+            // 
+            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.indexToolStripMenuItem.Text = "&Index";
+            // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.searchToolStripMenuItem.Text = "&Search";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(119, 6);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.aboutToolStripMenuItem.Text = "&About...";
+            // 
+            // objectsToolStripMenuItem
+            // 
+            this.objectsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewToolStripMenuItem});
+            this.objectsToolStripMenuItem.Name = "objectsToolStripMenuItem";
+            this.objectsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.objectsToolStripMenuItem.Text = "Objects";
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewToolStripMenuItem.Text = "View";
+            this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click);
+            // 
+            // mapFileBindingSource
+            // 
+            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
+            // 
+            // animationsToolStripMenuItem
+            // 
+            this.animationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadAM1AXSFileToolStripMenuItem});
+            this.animationsToolStripMenuItem.Name = "animationsToolStripMenuItem";
+            this.animationsToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+            this.animationsToolStripMenuItem.Text = "Animations";
+            // 
+            // loadAM1AXSFileToolStripMenuItem
+            // 
+            this.loadAM1AXSFileToolStripMenuItem.Name = "loadAM1AXSFileToolStripMenuItem";
+            this.loadAM1AXSFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadAM1AXSFileToolStripMenuItem.Text = "Load AM1 AXS File";
+            this.loadAM1AXSFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM1AXSFileToolStripMenuItem_Click);
+            // 
+            // openAXSFileDialog
+            // 
+            this.openAXSFileDialog.DefaultExt = "axs";
+            this.openAXSFileDialog.Filter = "Army Men 1 Animation|*.axs";
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(997, 643);
+            this.ClientSize = new System.Drawing.Size(997, 658);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.buttonEditProps);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.rawBinaryOutput);
             this.Controls.Add(this.currentAMMFile);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Editor";
             this.Text = "AMM Editor";
             this.Load += new System.EventHandler(this.Editor_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -160,15 +316,33 @@
 
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.BindingSource mapFileBindingSource;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.OpenFileDialog openAMMFileDialog;
         private System.Windows.Forms.Label currentAMMFile;
         private System.Windows.Forms.TextBox rawBinaryOutput;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.SaveFileDialog saveAMMFileDialog;
         private System.Windows.Forms.Button buttonEditProps;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openDATFileDialog;
+        private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem objectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem animationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadAM1AXSFileToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openAXSFileDialog;
     }
 }
 

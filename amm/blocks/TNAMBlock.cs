@@ -19,7 +19,7 @@ namespace AMMEdit.amm.blocks
 
         public string FieldID => Guid.NewGuid().ToString();
 
-        public bool CanEditProperties => true;
+        public bool CanEditProperties => DidLoadTexture;
 
         public string TextureFileName { get; private set; }
 
@@ -33,6 +33,8 @@ namespace AMMEdit.amm.blocks
 
         public int NumTilesPerRow { get; private set; }
 
+        public bool DidLoadTexture { get; private set; }
+
         public TNAMBlock(BinaryReader r, string parentDirectory)
         {
             var cstringLen = r.ReadInt32();
@@ -40,14 +42,18 @@ namespace AMMEdit.amm.blocks
 
             TextureFileName = new string(cstring).Replace("\0", "");
 
+            DidLoadTexture = false;
             LoadTextureFile(parentDirectory + "\\" + TextureFileName);
         }
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            TextureMap tm = new TextureMap(this, null);
+            if (DidLoadTexture)
+            {
+                TextureMap tm = new TextureMap(this, null);
 
-            tm.Show(current);
+                tm.Show(current);
+            }
         }
 
         public byte[] ToBytes()
@@ -96,7 +102,20 @@ namespace AMMEdit.amm.blocks
         {
             if (!File.Exists(filename))
             {
-                throw new ArgumentException(string.Format("Please load from the location that contains {0}; not found at {1}", this.TextureFileName, filename));
+                OpenFileDialog findATLDialog = new OpenFileDialog();
+                findATLDialog.DefaultExt = "atl";
+                findATLDialog.Filter = "Army Men texture map|*.atl";
+                findATLDialog.Title = "Find `" + filename + "`";
+
+                DialogResult result = findATLDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    filename = findATLDialog.FileName;
+                } else if (result == DialogResult.Cancel)
+                {
+                    DidLoadTexture = false;
+                    return;
+                }
             }
 
             /**
@@ -131,6 +150,8 @@ namespace AMMEdit.amm.blocks
                     TextureImagesheet.MakeTransparent(TextureImagesheet.Palette.Entries[0]);
                 }
             }
+
+            DidLoadTexture = true;
         }
     }
 }

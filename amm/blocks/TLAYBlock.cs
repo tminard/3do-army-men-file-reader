@@ -2,6 +2,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,13 +45,16 @@ namespace AMMEdit.amm.blocks
 
         public string FieldID => Guid.NewGuid().ToString();
 
-        public bool CanEditProperties => true;
+        public bool CanEditProperties => TextureNameBlock.DidLoadTexture;
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            TextureMap tm = new TextureMap(TextureNameBlock, this);
+            if (TextureNameBlock.DidLoadTexture)
+            {
+                TextureMap tm = new TextureMap(TextureNameBlock, this);
 
-            tm.Show(current);
+                tm.Show(current);
+            }
         }
 
         public UInt16 GetTextureIDAtLocation(int x, int y)
@@ -59,6 +63,12 @@ namespace AMMEdit.amm.blocks
             int seqX = x * 2; // each segment is represented by 2 bytes (UInt16)
             int seqY = y * Width * 2;
             int seq = seqY + seqX;
+
+            if (seq + 2 > RawTileTextureIDs.Count)
+            {
+                Debug.WriteLine("Tried to access texture at x: " + x + ", y: " + y + " but was greater than max textures. Skipping");
+                return 0;
+            }
 
             Span<byte> ranAccess = new Span<byte>(RawTileTextureIDs.ToArray());
             UInt16 id = BinaryPrimitives.ReadUInt16LittleEndian(ranAccess.Slice(seq, 2));

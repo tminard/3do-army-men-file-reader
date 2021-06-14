@@ -129,6 +129,8 @@
             this.DoubleBuffered = true;
             this.Name = "TextureMap";
             this.Text = "TextureMap";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureMap_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TextureMap_FormClosed);
             this.Load += new System.EventHandler(this.TextureMap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

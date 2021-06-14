@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AMMEdit.amm.blocks;
+using AMMEdit.objects;
+using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing;
@@ -44,12 +46,6 @@ namespace AMMEdit.amm
             content.AddRange(orderedBytes);
 
             File.WriteAllBytes(filename, content.ToArray());
-
-            /*Bitmap bm = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-            var bitmapData = bm.LockBits(new Rectangle(Point.Empty, bm.Size), ImageLockMode.ReadWrite, bm.PixelFormat);
-            Marshal.Copy(m_fields[18].ToBytes(), 8, bitmapData.Scan0, 256*256);
-            bm.UnlockBits(bitmapData);
-            bm.Save(filename + ".move.bmp");*/
         }
 
         private byte[] UInt32ToBytes(UInt32 val)

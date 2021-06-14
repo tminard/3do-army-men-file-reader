@@ -101,16 +101,16 @@ namespace AMMEdit.amm
                 }
             }
 
-            fields.Add(
-                new CombinedTextureLayersBlock(
-                    fields.OfType<TNAMBlock>().First(),
-                    fields
-                        .OfType<TLAYBlock>()
-                        .ToList(),
-                    fields.OfType<OLAYBlock>().ToList(),
-                    dataFileReference
-                )
-            );
+                fields.Add(
+                    new CombinedTextureLayersBlock(
+                        fields.OfType<TNAMBlock>().First(),
+                        fields
+                            .OfType<TLAYBlock>()
+                            .ToList(),
+                        fields.OfType<OLAYBlock>().ToList(),
+                        dataFileReference
+                    )
+                );
 
             return new MapFile(fields);
         }
