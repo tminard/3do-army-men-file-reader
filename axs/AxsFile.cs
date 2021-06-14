@@ -16,7 +16,10 @@ namespace AMMEdit.axs
         private readonly byte[] m_axs_block_header;
         private readonly UInt32 m_num_sprites;
         private readonly byte[] m_bmp_header;
-        private readonly List<Color> m_palette;
+        private List<FrameImageData> m_frame_images;
+        private List<Color> m_palette;
+        private List<Animation> m_animations = new List<Animation>();
+
 
         public AxsFile(BinaryReader reader)
         {
@@ -43,9 +46,22 @@ namespace AMMEdit.axs
                 m_palette.Add(Color.FromArgb(rC, gC, bC));
             }
 
-            // TODO: the remainder of the file is the compressed bitmap data. Can be read similar to .dat file.
+            m_frame_images = new List<FrameImageData>((int)m_num_sprites);
+            for (int s = 0; s < m_num_sprites; s++)
+            {
+                m_frame_images.Add(new FrameImageData(reader, m_palette));
+            }
+
+            for (int a = 0; a < m_header.GetNumberOfSequences(); a++)
+            {
+                Animations.Add(new Animation(Animation_sequences[a], m_frame_images));
+            }
         }
 
         public List<AnimationSequence> Animation_sequences => m_animation_sequences;
+
+        public List<FrameImageData> Frame_images => m_frame_images;
+
+        public List<Animation> Animations { get => m_animations; set => m_animations = value; }
     }
 }

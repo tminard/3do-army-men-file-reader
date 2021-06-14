@@ -108,6 +108,8 @@
     <Compile Include="amm\loaders\MapFileLoader.cs" />
     <Compile Include="amm\blocks\subfields\units\GenericFractionUnit.cs" />
     <Compile Include="axs\AxsFile.AnimationSequence.cs" />
+    <Compile Include="axs\AxsFile.Animation.cs" />
+    <Compile Include="axs\AxsFile.FrameImageData.cs" />
     <Compile Include="axs\AxsFile.FrameData.cs" />
     <Compile Include="axs\AxsFile.cs" />
     <Compile Include="axs\AxsFile.Header.cs" />
