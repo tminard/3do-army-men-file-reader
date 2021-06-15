@@ -55,10 +55,12 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.objectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.animationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAM1AXSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.openAXSFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.loadAM2ANIFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openANIDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -259,18 +261,15 @@
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.viewToolStripMenuItem.Text = "View";
             this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click);
-            // 
-            // mapFileBindingSource
-            // 
-            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
             // 
             // animationsToolStripMenuItem
             // 
             this.animationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadAM1AXSFileToolStripMenuItem});
+            this.loadAM1AXSFileToolStripMenuItem,
+            this.loadAM2ANIFileToolStripMenuItem});
             this.animationsToolStripMenuItem.Name = "animationsToolStripMenuItem";
             this.animationsToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
             this.animationsToolStripMenuItem.Text = "Animations";
@@ -278,14 +277,30 @@
             // loadAM1AXSFileToolStripMenuItem
             // 
             this.loadAM1AXSFileToolStripMenuItem.Name = "loadAM1AXSFileToolStripMenuItem";
-            this.loadAM1AXSFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.loadAM1AXSFileToolStripMenuItem.Text = "Load AM1 AXS File";
+            this.loadAM1AXSFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.loadAM1AXSFileToolStripMenuItem.Text = "Load AM1 AXS file...";
             this.loadAM1AXSFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM1AXSFileToolStripMenuItem_Click);
+            // 
+            // mapFileBindingSource
+            // 
+            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
             // 
             // openAXSFileDialog
             // 
             this.openAXSFileDialog.DefaultExt = "axs";
             this.openAXSFileDialog.Filter = "Army Men 1 Animation|*.axs";
+            // 
+            // loadAM2ANIFileToolStripMenuItem
+            // 
+            this.loadAM2ANIFileToolStripMenuItem.Name = "loadAM2ANIFileToolStripMenuItem";
+            this.loadAM2ANIFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.loadAM2ANIFileToolStripMenuItem.Text = "Load AM2+ ANI file...";
+            this.loadAM2ANIFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM2ANIFileToolStripMenuItem_Click);
+            // 
+            // openANIDialog1
+            // 
+            this.openANIDialog1.DefaultExt = "ani";
+            this.openANIDialog1.Filter = "Army Men 2 Animation|*.ani";
             // 
             // Editor
             // 
@@ -343,6 +358,8 @@
         private System.Windows.Forms.ToolStripMenuItem animationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadAM1AXSFileToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openAXSFileDialog;
+        private System.Windows.Forms.ToolStripMenuItem loadAM2ANIFileToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openANIDialog1;
     }
 }
 

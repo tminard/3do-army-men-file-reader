@@ -1,4 +1,5 @@
 ﻿using AMMEdit.amm;
+using AMMEdit.ani;
 using AMMEdit.axs;
 using AMMEdit.objects;
 using AMMEdit.objects.loaders;
@@ -161,6 +162,28 @@ namespace AMMEdit
                 if (axsFile != null)
                 {
                     AnimatedSpriteViewer sv = new AnimatedSpriteViewer(axsFile);
+                    sv.Show(this);
+                }
+            }
+        }
+
+        private void loadAM2ANIFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openANIDialog1.ShowDialog() == DialogResult.OK)
+            {
+                AniFile aniFile;
+
+                using (FileStream fs = new FileStream(openANIDialog1.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    using (BinaryReader r = new BinaryReader(fs))
+                    {
+                        aniFile = new AniFile(r);
+                    }
+                }
+
+                if (aniFile != null)
+                {
+                    AnimatedANISpriteView sv = new AnimatedANISpriteView(aniFile);
                     sv.Show(this);
                 }
             }

@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -107,6 +107,7 @@
     <Compile Include="amm\MapFile.cs" />
     <Compile Include="amm\loaders\MapFileLoader.cs" />
     <Compile Include="amm\blocks\subfields\units\GenericFractionUnit.cs" />
+    <Compile Include="ani\AniFile.cs" />
     <Compile Include="axs\AxsFile.AnimationSequence.cs" />
     <Compile Include="axs\AxsFile.Animation.cs" />
     <Compile Include="axs\AxsFile.FrameImageData.cs" />
@@ -125,6 +126,12 @@
     <Compile Include="objects\loaders\DatFileLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyEditors\AnimatedANISpriteView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyEditors\AnimatedANISpriteView.Designer.cs">
+      <DependentUpon>AnimatedANISpriteView.cs</DependentUpon>
+    </Compile>
     <Compile Include="PropertyEditors\AnimatedSpriteViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +178,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="PropertyEditors\AnimatedANISpriteView.resx">
+      <DependentUpon>AnimatedANISpriteView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PropertyEditors\AnimatedSpriteViewer.resx">
       <DependentUpon>AnimatedSpriteViewer.cs</DependentUpon>
     </EmbeddedResource>

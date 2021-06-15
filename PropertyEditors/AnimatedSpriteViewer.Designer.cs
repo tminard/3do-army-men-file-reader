@@ -29,6 +29,7 @@ namespace AMMEdit.PropertyEditors
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.spriteViewBox = new System.Windows.Forms.PictureBox();
@@ -36,6 +37,8 @@ namespace AMMEdit.PropertyEditors
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportSpritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.spriteViewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -70,9 +73,10 @@ namespace AMMEdit.PropertyEditors
             // 
             this.trackBar1.Location = new System.Drawing.Point(399, 569);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(512, 45);
+            this.trackBar1.Size = new System.Drawing.Size(455, 45);
             this.trackBar1.TabIndex = 11;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
             // menuStrip1
             // 
@@ -99,19 +103,36 @@ namespace AMMEdit.PropertyEditors
             this.exportSpritesToolStripMenuItem.Text = "Export sprites...";
             this.exportSpritesToolStripMenuItem.Click += new System.EventHandler(this.exportSpritesToolStripMenuItem_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(853, 571);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(63, 43);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "Play";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // AnimatedSpriteViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(928, 897);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.spriteViewBox);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AnimatedSpriteViewer";
-            this.Text = "AnimatedSpriteViewer";
+            this.Text = "AXS Animation Viewer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AnimatedSpriteViewer_FormClosing);
             this.Load += new System.EventHandler(this.AnimatedSpriteViewer_Load);
             ((System.ComponentModel.ISupportInitialize)(this.spriteViewBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
@@ -131,5 +152,7 @@ namespace AMMEdit.PropertyEditors
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportSpritesToolStripMenuItem;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

@@ -20,6 +20,8 @@ namespace AMMEdit.PropertyEditors
             AxsFile = axsFile;
         }
 
+        private bool m_playing = false;
+
         private Bitmap renderedPreview = new Bitmap(256, 256);
 
         public AxsFile AxsFile { get; }
@@ -31,6 +33,8 @@ namespace AMMEdit.PropertyEditors
         {
             listBox1.DataSource = AxsFile.Animations;
             listBox1.DisplayMember = "Name";
+            timer1.Interval = 66; // 15 FPS
+            timer1.Stop();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -60,28 +64,34 @@ namespace AMMEdit.PropertyEditors
             buffer.Graphics.Clear(Color.AntiqueWhite);
 
             // draw annotations
-
-            buffer.Graphics.DrawImage(previewImage, new Rectangle(new Point(128, 128), new Size(previewImage.Width, previewImage.Height)), 0, 0, previewImage.Width, previewImage.Height, GraphicsUnit.Pixel);
-
             SolidBrush solidBrush = new SolidBrush(Color.Red);
 
             // this seems to be the anchor pixel for the image
             if (Selected_animation.ShowOffsetPoint == true)
             {
-                AxsFile.FrameData offsetPoint = Selected_animation.AnimationData.Offset_data[frameIndex];
+                AxsFile.FrameData offsetPointData = Selected_animation.AnimationData.Offset_data[frameIndex];
 
                 solidBrush.Color = Color.Blue;
-                buffer.Graphics.FillEllipse(solidBrush, previewImage.Width - Convert.ToInt32(offsetPoint.X) + 128, previewImage.Height - Convert.ToInt32(offsetPoint.Y) + 128, 4, 4);
+                buffer.Graphics.FillEllipse(solidBrush, previewImage.Width - Convert.ToInt32(offsetPointData.X) + 128, previewImage.Height - Convert.ToInt32(offsetPointData.Y) + 128, 4, 4);
             }
+
+            // start with a default centered image
+            Point centerPoint = new Point(128, 128);
 
             if (Selected_animation.ShowCenterPoint == true)
             {
-                AxsFile.FrameData centerPoint = Selected_animation.AnimationData.Center_reference_data[frameIndex];
+                AxsFile.FrameData centerPointData = Selected_animation.AnimationData.Center_reference_data[frameIndex];
 
-                Point p = new Point(Convert.ToInt32(centerPoint.X), Convert.ToInt32(centerPoint.Y));
+                if (centerPointData.X < 255 && centerPointData.Y < 255)
+                {
+                    Point p = new Point(
+                        Convert.ToInt32(centerPointData.X) + 128,
+                        previewImage.Height - Convert.ToInt32(centerPointData.Y) + 128
+                    );
 
-                solidBrush.Color = Color.Red;
-                buffer.Graphics.FillEllipse(solidBrush, p.X + 128, previewImage.Height - p.Y + 128, 2, 2);
+                    solidBrush.Color = Color.Red;
+                    buffer.Graphics.FillEllipse(solidBrush, p.X, p.Y, 2, 2);
+                }
             }
 
             int otherIndx = 0;
@@ -99,6 +109,12 @@ namespace AMMEdit.PropertyEditors
                 }
                 otherIndx += 64;
             });
+
+            // draw sprite
+            buffer.Graphics.DrawImage(previewImage, new Rectangle(
+                centerPoint,
+                new Size(previewImage.Width, previewImage.Height)
+            ), 0, 0, previewImage.Width, previewImage.Height, GraphicsUnit.Pixel);
 
             // done
 
@@ -153,6 +169,41 @@ namespace AMMEdit.PropertyEditors
                     }
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            m_playing = !m_playing;
+
+            if (m_playing)
+            {
+                timer1.Start();
+            } else
+            {
+                timer1.Stop();
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            int nextValue = trackBar1.Value + 1;
+
+            if (nextValue > trackBar1.Maximum)
+            {
+                nextValue = trackBar1.Minimum;
+            }
+
+            trackBar1.Value = nextValue;
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            DrawAnimationFrame();
+        }
+
+        private void AnimatedSpriteViewer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            timer1.Stop();
         }
     }
 }
