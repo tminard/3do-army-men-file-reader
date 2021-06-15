@@ -35,5 +35,21 @@ namespace AMMEdit.PropertyEditors
             propertyGrid1.SelectedObject = selectedSpriteData;
             pictureBox1.Image = selectedSpriteData.Image;
         }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var folderBrowse = new FolderBrowserDialog();
+
+            if (folderBrowse.ShowDialog() == DialogResult.OK)
+            {
+                string outFolder = System.IO.Path.Combine(folderBrowse.SelectedPath, "SpriteSheet");
+                System.IO.Directory.CreateDirectory(outFolder);
+                for (int f = 0; f < AniFile.Sprites.Count; f++)
+                {
+                    string outFile = System.IO.Path.Combine(outFolder, "sprite_" + f + ".png");
+                    AniFile.Sprites[f].Image.Save(outFile, System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
+        }
     }
 }

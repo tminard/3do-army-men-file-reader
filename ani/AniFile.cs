@@ -58,6 +58,10 @@ namespace AMMEdit.ani
 
             private readonly SpriteImageData m_sprite_image_data;
 
+            public Point A { get => new Point(m_a, m_b); }
+
+            public Point B { get => new Point(s1, s2); }
+
             public String Name { get => "Sprite " + m_number; }
 
             public Bitmap Image { get => m_sprite_image_data.Sprite_image; }
