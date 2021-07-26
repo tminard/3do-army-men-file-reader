@@ -32,6 +32,9 @@ namespace AMMEdit.ani
                );
             }
 
+            m_palette[0] = Color.FromArgb(255, 255, 255, 255);
+            m_palette[10] = Color.FromArgb(0, 0, 0, 0);
+
             m_num_sprites = reader.ReadInt32();
 
             // read sprite data
@@ -115,7 +118,7 @@ namespace AMMEdit.ani
                                 for (int pad = 0; pad < p; pad++)
                                 {
                                     var bmpPtr = h * m_width + idx + pad;
-                                    m_decoded_bitmap_data[bmpPtr] = 0; // transparent color in palette
+                                    m_decoded_bitmap_data[bmpPtr] = 10; // transparent color in palette
                                 }
                                 idx += p;
 
@@ -140,7 +143,7 @@ namespace AMMEdit.ani
                             }
                         }
 
-                        m_sprite_image.MakeTransparent(colorPalette[0]);
+                        // m_sprite_image.MakeTransparent(colorPalette[0]);
                         m_sprite_image.RotateFlip(RotateFlipType.RotateNoneFlipXY);
 
                         // shadow

@@ -45,6 +45,12 @@ namespace AMMEdit.amm.blocks
             return m_indexedObjects[index];
         }
 
+        public void AddObject(OLAYObject amObject)
+        {
+            m_indexedObjects.Add(m_numObjects, amObject);
+            m_numObjects += 1;
+        }
+
         public string DisplayFieldName { get; }
 
         public string FieldID { get; }

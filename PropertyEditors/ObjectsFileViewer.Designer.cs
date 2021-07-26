@@ -40,7 +40,6 @@ namespace AMMEdit.PropertyEditors
             this.spriteViewBox.Location = new System.Drawing.Point(525, 12);
             this.spriteViewBox.Name = "spriteViewBox";
             this.spriteViewBox.Size = new System.Drawing.Size(256, 256);
-            this.spriteViewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.spriteViewBox.TabIndex = 7;
             this.spriteViewBox.TabStop = false;
             // 

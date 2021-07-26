@@ -23,6 +23,14 @@ namespace AMMEdit.amm.blocks.subfields
             m_itemPosY = r.ReadInt32();
         }
 
+        public OLAYObject(int itemCategory, int itemSubType, int itemPosX, int itemPosY)
+        {
+            m_itemCategory = itemCategory;
+            m_itemSubType = itemSubType;
+            m_itemPosX = itemPosX;
+            m_itemPosY = itemPosY;
+        }
+
         public string[] ToFormattedPreview()
         {
             return new string[]

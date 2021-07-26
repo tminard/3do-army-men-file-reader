@@ -29,6 +29,7 @@ namespace AMMEdit.PropertyEditors
         private Thread previewGenerationThread;
         private Bitmap tileSheet;
         private TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        private List<Tuple<AMObject, Point>> placedObjects = new List<Tuple<AMObject, Point>>();
 
         public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<OLAYBlock> objectLayers = null, DatFile dataFile = null)
         {
@@ -50,6 +51,16 @@ namespace AMMEdit.PropertyEditors
             numericUpDown1.Maximum = TNameBlock.NumTiles;
 
             propertyGrid1.SelectedObject = SelectedTile;
+
+            if (DataFileReference != null)
+            {
+                listBox1.DataSource = DataFileReference.Objects;
+                listBox1.DisplayMember = "LabelText";
+            } else
+            {
+                listBox1.Enabled = false;
+                listBox1.Hide();
+            }
 
             if (LayerBlock == null)
             {
@@ -198,6 +209,20 @@ namespace AMMEdit.PropertyEditors
             }
 
             propertyGrid1.SelectedObject = SelectedTile;
+
+            // handle object placement
+            AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
+            if (selectedPrototype != null)
+            {
+                placedObjects.Add(new Tuple<AMObject, Point>(selectedPrototype, new Point(e.X, e.Y)));
+
+                if (ObjectLayerBlocks != null)
+                {
+                    // add to first object layer for now
+                    OLAYObject placedObject = new OLAYObject(selectedPrototype.TypeKey, selectedPrototype.InstanceKey, e.X, e.Y);
+                    ObjectLayerBlocks[0].AddObject(placedObject);
+                }
+            }
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -217,6 +242,52 @@ namespace AMMEdit.PropertyEditors
             if (previewGenerationThread != null && previewGenerationThread.IsAlive)
             {
                 previewGenerationThread.Abort();
+            }
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var folderBrowse = new FolderBrowserDialog();
+
+            if (folderBrowse.ShowDialog() == DialogResult.OK)
+            {
+                string outFolder = System.IO.Path.Combine(folderBrowse.SelectedPath, "TileMap");
+                System.IO.Directory.CreateDirectory(outFolder);
+                for (ushort f = 0; f < TNameBlock.NumTiles; f++)
+                {
+                    string outFile = System.IO.Path.Combine(outFolder, "tile_" + f + ".png");
+                    TNameBlock.GetTileImage(f).Save(outFile, ImageFormat.Png);
+                }
+            }
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGrid1.SelectedObject = ((ListBox)sender).SelectedItem;
+            pictureBox3.Image = ((AMObject)((ListBox)sender).SelectedItem).SpriteImage;
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            pictureBox1.Refresh();
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            // draw objects placed during current session
+            // performance will degrade the more objects are added in a given session.
+            // TODO: consider culling the list to current window only.
+            placedObjects.ForEach(placement => {
+                e.Graphics.DrawImage(placement.Item1.SpriteImage, placement.Item2);
+            });
+
+            // draw selected object
+            AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
+            Point mousePos = pictureBox1.PointToClient(Cursor.Position);
+
+            if (selectedPrototype != null)
+            {
+                e.Graphics.DrawImage(selectedPrototype.SpriteImage, mousePos);
             }
         }
     }

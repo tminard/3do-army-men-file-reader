@@ -223,6 +223,10 @@ namespace AMMEdit.objects.loaders
                             }
                         }
                         spriteBitmap.MakeTransparent(colorPalette[0]);
+                        if (decodedTypeKey == 44 || decodedTypeKey == 45 || decodedTypeKey == 46 || decodedTypeKey == 47) // UI Element
+                        {
+                            spriteBitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                        }
 
                         amObjectsList.Add(new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone()));
                         spriteBitmap.Dispose();
