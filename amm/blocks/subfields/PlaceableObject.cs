@@ -25,6 +25,16 @@ namespace AMMEdit.amm.blocks.subfields
             }
         }
 
+        public int NumBullets
+        {
+            get
+            {
+                return GetFieldValue("NUMB");
+            }
+        }
+
+        public string Name => m_name;
+
         public PlaceableObject(Dictionary<string, Int32> fields, BinaryReader r)
         {
             m_fields = fields;
@@ -66,15 +76,15 @@ namespace AMMEdit.amm.blocks.subfields
         public byte[] ToBytes()
         {
             int contentSize = m_values.Sum(kv => kv.Value.Count);
-            int size = contentSize + m_name.Length; // strings are already nil terminated
+            int size = contentSize + Name.Length; // strings are already nil terminated
             List<byte> content = new List<byte>(size);
 
             m_values.ToList().ForEach(kv => content.AddRange(kv.Value));
 
             // nil terminated name (ASCII)
-            if (m_name.Length > 0)
+            if (Name.Length > 0)
             {
-                byte[] b = UTF8Encoding.UTF8.GetBytes(m_name);
+                byte[] b = UTF8Encoding.UTF8.GetBytes(Name);
 
                 content.AddRange(b);
             }
@@ -116,12 +126,12 @@ namespace AMMEdit.amm.blocks.subfields
 
         private string GetFormattedName()
         {
-            char[] cstring = m_name.ToArray();
+            char[] cstring = Name.ToArray();
 
             if (cstring.Length > 0)
             {
-                char[] str = new char[m_name.Length - 1];
-                Array.Copy(cstring, str, m_name.Length - 1);
+                char[] str = new char[Name.Length - 1];
+                Array.Copy(cstring, str, Name.Length - 1);
 
                 return new string(str);
             }

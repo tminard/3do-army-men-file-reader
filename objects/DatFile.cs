@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,10 @@ namespace AMMEdit.objects
         public AMObject GetObject(int CategoryKey, int InstanceKey)
         {
             // TODO make this safer
-            return ObjectsByCatAndInstance[CategoryKey][InstanceKey].First();
+            if (ObjectsByCatAndInstance.ContainsKey(CategoryKey) && ObjectsByCatAndInstance[CategoryKey].ContainsKey(InstanceKey))
+            {
+                return ObjectsByCatAndInstance[CategoryKey][InstanceKey].First();
+            } else { return null; }
         }
     }
 }

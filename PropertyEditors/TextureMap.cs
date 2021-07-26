@@ -19,7 +19,7 @@ namespace AMMEdit.PropertyEditors
         public TLAYBlock LayerBlock { get; private set; }
         public TLAYBlock LayerBlock2 { get; private set; }
 
-        public List<OLAYBlock> ObjectLayerBlocks { get; private set; }
+        public List<Tuple<OLAYBlock, OATTBlock>> ObjectLayerBlocks { get; private set; }
 
         private DatFile DataFileReference;
 
@@ -29,9 +29,17 @@ namespace AMMEdit.PropertyEditors
         private Thread previewGenerationThread;
         private Bitmap tileSheet;
         private TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        private List<Tuple<AMObject, Point>> placedObjects = new List<Tuple<AMObject, Point>>();
 
-        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<OLAYBlock> objectLayers = null, DatFile dataFile = null)
+        private List<Tuple<AMObject, Point>> placedObjects = new List<Tuple<AMObject, Point>>();
+        private enum EditorState
+        {
+            VIEW,
+            PLACE_OBJECT
+        }
+
+        private EditorState editorState = EditorState.VIEW;
+
+        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<Tuple<OLAYBlock, OATTBlock>> objectLayers = null, DatFile dataFile = null)
         {
             TNameBlock = textureBlock;
             LayerBlock = mapBlock;
@@ -139,9 +147,9 @@ namespace AMMEdit.PropertyEditors
             {
                 ObjectLayerBlocks.ForEach(objectLayer =>
                 {
-                    for (int o = 0; o < objectLayer.m_numObjects; o++)
+                    for (int o = 0; o < objectLayer.Item1.m_numObjects; o++)
                     {
-                        OLAYObject obj = objectLayer.GetObjectByIndex(o);
+                        OLAYObject obj = objectLayer.Item1.GetObjectByIndex(o);
 
                         if (DataFileReference.ObjectsByCatAndInstance.ContainsKey(obj.m_itemCategory) == false)
                         {
@@ -194,6 +202,50 @@ namespace AMMEdit.PropertyEditors
         {
             SelectedTile.UpdatePosition(new Point(e.X, e.Y));
 
+            if (editorState == EditorState.VIEW)
+            {
+                if (ObjectLayerBlocks != null &&
+                    ObjectLayerBlocks.Count > 0 &&
+                    DataFileReference != null)
+                {
+                    List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>> found = new List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>>();
+
+                    // This is crap - I'm so sorry
+                    // We need access to the OATT block entry AND the index
+                    ObjectLayerBlocks.ForEach(
+                        objLayer => {
+                            found.AddRange(
+                                objLayer.Item1.GetObjectsByLocation(e.X, e.Y, DataFileReference)
+                                    .ConvertAll(
+                                        objectsByLocationAndIndex =>
+                                            new KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>(
+                                                objectsByLocationAndIndex.Key,
+                                                new Tuple<OLAYObject, OATTBlock>(objectsByLocationAndIndex.Value, objLayer.Item2)))
+                                );
+                        }
+                    );
+
+                    if (found.Count > 0)
+                    {
+                        List<Tuple<AMObject, OLAYObject, PlaceableObject>> selectedObjects = found.ConvertAll(kv => {
+                            return new Tuple<AMObject, OLAYObject, PlaceableObject>(
+                                DataFileReference.GetObject(kv.Value.Item1.m_itemCategory, kv.Value.Item1.m_itemSubType),
+                                kv.Value.Item1,
+                                (PlaceableObject)kv.Value.Item2.GetPlaceableByObjectIndex(kv.Key)
+                                );
+                        });
+
+                        SelectedTile.UpdateSelectedObjects(selectedObjects);
+                        listBox1.DataSource = selectedObjects.ConvertAll(foundObjects => foundObjects.Item1);
+                        listBox1.DisplayMember = "LabelText";
+                    } else
+                    {
+                        SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, PlaceableObject>>());
+                        listBox1.DataSource = null;
+                    }
+                }
+            }
+
             if (LayerBlock != null)
             {
                 ushort textureID = (ushort)(LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y) + Convert.ToUInt16(1));
@@ -211,16 +263,20 @@ namespace AMMEdit.PropertyEditors
             propertyGrid1.SelectedObject = SelectedTile;
 
             // handle object placement
-            AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
-            if (selectedPrototype != null)
+            
+            if (editorState == EditorState.PLACE_OBJECT)
             {
-                placedObjects.Add(new Tuple<AMObject, Point>(selectedPrototype, new Point(e.X, e.Y)));
-
-                if (ObjectLayerBlocks != null)
+                AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
+                if (selectedPrototype != null)
                 {
-                    // add to first object layer for now
-                    OLAYObject placedObject = new OLAYObject(selectedPrototype.TypeKey, selectedPrototype.InstanceKey, e.X, e.Y);
-                    ObjectLayerBlocks[0].AddObject(placedObject);
+                    placedObjects.Add(new Tuple<AMObject, Point>(selectedPrototype, new Point(e.X, e.Y)));
+
+                    if (ObjectLayerBlocks != null && ObjectLayerBlocks.Count > 0)
+                    {
+                        // add to first object layer for now
+                        OLAYObject placedObject = new OLAYObject(selectedPrototype.TypeKey, selectedPrototype.InstanceKey, e.X, e.Y);
+                        ObjectLayerBlocks[0].Item1.AddObject(placedObject);
+                    }
                 }
             }
         }
@@ -264,7 +320,14 @@ namespace AMMEdit.PropertyEditors
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             propertyGrid1.SelectedObject = ((ListBox)sender).SelectedItem;
-            pictureBox3.Image = ((AMObject)((ListBox)sender).SelectedItem).SpriteImage;
+            AMObject selectedAMObject = ((AMObject)((ListBox)sender).SelectedItem);
+
+            if (selectedAMObject != null) {
+                pictureBox3.Image = selectedAMObject.SpriteImage;
+            } else
+            {
+                pictureBox3.Image = null;
+            }
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -282,12 +345,22 @@ namespace AMMEdit.PropertyEditors
             });
 
             // draw selected object
-            AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
+            
             Point mousePos = pictureBox1.PointToClient(Cursor.Position);
 
-            if (selectedPrototype != null)
+            if (editorState == EditorState.PLACE_OBJECT)
             {
-                e.Graphics.DrawImage(selectedPrototype.SpriteImage, mousePos);
+                AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
+                if (selectedPrototype != null)
+                {
+                    e.Graphics.DrawImage(selectedPrototype.SpriteImage, mousePos);
+                }
+            } else
+            {
+                e.Graphics.DrawRectangle(
+                    new Pen(
+                        Color.FromArgb(128, Color.AliceBlue)
+                        ), new Rectangle(mousePos, new Size(16, 16)));
             }
         }
     }
@@ -309,12 +382,40 @@ namespace AMMEdit.PropertyEditors
         [Category("Selected")]
         public Object RawValue { get; private set; }
 
+        [Category("Objects"), Description("Number of selected objects"), DisplayName("Count")]
+        public int SelectedObjectsCount { get; private set; }
+
+        [Category("Objects"), Description("Reference to use in scripts"), DisplayName("Script Name")]
+        public String ScriptableName { get; private set; }
+
+        [Category("Objects"), Description("Placement-specific details for this object"), DisplayName("Properties")]
+        public String PlacementDetails { get; private set; }
+
+        [Category("Objects"), Description("Number of bullets for the given object. Not always applicable."), DisplayName("Bullets")]
+        public int NumBullets { get; private set; }
+
         public void UpdatePosition(Point p)
         {
             PositionX = p.X;
             PositionY = p.Y;
             Position = p;
             Tile = new Point((int)(p.X / 16.0), (int)(p.Y / 16.0));
+        }
+
+        public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, PlaceableObject>> objects)
+        {
+            SelectedObjectsCount = objects.Count;
+            if (objects.Count == 1 && objects[0].Item3 != null)
+            {
+                ScriptableName = objects[0].Item3.Name;
+                PlacementDetails = String.Join("\n", objects[0].Item3.ToFormattedDescription(objects[0].Item2));
+                NumBullets = objects[0].Item3.NumBullets;
+            } else
+            {
+                ScriptableName = null;
+                PlacementDetails = null;
+                NumBullets = 0;
+            }
         }
 
         public void UpdateRawValue(Object v)

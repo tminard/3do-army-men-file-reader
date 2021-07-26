@@ -1,8 +1,10 @@
 ﻿using AMMEdit.amm.blocks.subfields;
+using AMMEdit.objects;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,6 +40,36 @@ namespace AMMEdit.amm.blocks
             {
                 m_indexedObjects.Add(i, new OLAYObject(r));
             }
+        }
+
+        public List<KeyValuePair<int, OLAYObject>> GetObjectsByLocation(int x, int y, DatFile datFile)
+        {
+            if (datFile == null)
+            {
+                return new List<KeyValuePair<int, OLAYObject>>();
+            }
+
+            Point p = new Point(x, y);
+
+            return m_indexedObjects.Where(kv => {
+            OLAYObject obj = kv.Value;
+            AMObject objInstance = datFile.GetObject(obj.m_itemCategory, obj.m_itemSubType);
+
+            Rectangle sprite = new Rectangle(obj.m_itemPosX, obj.m_itemPosY, objInstance.SpriteImage.Width, objInstance.SpriteImage.Height);
+
+            if (sprite.Contains(p))
+            {
+                // sample and check if this is a transparent color
+                Point px = new Point(
+                    x - obj.m_itemPosX,
+                    y - obj.m_itemPosY
+                    );
+
+                return objInstance.SpriteImage.GetPixel(px.X, px.Y).A == 255;
+            }
+
+                return false;
+            }).ToList();
         }
 
         public OLAYObject GetObjectByIndex(int index)

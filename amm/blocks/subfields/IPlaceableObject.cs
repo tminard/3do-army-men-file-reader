@@ -1,6 +1,6 @@
 ﻿namespace AMMEdit.amm.blocks.subfields
 {
-    interface IPlaceableObject
+    public interface IPlaceableObject
     {
         int ObjectIndex { get; }
 

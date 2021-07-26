@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
 {
-    class OATTBlock : IGenericFieldBlock
+    public class OATTBlock : IGenericFieldBlock
     {
         private Dictionary<string, Int32> m_keyValuePairs;
         private Int32 m_blockLength; // untrustworthy. Appears to be off by one in several files in unpredictable ways
@@ -73,6 +73,11 @@ namespace AMMEdit.amm.blocks
         public void ShowPropertyEditor(IWin32Window current)
         {
             throw new NotImplementedException();
+        }
+
+        public IPlaceableObject GetPlaceableByObjectIndex(int index)
+        {
+            return m_placeables.Find(placeable => placeable.ObjectIndex.Equals(index));
         }
 
         public byte[] ToBytes()

@@ -14,11 +14,11 @@ namespace AMMEdit.amm.blocks
         private readonly List<TLAYBlock> textureBlocks;
 
         private readonly DatFile dataFileRef;
-        private readonly List<OLAYBlock> objectBlocks;
+        private readonly List<Tuple<OLAYBlock, OATTBlock>> objectBlocks;
 
         private TNAMBlock TextureNameBlock { get; set; }
 
-        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks, List<OLAYBlock> objectBlocks = null, DatFile dataFile = null)
+        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks, List<Tuple<OLAYBlock, OATTBlock>> objectBlocks = null, DatFile dataFile = null)
         {
             this.TextureNameBlock = textureNameBlock;
             this.textureBlocks = textureBlocks ?? throw new ArgumentNullException(nameof(textureBlocks));

@@ -101,13 +101,20 @@ namespace AMMEdit.amm
                 }
             }
 
+            // Combine the associated OLAY and OATT blocks
+            List<Tuple<OLAYBlock, OATTBlock>> objects = fields.OfType<OLAYBlock>()
+                .Zip(
+                fields.OfType<OATTBlock>(),
+                (olay, oatt) => new Tuple<OLAYBlock, OATTBlock>(olay, oatt)
+            ).ToList();
+
                 fields.Add(
                     new CombinedTextureLayersBlock(
                         fields.OfType<TNAMBlock>().First(),
                         fields
                             .OfType<TLAYBlock>()
                             .ToList(),
-                        fields.OfType<OLAYBlock>().ToList(),
+                        objects,
                         dataFileReference
                     )
                 );
