@@ -18,6 +18,9 @@ namespace AMMEdit.amm.blocks
         public static string FIELD_NAME = "Object Definition Layer (OLAY)";
 
         private List<OLAYObject> m_indexedObjects;
+
+        private List<OLAYObject> m_sortedObjectsMemoized = null;
+
         private Int32 m_blockLength;
         public Int32 m_numObjects { get; private set; }
 
@@ -54,6 +57,10 @@ namespace AMMEdit.amm.blocks
             return m_indexedObjects.Where(obj =>
             {
                 AMObject objInstance = datFile.GetObject(obj.m_itemCategory, obj.m_itemSubType);
+                if (objInstance == null)
+                {
+                    return false;
+                }
 
                 Rectangle sprite = new Rectangle(obj.m_itemPosX, obj.m_itemPosY, objInstance.SpriteImage.Width, objInstance.SpriteImage.Height);
 
@@ -74,6 +81,39 @@ namespace AMMEdit.amm.blocks
             ).ToList();
         }
 
+        public List<OLAYObject> GetRenderOrderedObjects(DatFile datFile)
+        {
+            if (m_sortedObjectsMemoized != null)
+            {
+                return m_sortedObjectsMemoized;
+            }
+
+            m_sortedObjectsMemoized = new List<OLAYObject>(m_indexedObjects.Count);
+            m_sortedObjectsMemoized.AddRange(m_indexedObjects);
+
+            // sort front to back, right to left
+            /*m_sortedObjectsMemoized.Sort(delegate (OLAYObject a, OLAYObject b) {
+                AMObject aObj = datFile.GetObject(a.m_itemCategory, a.m_itemSubType);
+                AMObject bObj = datFile.GetObject(b.m_itemCategory, b.m_itemSubType);
+
+                int aX = a.m_itemPosX + aObj.SpriteImage.Width;
+                int aY = a.m_itemPosY + aObj.SpriteImage.Height;
+                int bX = b.m_itemPosX + bObj.SpriteImage.Width;
+                int bY = b.m_itemPosY + bObj.SpriteImage.Height;
+
+                if (aX == bX && aY == bY) return 0;
+                else if (aY == bY && aX > bX) return 1; // render a before b if y is same but a.x > b.x
+                else if (aY > bY) {
+                    if (aX > bX) return 1;
+                    else if (aX == bX) return 1;
+                    else return -1;
+                }
+                else return -1; // a is lesser
+            });*/
+
+            return m_sortedObjectsMemoized;
+        }
+
         public OLAYObject GetObjectByIndex(int index)
         {
             return m_indexedObjects[index];
@@ -83,12 +123,14 @@ namespace AMMEdit.amm.blocks
         {
             m_indexedObjects.Add(amObject);
             m_numObjects = m_indexedObjects.Count;
+            m_sortedObjectsMemoized = null;
         }
 
         public void DeleteObject(int index)
         {
             m_indexedObjects.RemoveAt(index);
             m_numObjects = m_indexedObjects.Count;
+            m_sortedObjectsMemoized = null;
         }
 
         public string DisplayFieldName { get; }

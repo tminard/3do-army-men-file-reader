@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AMMEdit.PropertyEditors;
+using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AMMEdit.amm
 {
-    class GenericFieldBlock : IGenericFieldBlock
+    public class GenericFieldBlock : IGenericFieldBlock
     {
         private readonly char[] fieldName;
         private readonly Int32 sizeInBytes;
@@ -16,6 +17,8 @@ namespace AMMEdit.amm
 
         public string DisplayFieldName { get; }
         public string FieldID { get; }
+
+        public GenericFlagMap FlagMap { get; }
 
         public GenericFieldBlock(char[] name, Int32 contentSizeInBytes, byte[] content)
         {
@@ -25,6 +28,14 @@ namespace AMMEdit.amm
 
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
+
+            if (sizeInBytes == 65536)
+            {
+                List<byte> data = new List<byte>();
+                data.AddRange(content);
+
+                FlagMap = new GenericFlagMap(data, 256, 256);
+            }
         }
 
         public byte[] ToBytes()

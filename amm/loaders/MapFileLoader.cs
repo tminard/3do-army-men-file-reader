@@ -108,16 +108,19 @@ namespace AMMEdit.amm
                 (olay, oatt) => new Tuple<OLAYBlock, OATTBlock>(olay, oatt)
             ).ToList();
 
-                fields.Add(
-                    new CombinedTextureLayersBlock(
-                        fields.OfType<TNAMBlock>().First(),
-                        fields
-                            .OfType<TLAYBlock>()
-                            .ToList(),
-                        objects,
-                        dataFileReference
-                    )
-                );
+            fields.Add(
+                new CombinedTextureLayersBlock(
+                    fields.OfType<TNAMBlock>().First(),
+                    fields
+                        .OfType<TLAYBlock>()
+                        .ToList(),
+                    objects,
+                    dataFileReference,
+                    fields.OfType<GenericFieldBlock>()
+                        .Where(fieldBlock => fieldBlock.FlagMap != null)
+                        .ToList()
+                )
+            );
 
             return new MapFile(fields);
         }

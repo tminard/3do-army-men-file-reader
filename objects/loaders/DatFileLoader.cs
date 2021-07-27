@@ -228,7 +228,13 @@ namespace AMMEdit.objects.loaders
                             spriteBitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
                         }
 
-                        amObjectsList.Add(new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone()));
+                        int existingInstanceCount = amObjectsList
+                            .Where(obj => obj.TypeKey == decodedTypeKey && obj.InstanceKey == decodedInstance)
+                            .Count();
+
+                        amObjectsList.Add(
+                            new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance, (Bitmap)spriteBitmap.Clone(), existingInstanceCount)
+                        );
                         spriteBitmap.Dispose();
                     }
 

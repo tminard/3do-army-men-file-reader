@@ -43,5 +43,13 @@ namespace AMMEdit.objects
                 return ObjectsByCatAndInstance[CategoryKey][InstanceKey].First();
             } else { return null; }
         }
+
+        public List<AMObject> GetPlaceableObjects()
+        {
+            return Objects
+                .Where(obj => obj.Placeable == true)
+                .Where(obj => obj.InstanceSequence == 0)
+                .ToList();
+        }
     }
 }

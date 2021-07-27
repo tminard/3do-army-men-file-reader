@@ -15,15 +15,17 @@ namespace AMMEdit.amm.blocks
 
         private readonly DatFile dataFileRef;
         private readonly List<Tuple<OLAYBlock, OATTBlock>> objectBlocks;
+        private readonly List<GenericFieldBlock> flagBlocks;
 
         private TNAMBlock TextureNameBlock { get; set; }
 
-        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks, List<Tuple<OLAYBlock, OATTBlock>> objectBlocks = null, DatFile dataFile = null)
+        public CombinedTextureLayersBlock(TNAMBlock textureNameBlock, List<TLAYBlock> textureBlocks, List<Tuple<OLAYBlock, OATTBlock>> objectBlocks = null, DatFile dataFile = null, List<GenericFieldBlock> flagBlocks = null)
         {
             this.TextureNameBlock = textureNameBlock;
             this.textureBlocks = textureBlocks ?? throw new ArgumentNullException(nameof(textureBlocks));
             this.objectBlocks = objectBlocks;
             this.dataFileRef = dataFile;
+            this.flagBlocks = flagBlocks;
         }
 
         public string DisplayFieldName => "Final Map";
@@ -34,7 +36,7 @@ namespace AMMEdit.amm.blocks
 
         public void ShowPropertyEditor(IWin32Window current)
         {
-            TextureMap tm = new TextureMap(TextureNameBlock, textureBlocks.First(), textureBlocks.Last(), objectBlocks, dataFileRef);
+            TextureMap tm = new TextureMap(TextureNameBlock, textureBlocks.First(), textureBlocks.Last(), objectBlocks, dataFileRef, flagBlocks);
 
             tm.Show(current);
         }

@@ -36,7 +36,6 @@
             this.rawBinaryOutput = new System.Windows.Forms.TextBox();
             this.saveAMMFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.buttonEditProps = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.openDATFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statusLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -57,10 +56,11 @@
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.animationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAM1AXSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadAM2ANIFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.openAXSFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.loadAM2ANIFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openANIDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -117,16 +117,6 @@
             this.buttonEditProps.UseVisualStyleBackColor = true;
             this.buttonEditProps.Click += new System.EventHandler(this.button3_Click);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(377, 334);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(99, 23);
-            this.button3.TabIndex = 6;
-            this.button3.Text = "Open DAT file";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
-            // 
             // openDATFileDialog
             // 
             this.openDATFileDialog.DefaultExt = "dat";
@@ -175,36 +165,37 @@
             // 
             // openToolStripMenuItem
             // 
+            this.openToolStripMenuItem.Enabled = false;
             this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(177, 6);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // helpToolStripMenuItem
@@ -224,35 +215,36 @@
             // contentsToolStripMenuItem
             // 
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.contentsToolStripMenuItem.Text = "&Contents";
             // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(119, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             // 
             // objectsToolStripMenuItem
             // 
             this.objectsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem1,
             this.viewToolStripMenuItem});
             this.objectsToolStripMenuItem.Name = "objectsToolStripMenuItem";
             this.objectsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
@@ -260,8 +252,9 @@
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.Enabled = false;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.viewToolStripMenuItem.Text = "View";
             this.viewToolStripMenuItem.Click += new System.EventHandler(this.viewToolStripMenuItem_Click);
             // 
@@ -281,6 +274,13 @@
             this.loadAM1AXSFileToolStripMenuItem.Text = "Load AM1 AXS file...";
             this.loadAM1AXSFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM1AXSFileToolStripMenuItem_Click);
             // 
+            // loadAM2ANIFileToolStripMenuItem
+            // 
+            this.loadAM2ANIFileToolStripMenuItem.Name = "loadAM2ANIFileToolStripMenuItem";
+            this.loadAM2ANIFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.loadAM2ANIFileToolStripMenuItem.Text = "Load AM2+ ANI file...";
+            this.loadAM2ANIFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM2ANIFileToolStripMenuItem_Click);
+            // 
             // mapFileBindingSource
             // 
             this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
@@ -290,17 +290,17 @@
             this.openAXSFileDialog.DefaultExt = "axs";
             this.openAXSFileDialog.Filter = "Army Men 1 Animation|*.axs";
             // 
-            // loadAM2ANIFileToolStripMenuItem
-            // 
-            this.loadAM2ANIFileToolStripMenuItem.Name = "loadAM2ANIFileToolStripMenuItem";
-            this.loadAM2ANIFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.loadAM2ANIFileToolStripMenuItem.Text = "Load AM2+ ANI file...";
-            this.loadAM2ANIFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM2ANIFileToolStripMenuItem_Click);
-            // 
             // openANIDialog1
             // 
             this.openANIDialog1.DefaultExt = "ani";
             this.openANIDialog1.Filter = "Army Men 2 Animation|*.ani";
+            // 
+            // openToolStripMenuItem1
+            // 
+            this.openToolStripMenuItem1.Name = "openToolStripMenuItem1";
+            this.openToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem1.Text = "Open";
+            this.openToolStripMenuItem1.Click += new System.EventHandler(this.openToolStripMenuItem1_Click);
             // 
             // Editor
             // 
@@ -309,7 +309,6 @@
             this.ClientSize = new System.Drawing.Size(997, 658);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.buttonEditProps);
             this.Controls.Add(this.rawBinaryOutput);
             this.Controls.Add(this.currentAMMFile);
@@ -336,7 +335,6 @@
         private System.Windows.Forms.TextBox rawBinaryOutput;
         private System.Windows.Forms.SaveFileDialog saveAMMFileDialog;
         private System.Windows.Forms.Button buttonEditProps;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openDATFileDialog;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.ProgressBar progressBar1;
@@ -360,6 +358,7 @@
         private System.Windows.Forms.OpenFileDialog openAXSFileDialog;
         private System.Windows.Forms.ToolStripMenuItem loadAM2ANIFileToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openANIDialog1;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem1;
     }
 }
 

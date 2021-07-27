@@ -87,32 +87,6 @@ namespace AMMEdit
             scheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            if (openDATFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                if (ioThread != null && ioThread.IsAlive)
-                {
-                    statusLabel.Text = "Terminating existing operation";
-                    ioThread.Abort();
-                    ioThread = null;
-                }
-
-                statusLabel.Text = "Loading `" + openDATFileDialog.FileName + "`";
-                progressBar1.Value = 0;
-                progressBar1.Visible = true;
-
-                ioThread = new Thread(loadDataFile);
-                ioThread.Priority = ThreadPriority.Highest;
-                ioThread.IsBackground = true;
-                ioThread.Start();
-
-            } else
-            {
-                statusLabel.Text = "Idle.";
-            }
-        }
-
         private void loadDataFile()
         {
             currentDataFile = new DatFileLoader(openDATFileDialog.FileName, progressBar1).Read();
@@ -122,6 +96,8 @@ namespace AMMEdit
                 statusLabel.Text = "Done";
                 progressBar1.Value = 100;
                 progressBar1.Visible = false;
+                openToolStripMenuItem.Enabled = true;
+                viewToolStripMenuItem.Enabled = true;
             }).Start(scheduler);
         }
 
@@ -186,6 +162,33 @@ namespace AMMEdit
                     AnimatedANISpriteView sv = new AnimatedANISpriteView(aniFile);
                     sv.Show(this);
                 }
+            }
+        }
+
+        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (openDATFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (ioThread != null && ioThread.IsAlive)
+                {
+                    statusLabel.Text = "Terminating existing operation";
+                    ioThread.Abort();
+                    ioThread = null;
+                }
+
+                statusLabel.Text = "Loading `" + openDATFileDialog.FileName + "`";
+                progressBar1.Value = 0;
+                progressBar1.Visible = true;
+
+                ioThread = new Thread(loadDataFile);
+                ioThread.Priority = ThreadPriority.Highest;
+                ioThread.IsBackground = true;
+                ioThread.Start();
+
+            }
+            else
+            {
+                statusLabel.Text = "Idle.";
             }
         }
     }

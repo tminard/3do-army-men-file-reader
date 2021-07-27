@@ -1,4 +1,5 @@
-﻿using AMMEdit.amm.blocks;
+﻿using AMMEdit.amm;
+using AMMEdit.amm.blocks;
 using AMMEdit.amm.blocks.subfields;
 using AMMEdit.objects;
 using System;
@@ -21,6 +22,8 @@ namespace AMMEdit.PropertyEditors
 
         public List<Tuple<OLAYBlock, OATTBlock>> ObjectLayerBlocks { get; private set; }
 
+        public List<GenericFieldBlock> FlagBlocks { get; private set; }
+
         private DatFile DataFileReference;
 
         public SelectedTileDataSource SelectedTile { get; private set; }
@@ -38,12 +41,13 @@ namespace AMMEdit.PropertyEditors
         {
             VIEW,
             PLACE_OBJECT,
-            DELETE_OBJECT
+            DELETE_OBJECT,
+            VIEW_FLAG
         }
 
         private EditorState editorState = EditorState.VIEW;
 
-        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<Tuple<OLAYBlock, OATTBlock>> objectLayers = null, DatFile dataFile = null)
+        public TextureMap(TNAMBlock textureBlock, TLAYBlock mapBlock, TLAYBlock mapBlock2 = null, List<Tuple<OLAYBlock, OATTBlock>> objectLayers = null, DatFile dataFile = null, List<GenericFieldBlock> flagLayers = null)
         {
             TNameBlock = textureBlock;
             LayerBlock = mapBlock;
@@ -51,6 +55,7 @@ namespace AMMEdit.PropertyEditors
             SelectedTile = new SelectedTileDataSource();
             ObjectLayerBlocks = objectLayers;
             DataFileReference = dataFile;
+            FlagBlocks = flagLayers;
 
             InitializeComponent();
         }
@@ -69,12 +74,14 @@ namespace AMMEdit.PropertyEditors
 
             if (DataFileReference != null)
             {
-                listBox1.DataSource = DataFileReference.Objects;
+                listBox1.DataSource = DataFileReference.GetPlaceableObjects();
                 listBox1.DisplayMember = "LabelText";
             } else
             {
                 listBox1.Enabled = false;
                 listBox1.Hide();
+                comboBoxMode.Enabled = false;
+                comboBoxMode.Hide();
             }
 
             if (LayerBlock == null)
@@ -150,11 +157,39 @@ namespace AMMEdit.PropertyEditors
                 }
             }
 
+            // render objects from front to back, right to left.
             if (ObjectLayerBlocks != null && DataFileReference != null)
             {
                 ObjectLayerBlocks.ForEach(objectLayer =>
                 {
-                    for (int o = 0; o < objectLayer.Item1.m_numObjects; o++)
+                    foreach (OLAYObject obj in objectLayer.Item1.GetRenderOrderedObjects(DataFileReference))
+                    {
+                        if (DataFileReference.ObjectsByCatAndInstance.ContainsKey(obj.m_itemCategory) == false)
+                        {
+                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object not defined in loaded DAT file.");
+
+                            continue;
+                        }
+                        else if (DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory].ContainsKey(obj.m_itemSubType) == false)
+                        {
+                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object defined, but type not defined in loaded DAT file.");
+
+                            continue;
+                        }
+
+                        AMObject aObj = DataFileReference.GetObject(obj.m_itemCategory, obj.m_itemSubType);
+
+                        if (aObj != null && aObj.SpriteImage != null)
+                        {
+                            mapBuffer.Graphics.DrawImage(aObj.SpriteImage, new Rectangle(new Point(obj.m_itemPosX, obj.m_itemPosY), new Size(aObj.SpriteImage.Width, aObj.SpriteImage.Height)), 0, 0, aObj.SpriteImage.Width, aObj.SpriteImage.Height, GraphicsUnit.Pixel);
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Image not loaded for object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + ")");
+                        }
+                    }
+
+                    /*for (int o = 0; o < objectLayer.Item1.m_numObjects; o++)
                     {
                         OLAYObject obj = objectLayer.Item1.GetObjectByIndex(o);
 
@@ -179,7 +214,7 @@ namespace AMMEdit.PropertyEditors
                         {
                             Debug.WriteLine("Image not loaded for object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + ")");
                         }
-                    }
+                    }*/
                 });
             }
 
@@ -297,8 +332,18 @@ namespace AMMEdit.PropertyEditors
 
             propertyGrid1.SelectedObject = SelectedTile;
 
+            // handle flap map selection
+            if (editorState == EditorState.VIEW_FLAG)
+            {
+                GenericFieldBlock selectedFlagBlock = (GenericFieldBlock)listBox2.SelectedItem;
+
+                if (selectedFlagBlock != null && selectedFlagBlock.FlagMap != null)
+                {
+                    SelectedTile.UpdatePosition(new Point(e.X, e.Y), selectedFlagBlock.FlagMap);
+                }
+            }
+
             // handle object placement
-            
             if (editorState == EditorState.PLACE_OBJECT)
             {
                 AMObject selectedPrototype = (AMObject)listBox1.SelectedItem;
@@ -395,8 +440,19 @@ namespace AMMEdit.PropertyEditors
                 e.Graphics.DrawLines(new Pen(Color.Red, 5), points);
             });
 
+            // draw flag map
+            if (editorState == EditorState.VIEW_FLAG)
+            {
+                GenericFieldBlock selectedFlagBlock = (GenericFieldBlock)listBox2.SelectedItem;
+
+                if (selectedFlagBlock != null && selectedFlagBlock.FlagMap != null)
+                {
+                    // TODO: render only clipped version
+                    e.Graphics.DrawImage(selectedFlagBlock.FlagMap.Overlay, new Point(0, 0));
+                }
+            }
+
             // draw selected object
-            
             Point mousePos = pictureBox1.PointToClient(Cursor.Position);
 
             if (editorState == EditorState.PLACE_OBJECT)
@@ -421,11 +477,29 @@ namespace AMMEdit.PropertyEditors
 
             if (editorState == EditorState.PLACE_OBJECT)
             {
-                listBox1.DataSource = DataFileReference.Objects;
+                listBox1.DataSource = DataFileReference.GetPlaceableObjects();
+                listBox1.DisplayMember = "LabelText";
+                listBox1.Show();
+                listBox2.DataSource = null;
+                listBox2.Hide();
+            } else if (editorState == EditorState.VIEW_FLAG) {
+                listBox2.DataSource = FlagBlocks;
+                listBox2.DisplayMember = "DisplayFieldName";
+                listBox1.Hide();
+                listBox1.DataSource = null;
+                listBox2.Show();
             } else
             {
                 listBox1.DataSource = null;
+                listBox1.Show();
+                listBox2.DataSource = null;
+                listBox2.Hide();
             }
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // flag map selection change
         }
     }
 
@@ -458,12 +532,20 @@ namespace AMMEdit.PropertyEditors
         [Category("Objects"), Description("Number of bullets for the given object. Not always applicable."), DisplayName("Bullets")]
         public int NumBullets { get; private set; }
 
-        public void UpdatePosition(Point p)
+        [Category("Flags"), Description("Flag map value"), DisplayName("Flag")]
+        public int Flag { get; private set; }
+
+        public void UpdatePosition(Point p, GenericFlagMap selectedFlagMap = null)
         {
             PositionX = p.X;
             PositionY = p.Y;
             Position = p;
             Tile = new Point((int)(p.X / 16.0), (int)(p.Y / 16.0));
+
+            if (selectedFlagMap != null)
+            {
+                Flag = Convert.ToInt32(selectedFlagMap.GetFlagAtLocation(Tile.X, Tile.Y));
+            }
         }
 
         public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>> objects)
