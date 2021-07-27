@@ -23,6 +23,10 @@ namespace AMMEdit.amm.blocks.subfields
             {
                 return GetFieldValue("INDX");
             }
+            set
+            {
+                SetFieldValue("INDX", value);
+            }
         }
 
         public int NumBullets
@@ -108,6 +112,11 @@ namespace AMMEdit.amm.blocks.subfields
             });
 
             return lines.ToArray();
+        }
+
+        private void SetFieldValue(string key, int value)
+        {
+            m_values[key] = BitConverter.GetBytes(value).ToList();
         }
 
         private int GetFieldValue(string key)

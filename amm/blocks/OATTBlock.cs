@@ -70,6 +70,22 @@ namespace AMMEdit.amm.blocks
 
         public bool CanEditProperties => false;
 
+        // It appears all the OATT entries have hardcoded array indexes
+        // So every time we delete an object, we have to rewrite all the entries with an index
+        // above the deleted target
+        public void MarkObjectIndexDeleted(int index)
+        {
+            m_placeables.ForEach(placeable => {
+                if (placeable.ObjectIndex == index)
+                {
+                    throw new Exception("Entry in OATT still references deleted index - is delete working properly?");
+                } else if (placeable.ObjectIndex > index)
+                {
+                    placeable.ObjectIndex -= 1;
+                }
+            });
+        }
+
         public void ShowPropertyEditor(IWin32Window current)
         {
             throw new NotImplementedException();

@@ -2,7 +2,7 @@
 {
     public interface IPlaceableObject
     {
-        int ObjectIndex { get; }
+        int ObjectIndex { get; set; }
 
         byte[] ToBytes();
         string[] ToFormattedDescription(OLAYObject obj);

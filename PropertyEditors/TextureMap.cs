@@ -234,11 +234,12 @@ namespace AMMEdit.PropertyEditors
 
                     if (found.Count > 0)
                     {
-                        List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>> selectedObjects = found.ConvertAll(kv =>
+                        List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>> selectedObjects = found.ConvertAll(kv =>
                         {
-                            return new Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>(
+                            return new Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>(
                                 DataFileReference.GetObject(kv.Value.Item1.m_itemCategory, kv.Value.Item1.m_itemSubType),
                                 kv.Value.Item1,
+                                kv.Value.Item2,
                                 (PlaceableObject)kv.Value.Item2.GetPlaceableByObjectIndex(kv.Key),
                                 kv.Value.Item3,
                                 kv.Key
@@ -253,25 +254,27 @@ namespace AMMEdit.PropertyEditors
                         } else if (editorState == EditorState.DELETE_OBJECT)
                         {
                             // Don't delete objects with Placeable definitions yet until we implement updating OATT layer too
-                            selectedObjects.RemoveAll(kv => kv.Item3 != null);
+                            selectedObjects.RemoveAll(kv => kv.Item4 != null);
 
                             // Don't delete objects more than once
                             selectedObjects.RemoveAll(kv => deletedObjects.Contains(new Tuple<AMObject, Point>(kv.Item1, new Point(kv.Item2.m_itemPosX, kv.Item2.m_itemPosY))));
 
                             // If given multiple options, select the first
                             if (selectedObjects.Count > 0) {
-                                Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int> toDelete = selectedObjects[0];
+                                Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int> toDelete = selectedObjects[0];
 
                                 // register delete object
                                 deletedObjects.Add(new Tuple<AMObject, Point>(toDelete.Item1, new Point(toDelete.Item2.m_itemPosX, toDelete.Item2.m_itemPosY)));
 
                                 // delete the object
-                                toDelete.Item4.DeleteObject(toDelete.Item5);
+                                toDelete.Item5.DeleteObject(toDelete.Item6);
+                                toDelete.Item3.MarkObjectIndexDeleted(toDelete.Item6);
+
                             }
                         }
                     } else
                     {
-                        SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>>());
+                        SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>>());
                         listBox1.DataSource = null;
                     }
                 }
@@ -463,14 +466,14 @@ namespace AMMEdit.PropertyEditors
             Tile = new Point((int)(p.X / 16.0), (int)(p.Y / 16.0));
         }
 
-        public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>> objects)
+        public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>> objects)
         {
             SelectedObjectsCount = objects.Count;
-            if (objects.Count == 1 && objects[0].Item3 != null)
+            if (objects.Count == 1 && objects[0].Item4 != null)
             {
-                ScriptableName = objects[0].Item3.Name;
-                PlacementDetails = String.Join("\n", objects[0].Item3.ToFormattedDescription(objects[0].Item2));
-                NumBullets = objects[0].Item3.NumBullets;
+                ScriptableName = objects[0].Item4.Name;
+                PlacementDetails = String.Join("\n", objects[0].Item4.ToFormattedDescription(objects[0].Item2));
+                NumBullets = objects[0].Item4.NumBullets;
             } else
             {
                 ScriptableName = null;
