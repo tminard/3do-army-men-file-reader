@@ -31,10 +31,14 @@ namespace AMMEdit.PropertyEditors
         private TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         private List<Tuple<AMObject, Point>> placedObjects = new List<Tuple<AMObject, Point>>();
+
+        private List<Tuple<AMObject, Point>> deletedObjects = new List<Tuple<AMObject, Point>>();
+
         private enum EditorState
         {
             VIEW,
-            PLACE_OBJECT
+            PLACE_OBJECT,
+            DELETE_OBJECT
         }
 
         private EditorState editorState = EditorState.VIEW;
@@ -55,6 +59,9 @@ namespace AMMEdit.PropertyEditors
         {
             pictureBox2.Image = TNameBlock.GetTileImage(1);
             pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+
+            comboBoxMode.DataSource = Enum.GetNames(typeof(EditorState));
+            comboBoxMode.SelectedItem = editorState;
 
             numericUpDown1.Maximum = TNameBlock.NumTiles;
 
@@ -202,13 +209,13 @@ namespace AMMEdit.PropertyEditors
         {
             SelectedTile.UpdatePosition(new Point(e.X, e.Y));
 
-            if (editorState == EditorState.VIEW)
+            if (editorState == EditorState.VIEW || editorState == EditorState.DELETE_OBJECT)
             {
                 if (ObjectLayerBlocks != null &&
                     ObjectLayerBlocks.Count > 0 &&
                     DataFileReference != null)
                 {
-                    List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>> found = new List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>>();
+                    List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock, OLAYBlock>>> found = new List<KeyValuePair<int, Tuple<OLAYObject, OATTBlock, OLAYBlock>>>();
 
                     // This is crap - I'm so sorry
                     // We need access to the OATT block entry AND the index
@@ -218,34 +225,59 @@ namespace AMMEdit.PropertyEditors
                                 objLayer.Item1.GetObjectsByLocation(e.X, e.Y, DataFileReference)
                                     .ConvertAll(
                                         objectsByLocationAndIndex =>
-                                            new KeyValuePair<int, Tuple<OLAYObject, OATTBlock>>(
+                                            new KeyValuePair<int, Tuple<OLAYObject, OATTBlock, OLAYBlock>>(
                                                 objectsByLocationAndIndex.Key,
-                                                new Tuple<OLAYObject, OATTBlock>(objectsByLocationAndIndex.Value, objLayer.Item2)))
+                                                new Tuple<OLAYObject, OATTBlock, OLAYBlock>(objectsByLocationAndIndex.Value, objLayer.Item2, objLayer.Item1)))
                                 );
                         }
                     );
 
                     if (found.Count > 0)
                     {
-                        List<Tuple<AMObject, OLAYObject, PlaceableObject>> selectedObjects = found.ConvertAll(kv => {
-                            return new Tuple<AMObject, OLAYObject, PlaceableObject>(
+                        List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>> selectedObjects = found.ConvertAll(kv =>
+                        {
+                            return new Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>(
                                 DataFileReference.GetObject(kv.Value.Item1.m_itemCategory, kv.Value.Item1.m_itemSubType),
                                 kv.Value.Item1,
-                                (PlaceableObject)kv.Value.Item2.GetPlaceableByObjectIndex(kv.Key)
+                                (PlaceableObject)kv.Value.Item2.GetPlaceableByObjectIndex(kv.Key),
+                                kv.Value.Item3,
+                                kv.Key
                                 );
                         });
 
-                        SelectedTile.UpdateSelectedObjects(selectedObjects);
-                        listBox1.DataSource = selectedObjects.ConvertAll(foundObjects => foundObjects.Item1);
-                        listBox1.DisplayMember = "LabelText";
+                        if (editorState == EditorState.VIEW)
+                        {
+                            SelectedTile.UpdateSelectedObjects(selectedObjects);
+                            listBox1.DataSource = selectedObjects.ConvertAll(foundObjects => foundObjects.Item1);
+                            listBox1.DisplayMember = "LabelText";
+                        } else if (editorState == EditorState.DELETE_OBJECT)
+                        {
+                            // Don't delete objects with Placeable definitions yet until we implement updating OATT layer too
+                            selectedObjects.RemoveAll(kv => kv.Item3 != null);
+
+                            // Don't delete objects more than once
+                            selectedObjects.RemoveAll(kv => deletedObjects.Contains(new Tuple<AMObject, Point>(kv.Item1, new Point(kv.Item2.m_itemPosX, kv.Item2.m_itemPosY))));
+
+                            // If given multiple options, select the first
+                            if (selectedObjects.Count > 0) {
+                                Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int> toDelete = selectedObjects[0];
+
+                                // register delete object
+                                deletedObjects.Add(new Tuple<AMObject, Point>(toDelete.Item1, new Point(toDelete.Item2.m_itemPosX, toDelete.Item2.m_itemPosY)));
+
+                                // delete the object
+                                toDelete.Item4.DeleteObject(toDelete.Item5);
+                            }
+                        }
                     } else
                     {
-                        SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, PlaceableObject>>());
+                        SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>>());
                         listBox1.DataSource = null;
                     }
                 }
             }
 
+            // Update general tile selection
             if (LayerBlock != null)
             {
                 ushort textureID = (ushort)(LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y) + Convert.ToUInt16(1));
@@ -344,6 +376,22 @@ namespace AMMEdit.PropertyEditors
                 e.Graphics.DrawImage(placement.Item1.SpriteImage, placement.Item2);
             });
 
+            // draw deleted object overlays similar to above
+            deletedObjects.ForEach(deletion =>
+            {
+                Point origin = deletion.Item2;
+                Size spriteSize = deletion.Item1.SpriteImage.Size;
+
+                // Cross out the image
+                Point[] points = {
+                    origin,
+                    new Point(origin.X + spriteSize.Width, origin.Y + spriteSize.Height),
+                    new Point(origin.X + spriteSize.Width, origin.Y),
+                    new Point(origin.X, origin.Y + spriteSize.Height)
+                };
+                e.Graphics.DrawLines(new Pen(Color.Red, 5), points);
+            });
+
             // draw selected object
             
             Point mousePos = pictureBox1.PointToClient(Cursor.Position);
@@ -361,6 +409,19 @@ namespace AMMEdit.PropertyEditors
                     new Pen(
                         Color.FromArgb(128, Color.AliceBlue)
                         ), new Rectangle(mousePos, new Size(16, 16)));
+            }
+        }
+
+        private void comboBoxMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            editorState = (EditorState)Enum.Parse(typeof(EditorState), (string)comboBoxMode.SelectedItem);
+
+            if (editorState == EditorState.PLACE_OBJECT)
+            {
+                listBox1.DataSource = DataFileReference.Objects;
+            } else
+            {
+                listBox1.DataSource = null;
             }
         }
     }
@@ -402,7 +463,7 @@ namespace AMMEdit.PropertyEditors
             Tile = new Point((int)(p.X / 16.0), (int)(p.Y / 16.0));
         }
 
-        public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, PlaceableObject>> objects)
+        public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, PlaceableObject, OLAYBlock, int>> objects)
         {
             SelectedObjectsCount = objects.Count;
             if (objects.Count == 1 && objects[0].Item3 != null)

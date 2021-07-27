@@ -40,6 +40,7 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.comboBoxMode = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -64,8 +65,9 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox2.Location = new System.Drawing.Point(980, 801);
+            this.pictureBox2.Location = new System.Drawing.Point(1136, 975);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(64, 64);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -74,7 +76,8 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(910, 845);
+            this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDown1.Location = new System.Drawing.Point(1066, 1019);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             1,
             0,
@@ -92,23 +95,29 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
+            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(12, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1030, 770);
+            this.panel1.Size = new System.Drawing.Size(1177, 942);
             this.panel1.TabIndex = 4;
             // 
             // propertyGrid1
             // 
-            this.propertyGrid1.Location = new System.Drawing.Point(1050, 606);
+            this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyGrid1.Location = new System.Drawing.Point(1214, 704);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(245, 259);
+            this.propertyGrid1.Size = new System.Drawing.Size(245, 335);
             this.propertyGrid1.TabIndex = 5;
             // 
             // textureMapPreviewBox
             // 
-            this.textureMapPreviewBox.Location = new System.Drawing.Point(1050, 19);
+            this.textureMapPreviewBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.textureMapPreviewBox.Location = new System.Drawing.Point(1216, 34);
             this.textureMapPreviewBox.Name = "textureMapPreviewBox";
             this.textureMapPreviewBox.Size = new System.Drawing.Size(256, 256);
             this.textureMapPreviewBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -117,8 +126,9 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1113, 141);
+            this.label1.Location = new System.Drawing.Point(1279, 156);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(131, 13);
             this.label1.TabIndex = 7;
@@ -130,7 +140,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1316, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1473, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -151,27 +161,45 @@
             // 
             // listBox1
             // 
+            this.listBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(1048, 440);
+            this.listBox1.Location = new System.Drawing.Point(1214, 455);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(247, 160);
+            this.listBox1.Size = new System.Drawing.Size(247, 212);
             this.listBox1.TabIndex = 9;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Location = new System.Drawing.Point(1099, 281);
+            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.pictureBox3.Location = new System.Drawing.Point(1265, 296);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(166, 147);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox3.TabIndex = 10;
             this.pictureBox3.TabStop = false;
             // 
+            // comboBoxMode
+            // 
+            this.comboBoxMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.comboBoxMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMode.FormattingEnabled = true;
+            this.comboBoxMode.Items.AddRange(new object[] {
+            "View",
+            "Place Objects",
+            "Delete Objects"});
+            this.comboBoxMode.Location = new System.Drawing.Point(1305, 677);
+            this.comboBoxMode.Name = "comboBoxMode";
+            this.comboBoxMode.Size = new System.Drawing.Size(154, 21);
+            this.comboBoxMode.TabIndex = 11;
+            this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxMode_SelectedIndexChanged);
+            // 
             // TextureMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1316, 881);
+            this.ClientSize = new System.Drawing.Size(1473, 1060);
+            this.Controls.Add(this.comboBoxMode);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label1);
@@ -216,5 +244,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.ComboBox comboBoxMode;
     }
 }
