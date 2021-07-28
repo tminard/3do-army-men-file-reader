@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>12</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -147,6 +147,12 @@
     <Compile Include="PropertyEditors\dialogs\AddUnit.Designer.cs">
       <DependentUpon>AddUnit.cs</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditors\dialogs\EditPlaceableObjectProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyEditors\dialogs\EditPlaceableObjectProperties.Designer.cs">
+      <DependentUpon>EditPlaceableObjectProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="PropertyEditors\GenericFlagMap.cs" />
     <Compile Include="PropertyEditors\ObjectsFileViewer.cs">
       <SubType>Form</SubType>
@@ -187,6 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PropertyEditors\dialogs\AddUnit.resx">
       <DependentUpon>AddUnit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyEditors\dialogs\EditPlaceableObjectProperties.resx">
+      <DependentUpon>EditPlaceableObjectProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PropertyEditors\ObjectsFileViewer.resx">
       <DependentUpon>ObjectsFileViewer.cs</DependentUpon>

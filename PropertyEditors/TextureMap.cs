@@ -288,9 +288,6 @@ namespace AMMEdit.PropertyEditors
                             listBox1.DisplayMember = "LabelText";
                         } else if (editorState == EditorState.DELETE_OBJECT)
                         {
-                            // Don't delete objects with Placeable definitions yet until we implement updating OATT layer too
-                            selectedObjects.RemoveAll(kv => kv.Item4 != null);
-
                             // Don't delete objects more than once
                             selectedObjects.RemoveAll(kv => deletedObjects.Contains(new Tuple<AMObject, Point>(kv.Item1, new Point(kv.Item2.m_itemPosX, kv.Item2.m_itemPosY))));
 
@@ -303,6 +300,12 @@ namespace AMMEdit.PropertyEditors
 
                                 // delete the object
                                 toDelete.Item5.DeleteObject(toDelete.Item6);
+
+                                if (toDelete.Item4 != null)
+                                {
+                                    toDelete.Item3.RemovePlaceable(toDelete.Item4);
+                                }
+
                                 toDelete.Item3.MarkObjectIndexDeleted(toDelete.Item6);
 
                             }
@@ -523,17 +526,24 @@ namespace AMMEdit.PropertyEditors
         [Category("Objects"), Description("Number of selected objects"), DisplayName("Count")]
         public int SelectedObjectsCount { get; private set; }
 
-        [Category("Objects"), Description("Reference to use in scripts"), DisplayName("Script Name")]
-        public String ScriptableName { get; private set; }
-
-        [Category("Objects"), Description("Placement-specific details for this object"), DisplayName("Properties")]
-        public String PlacementDetails { get; private set; }
-
-        [Category("Objects"), Description("Number of bullets for the given object. Not always applicable."), DisplayName("Bullets")]
-        public int NumBullets { get; private set; }
+        [Category("Properties"), Description("Objects placed on map can have custom properties like script name or number of bullets."), DisplayName("Custom properties")]
+        [Editor(typeof(PlaceableObject.PlaceableObjectPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        public PlaceableObject PlaceableObject { get; set; }
 
         [Category("Flags"), Description("Flag map value"), DisplayName("Flag")]
         public int Flag { get; private set; }
+
+        [Browsable(false)]
+        public OLAYObject SelectedOLAYObject { get; private set; }
+
+        [Browsable(false)]
+        public OATTBlock SelectedOATTBlock { get; private set; }
+
+        [Browsable(false)]
+        public AMObject SelectedAMObject { get; private set; }
+
+        [Browsable(false)]
+        public int SelectedObjectIndex { get; private set; }
 
         public void UpdatePosition(Point p, GenericFlagMap selectedFlagMap = null)
         {
@@ -551,16 +561,20 @@ namespace AMMEdit.PropertyEditors
         public void UpdateSelectedObjects(List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>> objects)
         {
             SelectedObjectsCount = objects.Count;
-            if (objects.Count == 1 && objects[0].Item4 != null)
+            if (objects.Count == 1)
             {
-                ScriptableName = objects[0].Item4.Name;
-                PlacementDetails = String.Join("\n", objects[0].Item4.ToFormattedDescription(objects[0].Item2));
-                NumBullets = objects[0].Item4.NumBullets;
+                SelectedObjectIndex = objects[0].Item6;
+                SelectedAMObject = objects[0].Item1;
+                SelectedOATTBlock = objects[0].Item3;
+                SelectedOLAYObject = objects[0].Item2;
+                PlaceableObject = objects[0].Item4;
             } else
             {
-                ScriptableName = null;
-                PlacementDetails = null;
-                NumBullets = 0;
+                SelectedObjectIndex = 0;
+                SelectedAMObject = null;
+                SelectedOATTBlock = null;
+                SelectedOLAYObject = null;
+                PlaceableObject = null;
             }
         }
 

@@ -1,21 +1,88 @@
-﻿using System;
+﻿using AMMEdit.PropertyEditors;
+using AMMEdit.PropertyEditors.dialogs;
+using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.Design;
 
 namespace AMMEdit.amm.blocks.subfields
 {
     /**
      * Appears to contain metadata for <see cref="OLAYObject"/>.
      */
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class PlaceableObject : IPlaceableObject
     {
+        public class PlaceableObjectPropertyEditor : UITypeEditor
+        {
+            public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+            {
+                if (provider != null)
+                {
+                    var _service = ((IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService)));
+
+                    PlaceableObject placeableTemplate = (PlaceableObject)value;
+                    SelectedTileDataSource dataSource = (SelectedTileDataSource)context.Instance;
+
+                    if (dataSource.SelectedOATTBlock == null)
+                    {
+                        // we cannot update or add without a reference to the OATT block
+                        return value;
+                    }
+
+                    bool newEntry = false;
+                    if (_service != null && value == null)
+                    {
+                        placeableTemplate = new PlaceableObject(dataSource.SelectedOATTBlock.m_keyValuePairs)
+                         {
+                            ObjectIndex = dataSource.SelectedObjectIndex
+                         };
+                        newEntry = true;
+                    }
+
+                    var editorForm = new EditPlaceableObjectProperties(placeableTemplate);
+
+                    if (editorForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        if (newEntry)
+                        {
+                            // update the OATT block and grab the reference
+                            var addedPlaceable = dataSource.SelectedOATTBlock.AddPlaceable(editorForm.PlaceableObject);
+
+                            if (addedPlaceable != null)
+                            {
+                                value = addedPlaceable;
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Attempted to add placeable but got NULL - is the placeable valid?");
+                            }
+                        } else
+                        {
+                            ((PlaceableObject)value).CopyFrom(editorForm.PlaceableObject);
+                        }
+                    }
+                }
+
+                return value;
+            }
+
+            public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+            {
+                return UITypeEditorEditStyle.Modal;
+            }
+        }
+
         private Dictionary<string, Int32> m_fields; // field name, and byte length
         private Dictionary<string, List<byte>> m_values;
-        private readonly string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
+        private string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
 
         public int ObjectIndex
         {
@@ -23,12 +90,73 @@ namespace AMMEdit.amm.blocks.subfields
             {
                 return GetFieldValue("INDX");
             }
-            set
+            private set
             {
                 SetFieldValue("INDX", value);
             }
         }
 
+        public int NameLength
+        {
+            get
+            {
+                return GetFieldValue("SCRI");
+            }
+        }
+
+        [Category("Properties"), Description("Movement block - unknown affect"), DisplayName("MOVE")]
+        public byte MoveBlock
+        {
+            get
+            {
+                return GetByteFieldValue("MOVE");
+            }
+            set
+            {
+                SetByteFieldValue("MOVE", value);
+            }
+        }
+
+        [Category("Properties"), Description("ELOW block - unknown affect"), DisplayName("ELOW")]
+        public byte ELOWBlock
+        {
+            get
+            {
+                return GetByteFieldValue("ELOW");
+            }
+            set
+            {
+                SetByteFieldValue("ELOW", value);
+            }
+        }
+
+        [Category("Properties"), Description("TRIG block - unknown affect"), DisplayName("TRIG")]
+        public byte TRIGBlock
+        {
+            get
+            {
+                return GetByteFieldValue("TRIG");
+            }
+            set
+            {
+                SetByteFieldValue("TRIG", value);
+            }
+        }
+
+        [Category("Properties"), Description("GRUP block - unknown affect"), DisplayName("GRUP")]
+        public byte GRUPBlock
+        {
+            get
+            {
+                return GetByteFieldValue("GRUP");
+            }
+            set
+            {
+                SetByteFieldValue("GRUP", value);
+            }
+        }
+
+        [Category("Properties"), Description("Bullets in power up"), DisplayName("Bullets")]
         public int NumBullets
         {
             get
@@ -37,7 +165,85 @@ namespace AMMEdit.amm.blocks.subfields
             }
         }
 
-        public string Name => m_name;
+        [Category("Properties"), Description("Reference to use in scripts"), DisplayName("Script Name")]
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+            set
+            {
+                if (value.Trim().Length > 12)
+                {
+                    value = value.Trim().Substring(0, 11);
+                } else
+                {
+                    value = value.Trim();
+                }
+
+                if (!value.EndsWith("\0") && value.Length > 0)
+                {
+                    value += "\0";
+                } else if (value.Length == 0)
+                {
+                    value = ""; // only nil terminated if non-empty
+                }
+
+                m_name = value;
+
+                SetFieldValue("SCRI", Math.Max(0, m_name.Length));
+            }
+        }
+
+        public void CopyFrom(PlaceableObject other)
+        {
+            m_fields = new Dictionary<string, int>(other.m_fields);
+            m_values = new Dictionary<string, List<byte>>(other.m_values);
+            m_name = other.m_name;
+        }
+
+        public void SetObjectIndex(int index)
+        {
+            ObjectIndex = index;
+        }
+
+        public PlaceableObject(PlaceableObject existing)
+        {
+            m_fields = new Dictionary<string, int>(existing.m_fields);
+            m_values = new Dictionary<string, List<byte>>(existing.m_values);
+            m_name = existing.m_name;
+        }
+
+        public PlaceableObject(Dictionary<string, Int32> fields)
+        {
+            m_fields = fields;
+            m_values = new Dictionary<string, List<byte>>();
+            m_name = "";
+
+            m_fields.ToList().ForEach(kv =>
+            {
+                List<byte> d;
+                switch (kv.Value)
+                {
+                    case 1:
+                        d = new List<byte>(1)
+                        {
+                            0b0
+                        };
+
+                        m_values.Add(kv.Key, d);
+                        break;
+                    default:
+                        d = new List<byte>(kv.Value);
+                        byte[] emptyList = new byte[kv.Value];
+                        d.AddRange(emptyList);
+
+                        m_values.Add(kv.Key, d);
+                        break;
+                }
+            });
+        }
 
         public PlaceableObject(Dictionary<string, Int32> fields, BinaryReader r)
         {
@@ -116,7 +322,20 @@ namespace AMMEdit.amm.blocks.subfields
 
         private void SetFieldValue(string key, int value)
         {
-            m_values[key] = BitConverter.GetBytes(value).ToList();
+            Span<byte> buff = stackalloc byte[4];
+            BinaryPrimitives.WriteInt32LittleEndian(buff, value);
+
+            m_values[key] = buff.ToArray().ToList();
+        }
+
+        private void SetByteFieldValue(string key, byte value)
+        {
+            m_values[key][0] = value;
+        }
+
+        private byte GetByteFieldValue(string key)
+        {
+            return m_values[key][0];
         }
 
         private int GetFieldValue(string key)
@@ -148,6 +367,11 @@ namespace AMMEdit.amm.blocks.subfields
             {
                 return "(unnamed)";
             }
+        }
+
+        public override string ToString()
+        {
+            return "(defined)";
         }
     }
 }

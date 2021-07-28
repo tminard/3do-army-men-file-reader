@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace AMMEdit.amm.blocks.subfields
         public Int32 m_itemSubType { get; private set; }
         public Int32 m_itemPosX { get; private set; }
         public Int32 m_itemPosY { get; private set; }
+
+        public Point Tile { get => new Point((int)(m_itemPosX / 16.0), (int)(m_itemPosY / 16.0)); }
 
         public OLAYObject(BinaryReader r)
         {

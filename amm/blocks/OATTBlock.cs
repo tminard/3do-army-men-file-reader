@@ -13,7 +13,7 @@ namespace AMMEdit.amm.blocks
 {
     public class OATTBlock : IGenericFieldBlock
     {
-        private Dictionary<string, Int32> m_keyValuePairs;
+        public Dictionary<string, Int32> m_keyValuePairs { get; private set; }
         private Int32 m_blockLength; // untrustworthy. Appears to be off by one in several files in unpredictable ways
         private Int32 m_correctedBlockLength;
         private List<IPlaceableObject> m_placeables;
@@ -81,9 +81,27 @@ namespace AMMEdit.amm.blocks
                     throw new Exception("Entry in OATT still references deleted index - is delete working properly?");
                 } else if (placeable.ObjectIndex > index)
                 {
-                    placeable.ObjectIndex -= 1;
+                    placeable.SetObjectIndex(placeable.ObjectIndex - 1);
                 }
             });
+        }
+
+        public PlaceableObject AddPlaceable(PlaceableObject placeable)
+        {
+            if (m_placeables.OfType<PlaceableObject>().ToList().Find(p => (p.Name.Length > 0 && p.Name == placeable.Name)) != null)
+            {
+                // no duplicates allowed
+                return null;
+            }
+
+            m_placeables.Add(new PlaceableObject(placeable));
+
+            return (PlaceableObject)m_placeables.Last();
+        }
+
+        public bool RemovePlaceable(PlaceableObject placeable)
+        {
+            return m_placeables.Remove(placeable);
         }
 
         public void ShowPropertyEditor(IWin32Window current)

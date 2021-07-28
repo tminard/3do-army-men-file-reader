@@ -2,9 +2,10 @@
 {
     public interface IPlaceableObject
     {
-        int ObjectIndex { get; set; }
+        int ObjectIndex { get; }
 
         byte[] ToBytes();
+        void SetObjectIndex(int index);
         string[] ToFormattedDescription(OLAYObject obj);
     }
 }

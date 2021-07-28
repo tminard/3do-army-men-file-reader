@@ -57,10 +57,10 @@
             this.animationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAM1AXSFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAM2ANIFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.openAXSFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.openANIDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mapFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mapFileBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -170,32 +170,32 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "&Open";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.openToolStripMenuItem.Text = "&Open AMM...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(185, 6);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(185, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // helpToolStripMenuItem
@@ -215,30 +215,30 @@
             // contentsToolStripMenuItem
             // 
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.contentsToolStripMenuItem.Text = "&Contents";
             // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(119, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             // 
             // objectsToolStripMenuItem
@@ -248,7 +248,7 @@
             this.viewToolStripMenuItem});
             this.objectsToolStripMenuItem.Name = "objectsToolStripMenuItem";
             this.objectsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-            this.objectsToolStripMenuItem.Text = "Objects";
+            this.objectsToolStripMenuItem.Text = "&Objects";
             // 
             // viewToolStripMenuItem
             // 
@@ -265,7 +265,7 @@
             this.loadAM2ANIFileToolStripMenuItem});
             this.animationsToolStripMenuItem.Name = "animationsToolStripMenuItem";
             this.animationsToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
-            this.animationsToolStripMenuItem.Text = "Animations";
+            this.animationsToolStripMenuItem.Text = "&Animations";
             // 
             // loadAM1AXSFileToolStripMenuItem
             // 
@@ -281,10 +281,6 @@
             this.loadAM2ANIFileToolStripMenuItem.Text = "Load AM2+ ANI file...";
             this.loadAM2ANIFileToolStripMenuItem.Click += new System.EventHandler(this.loadAM2ANIFileToolStripMenuItem_Click);
             // 
-            // mapFileBindingSource
-            // 
-            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
-            // 
             // openAXSFileDialog
             // 
             this.openAXSFileDialog.DefaultExt = "axs";
@@ -299,8 +295,12 @@
             // 
             this.openToolStripMenuItem1.Name = "openToolStripMenuItem1";
             this.openToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem1.Text = "Open";
+            this.openToolStripMenuItem1.Text = "Load DAT file...";
             this.openToolStripMenuItem1.Click += new System.EventHandler(this.openToolStripMenuItem1_Click);
+            // 
+            // mapFileBindingSource
+            // 
+            this.mapFileBindingSource.DataSource = typeof(AMMEdit.amm.MapFile);
             // 
             // Editor
             // 
@@ -316,7 +316,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Editor";
-            this.Text = "AMM Editor";
+            this.Text = "3DO Army Men Editor";
             this.Load += new System.EventHandler(this.Editor_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
