@@ -76,7 +76,8 @@ namespace AMMEdit.PropertyEditors
             {
                 listBox1.DataSource = DataFileReference.GetPlaceableObjects();
                 listBox1.DisplayMember = "LabelText";
-            } else
+            }
+            else
             {
                 listBox1.Enabled = false;
                 listBox1.Hide();
@@ -89,7 +90,8 @@ namespace AMMEdit.PropertyEditors
                 label1.Visible = false;
                 pictureBox1.Image = (Bitmap)TNameBlock.TextureImagesheet.Clone();
                 textureMapPreviewBox.Image = pictureBox1.Image;
-            } else
+            }
+            else
             {
                 panel1.Controls.Add(pictureBox1);
                 panel1.AutoScroll = true;
@@ -221,7 +223,8 @@ namespace AMMEdit.PropertyEditors
             mapBuffer.Render();
             mapBuffer.Dispose();
 
-            new Task(() => {
+            new Task(() =>
+            {
                 textureMapPreviewBox.Image = renderedMap;
                 label1.Visible = false;
                 textureMapPreviewBox.Invalidate();
@@ -255,7 +258,8 @@ namespace AMMEdit.PropertyEditors
                     // This is crap - I'm so sorry
                     // We need access to the OATT block entry AND the index
                     ObjectLayerBlocks.ForEach(
-                        objLayer => {
+                        objLayer =>
+                        {
                             found.AddRange(
                                 objLayer.Item1.GetObjectsByLocation(e.X, e.Y, DataFileReference)
                                     .ConvertAll(
@@ -286,13 +290,15 @@ namespace AMMEdit.PropertyEditors
                             SelectedTile.UpdateSelectedObjects(selectedObjects);
                             listBox1.DataSource = selectedObjects.ConvertAll(foundObjects => foundObjects.Item1);
                             listBox1.DisplayMember = "LabelText";
-                        } else if (editorState == EditorState.DELETE_OBJECT)
+                        }
+                        else if (editorState == EditorState.DELETE_OBJECT)
                         {
                             // Don't delete objects more than once
                             selectedObjects.RemoveAll(kv => deletedObjects.Contains(new Tuple<AMObject, Point>(kv.Item1, new Point(kv.Item2.m_itemPosX, kv.Item2.m_itemPosY))));
 
                             // If given multiple options, select the first
-                            if (selectedObjects.Count > 0) {
+                            if (selectedObjects.Count > 0)
+                            {
                                 Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int> toDelete = selectedObjects[0];
 
                                 // register delete object
@@ -310,7 +316,8 @@ namespace AMMEdit.PropertyEditors
 
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         SelectedTile.UpdateSelectedObjects(new List<Tuple<AMObject, OLAYObject, OATTBlock, PlaceableObject, OLAYBlock, int>>());
                         listBox1.DataSource = null;
@@ -324,7 +331,8 @@ namespace AMMEdit.PropertyEditors
                 ushort textureID = (ushort)(LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y) + Convert.ToUInt16(1));
                 SelectedTile.UpdateRawValue(textureID);
                 numericUpDown1.Value = textureID;
-            } else
+            }
+            else
             {
                 // Set to the selected texture ID
                 int textureID = SelectedTile.Tile.X + (SelectedTile.Tile.Y * TNameBlock.NumTilesPerRow) + 1;
@@ -405,9 +413,11 @@ namespace AMMEdit.PropertyEditors
             propertyGrid1.SelectedObject = ((ListBox)sender).SelectedItem;
             AMObject selectedAMObject = ((AMObject)((ListBox)sender).SelectedItem);
 
-            if (selectedAMObject != null) {
+            if (selectedAMObject != null)
+            {
                 pictureBox3.Image = selectedAMObject.SpriteImage;
-            } else
+            }
+            else
             {
                 pictureBox3.Image = null;
             }
@@ -423,7 +433,8 @@ namespace AMMEdit.PropertyEditors
             // draw objects placed during current session
             // performance will degrade the more objects are added in a given session.
             // TODO: consider culling the list to current window only.
-            placedObjects.ForEach(placement => {
+            placedObjects.ForEach(placement =>
+            {
                 e.Graphics.DrawImage(placement.Item1.SpriteImage, placement.Item2);
             });
 
@@ -465,7 +476,8 @@ namespace AMMEdit.PropertyEditors
                 {
                     e.Graphics.DrawImage(selectedPrototype.SpriteImage, mousePos);
                 }
-            } else
+            }
+            else
             {
                 e.Graphics.DrawRectangle(
                     new Pen(
@@ -485,13 +497,16 @@ namespace AMMEdit.PropertyEditors
                 listBox1.Show();
                 listBox2.DataSource = null;
                 listBox2.Hide();
-            } else if (editorState == EditorState.VIEW_FLAG) {
+            }
+            else if (editorState == EditorState.VIEW_FLAG)
+            {
                 listBox2.DataSource = FlagBlocks;
                 listBox2.DisplayMember = "DisplayFieldName";
                 listBox1.Hide();
                 listBox1.DataSource = null;
                 listBox2.Show();
-            } else
+            }
+            else
             {
                 listBox1.DataSource = null;
                 listBox1.Show();
@@ -568,7 +583,8 @@ namespace AMMEdit.PropertyEditors
                 SelectedOATTBlock = objects[0].Item3;
                 SelectedOLAYObject = objects[0].Item2;
                 PlaceableObject = objects[0].Item4;
-            } else
+            }
+            else
             {
                 SelectedObjectIndex = 0;
                 SelectedAMObject = null;

@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AMMEdit.objects.loaders
@@ -192,19 +190,22 @@ namespace AMMEdit.objects.loaders
                                     idx += p;
                                 }
                             }
-                        } else if (rleEncodingMode == 0 && rleEncodingModeSecondPass == 32)
+                        }
+                        else if (rleEncodingMode == 0 && rleEncodingModeSecondPass == 32)
                         {
                             // skip cannot read this - use `?` image in renderer
                             Debug.WriteLine("Could not load T" + decodedTypeKey + " i" + decodedInstance + ": Unsupported RLE mode.");
 
                             continue;
-                        } else if (rleEncodingMode == 0)
+                        }
+                        else if (rleEncodingMode == 0)
                         {
                             // these tend to be UI images
                             widthPadded = width + (4 - width % 4) % 4;
                             decodedBitmapData = new byte[widthPadded * height];
                             decodedBitmapData = r.ReadBytes(Convert.ToInt32(widthPadded * height));
-                        } else
+                        }
+                        else
                         {
                             // skip cannot read this - use `?` image in renderer
                             // TODO: ^

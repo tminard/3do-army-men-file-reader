@@ -3,10 +3,6 @@ using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using static AMMEdit.amm.blocks.subfields.Scenario;
 using static AMMEdit.amm.FractionUnit;
 
@@ -42,7 +38,9 @@ namespace AMMEdit.amm
 
         public List<FractionUnit> Units { get; }
 
-        public string Name { get
+        public string Name
+        {
+            get
             {
                 return this.order.ToString();
             }
@@ -110,7 +108,8 @@ namespace AMMEdit.amm
             return Units.FindAll(u => u.UnitTypeClass == unitClass && u.UnitTypeID == unitType).Count;
         }
 
-        public void AddUnit(FractionUnit unit) {
+        public void AddUnit(FractionUnit unit)
+        {
             Units.Add(unit);
 
             if (numCountFields == 7 && unit.UnitTypeClass == (byte)UnitClass.GroundUnit && unit.UnitTypeID == (byte)GenericFractionUnit.UnitType.Special1)

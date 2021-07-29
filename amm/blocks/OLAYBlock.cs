@@ -3,12 +3,10 @@ using AMMEdit.objects;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
@@ -33,7 +31,7 @@ namespace AMMEdit.amm.blocks
             FieldID = Guid.NewGuid().ToString();
 
             m_blockLength = r.ReadInt32();
-            m_numObjects= r.ReadInt32();
+            m_numObjects = r.ReadInt32();
 
             m_indexedObjects = new List<OLAYObject>(m_numObjects);
 
@@ -50,8 +48,8 @@ namespace AMMEdit.amm.blocks
                 return new List<KeyValuePair<int, OLAYObject>>();
             }
 
-            Point p = new Point(x, y);  
- 
+            Point p = new Point(x, y);
+
             return m_indexedObjects.Where(obj =>
             {
                 AMObject objInstance = datFile.GetObject(obj.m_itemCategory, obj.m_itemSubType);
@@ -128,7 +126,8 @@ namespace AMMEdit.amm.blocks
             list.AddRange(buff.Slice(0, 8).ToArray());
             buff.Clear();
 
-            m_indexedObjects.ToList().ForEach(kv => {
+            m_indexedObjects.ToList().ForEach(kv =>
+            {
                 list.AddRange(kv.ToBytes());
             });
 

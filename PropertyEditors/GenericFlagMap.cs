@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AMMEdit.PropertyEditors
 {
@@ -34,7 +32,8 @@ namespace AMMEdit.PropertyEditors
             if (pos < RawContent.Count && pos >= 0 && x < Width)
             {
                 return RawContent[pos];
-            } else
+            }
+            else
             {
                 throw new Exception("Requested map position greater than map size");
             }
@@ -51,7 +50,8 @@ namespace AMMEdit.PropertyEditors
 
             byte maxVal = RawContent.Max();
             double factor = 0;
-            if (maxVal > 0) {
+            if (maxVal > 0)
+            {
                 factor = 255.0 / Convert.ToDouble(Convert.ToInt32(maxVal) * 16);
             }
 

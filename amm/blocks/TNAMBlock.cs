@@ -3,12 +3,9 @@ using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
@@ -91,8 +88,8 @@ namespace AMMEdit.amm.blocks
         public Bitmap GetTileImage(UInt16 index)
         {
             int indx = Convert.ToInt32(index);
-            int x = (index % NumTilesPerRow)*TileSquareSize;
-            int y = (index / NumTilesPerRow)*TileSquareSize;
+            int x = (index % NumTilesPerRow) * TileSquareSize;
+            int y = (index / NumTilesPerRow) * TileSquareSize;
             Rectangle bounds = new Rectangle(new Point(x, y), new Size(TileSquareSize, TileSquareSize));
 
             return TextureImagesheet.Clone(bounds, TextureImagesheet.PixelFormat);
@@ -111,7 +108,8 @@ namespace AMMEdit.amm.blocks
                 if (result == DialogResult.OK)
                 {
                     filename = findATLDialog.FileName;
-                } else if (result == DialogResult.Cancel)
+                }
+                else if (result == DialogResult.Cancel)
                 {
                     DidLoadTexture = false;
                     return;

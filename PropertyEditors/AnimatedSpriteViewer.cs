@@ -1,13 +1,7 @@
 ﻿using AMMEdit.axs;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AMMEdit.PropertyEditors
@@ -50,7 +44,7 @@ namespace AMMEdit.PropertyEditors
 
         private void DrawAnimationFrame()
         {
-            
+
             int frameIndex = trackBar1.Value;
             Bitmap previewImage = (Bitmap)Selected_animation.Images[trackBar1.Value].Clone();
 
@@ -107,7 +101,8 @@ namespace AMMEdit.PropertyEditors
             }
 
             int otherIndx = 0;
-            Selected_animation.AnimationData.Other_frame_data.ForEach(other => {
+            Selected_animation.AnimationData.Other_frame_data.ForEach(other =>
+            {
                 if (other.Count > frameIndex)
                 {
                     AxsFile.FrameData otherData = other[frameIndex];
@@ -152,7 +147,7 @@ namespace AMMEdit.PropertyEditors
                     string outFile = System.IO.Path.Combine(outFolder, "sprite_" + f + ".png");
                     AxsFile.Frame_images[f].Sprite_image.Save(outFile, System.Drawing.Imaging.ImageFormat.Png);
                 }
-                
+
                 for (int a = 0; a < AxsFile.Animations.Count; a++)
                 {
                     AxsFile.Animation ani = AxsFile.Animations[a];
@@ -168,7 +163,8 @@ namespace AMMEdit.PropertyEditors
                         try
                         {
                             ani.Images[i].Save(outFile, System.Drawing.Imaging.ImageFormat.Png);
-                        } catch (System.Runtime.InteropServices.ExternalException ex)
+                        }
+                        catch (System.Runtime.InteropServices.ExternalException ex)
                         {
                             Debug.WriteLine("Failed to save " + outFile + ": " + ex.Message);
                         }
@@ -184,7 +180,8 @@ namespace AMMEdit.PropertyEditors
             if (m_playing)
             {
                 timer1.Start();
-            } else
+            }
+            else
             {
                 timer1.Stop();
             }

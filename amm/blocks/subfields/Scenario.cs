@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AMMEdit.amm.blocks.subfields
 {
@@ -35,7 +32,7 @@ namespace AMMEdit.amm.blocks.subfields
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Name"));
             }
         }
- 
+
 
         public string FieldID { get; }
 

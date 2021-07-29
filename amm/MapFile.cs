@@ -1,15 +1,8 @@
-﻿using AMMEdit.amm.blocks;
-using AMMEdit.objects;
-using System;
+﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AMMEdit.amm
 {

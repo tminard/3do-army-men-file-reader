@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AMMEdit.objects
 {
@@ -25,7 +21,8 @@ namespace AMMEdit.objects
                         ObjectsByCatAndInstance[amObject.TypeKey].Add(amObject.InstanceKey, new List<AMObject>());
                     }
                     ObjectsByCatAndInstance[amObject.TypeKey][amObject.InstanceKey].Add(amObject);
-                } else
+                }
+                else
                 {
                     ObjectsByCatAndInstance.Add(amObject.TypeKey, new Dictionary<int, List<AMObject>>());
                     ObjectsByCatAndInstance[amObject.TypeKey].Add(amObject.InstanceKey, new List<AMObject>());
@@ -41,7 +38,8 @@ namespace AMMEdit.objects
             if (ObjectsByCatAndInstance.ContainsKey(CategoryKey) && ObjectsByCatAndInstance[CategoryKey].ContainsKey(InstanceKey))
             {
                 return ObjectsByCatAndInstance[CategoryKey][InstanceKey].First();
-            } else { return null; }
+            }
+            else { return null; }
         }
 
         public List<AMObject> GetPlaceableObjects()

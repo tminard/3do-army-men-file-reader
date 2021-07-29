@@ -2,11 +2,9 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AMMEdit.amm.blocks
@@ -75,11 +73,13 @@ namespace AMMEdit.amm.blocks
         // above the deleted target
         public void MarkObjectIndexDeleted(int index)
         {
-            m_placeables.ForEach(placeable => {
+            m_placeables.ForEach(placeable =>
+            {
                 if (placeable.ObjectIndex == index)
                 {
                     throw new Exception("Entry in OATT still references deleted index - is delete working properly?");
-                } else if (placeable.ObjectIndex > index)
+                }
+                else if (placeable.ObjectIndex > index)
                 {
                     placeable.SetObjectIndex(placeable.ObjectIndex - 1);
                 }
@@ -134,7 +134,8 @@ namespace AMMEdit.amm.blocks
 
             // key-value pairs
             // key is the field name. Value is the number of bytes in the data
-            m_keyValuePairs.ToList().ForEach(kv => {
+            m_keyValuePairs.ToList().ForEach(kv =>
+            {
                 list.AddRange(ASCIIEncoding.ASCII.GetBytes(kv.Key.ToArray()));
 
                 byte[] val = new byte[4];

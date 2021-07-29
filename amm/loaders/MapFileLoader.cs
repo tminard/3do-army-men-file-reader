@@ -1,12 +1,10 @@
 ﻿using AMMEdit.amm.blocks;
+using AMMEdit.objects;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Buffers.Binary;
-using AMMEdit.objects;
 
 namespace AMMEdit.amm
 {
@@ -31,7 +29,8 @@ namespace AMMEdit.amm
                 {
                     // construct an object using the file spec
                     char[] fileID = r.ReadChars(4);
-                    if (string.Compare(new string(fileID), new string(MAGIC)) != 0) {
+                    if (string.Compare(new string(fileID), new string(MAGIC)) != 0)
+                    {
                         throw new ArgumentException("Not a valid Army Men 1 map file");
                     }
 
@@ -77,7 +76,7 @@ namespace AMMEdit.amm
                                 break;
                             case "VERS":
                                 size = r.ReadInt32(); // length of version field. Always 8.
-                                                            // this field always occurs either first or after CNUM. CNUM doesnt always appear.
+                                                      // this field always occurs either first or after CNUM. CNUM doesnt always appear.
                                 major = r.ReadInt32();
                                 minor = r.ReadInt32();
 

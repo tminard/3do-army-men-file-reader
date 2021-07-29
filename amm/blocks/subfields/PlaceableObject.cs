@@ -9,7 +9,6 @@ using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms.Design;
 
 namespace AMMEdit.amm.blocks.subfields
@@ -41,9 +40,9 @@ namespace AMMEdit.amm.blocks.subfields
                     if (_service != null && value == null)
                     {
                         placeableTemplate = new PlaceableObject(dataSource.SelectedOATTBlock.m_keyValuePairs)
-                         {
+                        {
                             ObjectIndex = dataSource.SelectedObjectIndex
-                         };
+                        };
                         newEntry = true;
                     }
 
@@ -64,7 +63,8 @@ namespace AMMEdit.amm.blocks.subfields
                             {
                                 Debug.WriteLine("Attempted to add placeable but got NULL - is the placeable valid?");
                             }
-                        } else
+                        }
+                        else
                         {
                             ((PlaceableObject)value).CopyFrom(editorForm.PlaceableObject);
                         }
@@ -83,6 +83,14 @@ namespace AMMEdit.amm.blocks.subfields
         private Dictionary<string, Int32> m_fields; // field name, and byte length
         private Dictionary<string, List<byte>> m_values;
         private string m_name; // nil terminated when written. Two objects cannot share the same name, UNLESS the name is empty
+
+        public string Description
+        {
+            get
+            {
+                return String.Join("\n", ToFormattedDescription());
+            }
+        }
 
         public int ObjectIndex
         {
@@ -157,11 +165,15 @@ namespace AMMEdit.amm.blocks.subfields
         }
 
         [Category("Properties"), Description("Bullets in power up"), DisplayName("Bullets")]
-        public int NumBullets
+        public byte NumBullets
         {
             get
             {
-                return GetFieldValue("NUMB");
+                return GetByteFieldValue("NUMB");
+            }
+            set
+            {
+                SetByteFieldValue("NUMB", value);
             }
         }
 
@@ -177,7 +189,8 @@ namespace AMMEdit.amm.blocks.subfields
                 if (value.Trim().Length > 12)
                 {
                     value = value.Trim().Substring(0, 11);
-                } else
+                }
+                else
                 {
                     value = value.Trim();
                 }
@@ -185,7 +198,8 @@ namespace AMMEdit.amm.blocks.subfields
                 if (!value.EndsWith("\0") && value.Length > 0)
                 {
                     value += "\0";
-                } else if (value.Length == 0)
+                }
+                else if (value.Length == 0)
                 {
                     value = ""; // only nil terminated if non-empty
                 }
@@ -302,15 +316,23 @@ namespace AMMEdit.amm.blocks.subfields
             return content.ToArray();
         }
 
+        public string[] ToFormattedDescription()
+        {
+            return ToFormattedDescription(null);
+        }
+
         public string[] ToFormattedDescription(OLAYObject obj)
         {
             List<string> lines = new List<string> {
                 string.Format("Script Name:\t{0}", GetFormattedName())
             };
 
-            lines.Add(string.Empty);
-            lines.AddRange(obj.ToFormattedPreview());
-            lines.Add(string.Empty);
+            if (obj != null)
+            {
+                lines.Add(string.Empty);
+                lines.AddRange(obj.ToFormattedPreview());
+                lines.Add(string.Empty);
+            }
 
             m_fields.ToList().ForEach(kv =>
             {
@@ -322,6 +344,7 @@ namespace AMMEdit.amm.blocks.subfields
 
         private void SetFieldValue(string key, int value)
         {
+            if (!m_fields.ContainsKey(key)) return;
             Span<byte> buff = stackalloc byte[4];
             BinaryPrimitives.WriteInt32LittleEndian(buff, value);
 
@@ -330,16 +353,19 @@ namespace AMMEdit.amm.blocks.subfields
 
         private void SetByteFieldValue(string key, byte value)
         {
+            if (!m_fields.ContainsKey(key)) return;
             m_values[key][0] = value;
         }
 
         private byte GetByteFieldValue(string key)
         {
+            if (!m_fields.ContainsKey(key)) return 0b0;
             return m_values[key][0];
         }
 
         private int GetFieldValue(string key)
         {
+            if (!m_fields.ContainsKey(key)) return 0;
             byte[] data = m_values[key].ToArray();
 
             if (data.Length == 1)
