@@ -59,7 +59,9 @@ namespace AMMEdit.amm
                         {
                             case "TLAY":
                                 TNAMBlock tNAMBlock = (TNAMBlock)fields.FindLast(x => x.DisplayFieldName == "Textures");
-                                fields.Add(new TLAYBlock(r, tNAMBlock));
+                                TLAYBlock tLay = new TLAYBlock(r, tNAMBlock);
+
+                                fields.Add(tLay);
                                 break;
                             case "TNAM":
                                 fields.Add(new TNAMBlock(r, Directory.GetParent(this.infile).FullName));
@@ -85,14 +87,23 @@ namespace AMMEdit.amm
                                 BinaryPrimitives.WriteInt32LittleEndian(content.Slice(0, 4), major);
                                 BinaryPrimitives.WriteInt32LittleEndian(content.Slice(4, 4), minor);
 
-                                fields.Add(new GenericFieldBlock(fieldID, size, content.ToArray()));
+                                fields.Add(new GenericFieldBlock(fieldID, size, content.ToArray(), -1, -1));
                                 break;
                             default:
+                                TLAYBlock lastTLAY = (TLAYBlock)fields.FirstOrDefault(f => (f is TLAYBlock));
+                                int mapWidth = 0, mapHeight = 0;
+
+                                if (lastTLAY != null)
+                                {
+                                    mapWidth = lastTLAY.Width;
+                                    mapHeight = lastTLAY.Height;
+                                }
+
                                 size = r.ReadInt32();
                                 {
                                     byte[] c = r.ReadBytes(size);
 
-                                    fields.Add(new GenericFieldBlock(fieldID, size, c));
+                                    fields.Add(new GenericFieldBlock(fieldID, size, c, mapWidth, mapHeight));
                                 }
                                 break;
                         }

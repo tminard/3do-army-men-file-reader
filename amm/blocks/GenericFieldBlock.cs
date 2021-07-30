@@ -18,7 +18,7 @@ namespace AMMEdit.amm
 
         public GenericFlagMap FlagMap { get; }
 
-        public GenericFieldBlock(char[] name, Int32 contentSizeInBytes, byte[] content)
+        public GenericFieldBlock(char[] name, Int32 contentSizeInBytes, byte[] content, int mapWidth, int mapHeight)
         {
             this.fieldName = name;
             this.sizeInBytes = contentSizeInBytes;
@@ -27,15 +27,13 @@ namespace AMMEdit.amm
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
 
-            // TODO: maps are not always square!! Consult texture map for actual map size
-            if (sizeInBytes % 2 == 0 && sizeInBytes > (128 ^ 2))
+            // Maps are not always square!
+            if (sizeInBytes > (128 ^ 2))
             {
-                int gridSize = Convert.ToInt32(Math.Sqrt(sizeInBytes));
-
                 List<byte> data = new List<byte>();
                 data.AddRange(content);
 
-                FlagMap = new GenericFlagMap(data, gridSize, gridSize);
+                FlagMap = new GenericFlagMap(data, mapWidth, mapHeight);
             }
             else
             {

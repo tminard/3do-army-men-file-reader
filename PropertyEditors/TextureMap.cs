@@ -481,7 +481,7 @@ namespace AMMEdit.PropertyEditors
         {
             // draw objects placed during current session
             // performance will degrade the more objects are added in a given session.
-            // TODO: consider culling the list to current window only.
+            // Consider culling the list to current window only.
             placedObjects.ForEach(placement =>
             {
                 e.Graphics.DrawImage(placement.Item1.SpriteImage, placement.Item2);
@@ -510,7 +510,7 @@ namespace AMMEdit.PropertyEditors
 
                 if (selectedFlagBlock != null && selectedFlagBlock.FlagMap != null)
                 {
-                    // TODO: render only clipped version
+                    // Draw the entire thing for now. I'd like to clip the view at some point if we need to support longer running editing sessions
                     e.Graphics.DrawImage(selectedFlagBlock.FlagMap.Overlay, new Point(0, 0));
 
                     // render edited flag list

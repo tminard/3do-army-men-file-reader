@@ -2,6 +2,7 @@
 using AMMEdit.PropertyEditors.dialogs;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
 
 namespace AMMEdit.PropertyEditors.tools
@@ -22,6 +23,10 @@ namespace AMMEdit.PropertyEditors.tools
             [Editor(typeof(FlagEditor.TypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
             public MapFlag MapFlag { get; set; }
 
+            [Category("Tool"), Description("Size of the brush"), DisplayName("Brush size")]
+            [Range(1, 5, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+            public int BrushSize { get; set; }
+
             public PaintMode SelectedPaintMode { get; set; }
         }
 
@@ -33,7 +38,8 @@ namespace AMMEdit.PropertyEditors.tools
             EditorProperties = new Properties
             {
                 MapFlag = new MapFlag(0b0),
-                SelectedPaintMode = Properties.PaintMode.NOOP
+                SelectedPaintMode = Properties.PaintMode.NOOP,
+                BrushSize = 1
             };
 
             propertyGrid1.SelectedObject = EditorProperties;
