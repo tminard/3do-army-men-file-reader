@@ -113,6 +113,7 @@ namespace AMMEdit.amm.blocks.subfields
         }
 
         [Category("Properties"), Description("Movement block - unknown affect"), DisplayName("MOVE")]
+        [Editor(typeof(FlagEditor.TypeEditor), typeof(UITypeEditor))]
         public byte MoveBlock
         {
             get
@@ -126,6 +127,7 @@ namespace AMMEdit.amm.blocks.subfields
         }
 
         [Category("Properties"), Description("ELOW block - unknown affect"), DisplayName("ELOW")]
+        [Editor(typeof(FlagEditor.TypeEditor), typeof(UITypeEditor))]
         public byte ELOWBlock
         {
             get

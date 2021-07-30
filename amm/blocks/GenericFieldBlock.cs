@@ -34,6 +34,10 @@ namespace AMMEdit.amm
 
                 FlagMap = new GenericFlagMap(data, 256, 256);
             }
+            else
+            {
+                FlagMap = null;
+            }
         }
 
         public byte[] ToBytes()
@@ -44,14 +48,27 @@ namespace AMMEdit.amm
             // ID
             list.AddRange(ASCIIEncoding.ASCII.GetBytes(fieldName));
 
-            // length
-            BinaryPrimitives.WriteInt32LittleEndian(buff.Slice(0), content.Length);
-            list.AddRange(buff.Slice(0, 4).ToArray());
+            if (FlagMap != null)
+            {
+                byte[] flagContent = FlagMap.ToBytes();
+                BinaryPrimitives.WriteInt32LittleEndian(buff.Slice(0), flagContent.Length);
+                list.AddRange(buff.Slice(0, 4).ToArray());
 
-            // content
-            list.AddRange(this.content);
+                list.AddRange(flagContent);
 
-            return list.ToArray();
+                return list.ToArray();
+            }
+            else
+            {
+                // length
+                BinaryPrimitives.WriteInt32LittleEndian(buff.Slice(0), content.Length);
+                list.AddRange(buff.Slice(0, 4).ToArray());
+
+                // content
+                list.AddRange(this.content);
+
+                return list.ToArray();
+            }
         }
 
         public string[] ToFormattedPreview()

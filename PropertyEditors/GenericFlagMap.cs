@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AMMEdit.amm.blocks.subfields;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10,14 +11,15 @@ namespace AMMEdit.PropertyEditors
     {
         public GenericFlagMap(List<byte> rawContent, int width, int height)
         {
-            RawContent = rawContent;
+            RawContent = new List<MapFlag>(rawContent.Count);
+            RawContent.AddRange(rawContent.ConvertAll(flag => new MapFlag(flag)));
             Width = width;
             Height = height;
 
             GenerateOverlay();
         }
 
-        List<byte> RawContent { get; set; }
+        List<MapFlag> RawContent { get; set; }
 
         public int Width { get; set; }
 
@@ -25,7 +27,7 @@ namespace AMMEdit.PropertyEditors
 
         public Bitmap Overlay { get; set; }
 
-        public byte GetFlagAtLocation(int x, int y)
+        public MapFlag GetFlagAtLocation(int x, int y)
         {
             int pos = (Width * y) + x;
 
@@ -48,7 +50,7 @@ namespace AMMEdit.PropertyEditors
 
             mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, 256 * 16, 256 * 16));
 
-            byte maxVal = RawContent.Max();
+            byte maxVal = ToBytes().Max();
             double factor = 0;
             if (maxVal > 0)
             {
@@ -61,7 +63,7 @@ namespace AMMEdit.PropertyEditors
                 {
                     if (x >= 256 || y >= 256) continue;
 
-                    UInt16 flagID = GetFlagAtLocation(x, y);
+                    UInt16 flagID = GetFlagAtLocation(x, y).Flag;
                     int flagValueScaled = Convert.ToInt32(Math.Round(Convert.ToDouble((flagID * 16)) * factor));
 
                     int posX = x * 16;
@@ -80,6 +82,11 @@ namespace AMMEdit.PropertyEditors
             Overlay = (Bitmap)renderedMap.Clone();
 
             renderedMap.Dispose();
+        }
+
+        internal byte[] ToBytes()
+        {
+            return RawContent.ConvertAll(f => f.Flag).ToArray();
         }
     }
 }

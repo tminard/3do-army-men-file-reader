@@ -2,6 +2,7 @@
 using AMMEdit.amm.blocks;
 using AMMEdit.amm.blocks.subfields;
 using AMMEdit.objects;
+using AMMEdit.PropertyEditors.dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -190,33 +191,6 @@ namespace AMMEdit.PropertyEditors
                             Debug.WriteLine("Image not loaded for object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + ")");
                         }
                     }
-
-                    /*for (int o = 0; o < objectLayer.Item1.m_numObjects; o++)
-                    {
-                        OLAYObject obj = objectLayer.Item1.GetObjectByIndex(o);
-
-                        if (DataFileReference.ObjectsByCatAndInstance.ContainsKey(obj.m_itemCategory) == false)
-                        {
-                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object not defined in loaded DAT file.");
-
-                            continue;
-                        } else if (DataFileReference.ObjectsByCatAndInstance[obj.m_itemCategory].ContainsKey(obj.m_itemSubType) == false)
-                        {
-                            Debug.WriteLine("Could not place object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + "): Object defined, but type not defined in loaded DAT file.");
-
-                            continue;
-                        }
-
-                        AMObject aObj = DataFileReference.GetObject(obj.m_itemCategory, obj.m_itemSubType);
-
-                        if (aObj != null && aObj.SpriteImage != null)
-                        {
-                            mapBuffer.Graphics.DrawImage(aObj.SpriteImage, new Rectangle(new Point(obj.m_itemPosX, obj.m_itemPosY), new Size(aObj.SpriteImage.Width, aObj.SpriteImage.Height)), 0, 0, aObj.SpriteImage.Width, aObj.SpriteImage.Height, GraphicsUnit.Pixel);
-                        } else
-                        {
-                            Debug.WriteLine("Image not loaded for object " + obj.m_itemCategory + " type " + obj.m_itemSubType + "(x:" + obj.m_itemPosX + ",y:" + obj.m_itemPosY + ")");
-                        }
-                    }*/
                 });
             }
 
@@ -546,7 +520,8 @@ namespace AMMEdit.PropertyEditors
         public PlaceableObject PlaceableObject { get; set; }
 
         [Category("Flags"), Description("Flag map value"), DisplayName("Flag")]
-        public int Flag { get; private set; }
+        [Editor(typeof(FlagEditor.TypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        public MapFlag Flag { get; private set; }
 
         [Browsable(false)]
         public OLAYObject SelectedOLAYObject { get; private set; }
@@ -560,6 +535,9 @@ namespace AMMEdit.PropertyEditors
         [Browsable(false)]
         public int SelectedObjectIndex { get; private set; }
 
+        [Browsable(false)]
+        public GenericFlagMap SelectedFlagMap { get; private set; }
+
         public void UpdatePosition(Point p, GenericFlagMap selectedFlagMap = null)
         {
             PositionX = p.X;
@@ -569,7 +547,13 @@ namespace AMMEdit.PropertyEditors
 
             if (selectedFlagMap != null)
             {
-                Flag = Convert.ToInt32(selectedFlagMap.GetFlagAtLocation(Tile.X, Tile.Y));
+                SelectedFlagMap = selectedFlagMap;
+                Flag = selectedFlagMap.GetFlagAtLocation(Tile.X, Tile.Y);
+            }
+            else
+            {
+                SelectedFlagMap = null;
+                Flag = null;
             }
         }
 
