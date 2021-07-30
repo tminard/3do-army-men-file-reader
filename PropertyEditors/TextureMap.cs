@@ -97,7 +97,7 @@ namespace AMMEdit.PropertyEditors
                 panel1.Controls.Add(pictureBox1);
                 panel1.AutoScroll = true;
                 pictureBox1.BackColor = Color.Aqua;
-                pictureBox1.Size = new Size(256 * 16, 256 * 16);
+                pictureBox1.Size = new Size(LayerBlock.Width * 16, LayerBlock.Height * 16);
 
                 tileSheet = (Bitmap)TNameBlock.TextureImagesheet.Clone();
                 DrawMap();
@@ -126,17 +126,18 @@ namespace AMMEdit.PropertyEditors
             {
                 return;
             }
+            renderedMap = new Bitmap(LayerBlock.Width * 16, LayerBlock.Height * 16);
             BufferedGraphicsContext currentContext;
             BufferedGraphics mapBuffer;
             currentContext = BufferedGraphicsManager.Current;
 
-            mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, 256 * 16, 256 * 16));
+            mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, LayerBlock.Width * 16, LayerBlock.Height * 16));
 
-            for (int x = 0; x < 256; x++)
+            for (int x = 0; x < LayerBlock.Width; x++)
             {
-                for (int y = 0; y < 256; y++)
+                for (int y = 0; y < LayerBlock.Height; y++)
                 {
-                    if (x >= 256 || y >= 256) continue;
+                    if (x >= LayerBlock.Width || y >= LayerBlock.Height) continue;
 
                     UInt16 imageNum = LayerBlock.GetTextureIDAtLocation(x, y);
 

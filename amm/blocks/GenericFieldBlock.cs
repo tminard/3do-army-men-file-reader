@@ -27,12 +27,14 @@ namespace AMMEdit.amm
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
 
-            if (sizeInBytes == 65536)
+            if (sizeInBytes % 2 == 0 && sizeInBytes > (128^2))
             {
+                int gridSize = Convert.ToInt32(Math.Sqrt(sizeInBytes));
+
                 List<byte> data = new List<byte>();
                 data.AddRange(content);
 
-                FlagMap = new GenericFlagMap(data, 256, 256);
+                FlagMap = new GenericFlagMap(data, gridSize, gridSize);
             }
             else
             {

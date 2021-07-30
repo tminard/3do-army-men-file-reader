@@ -43,12 +43,12 @@ namespace AMMEdit.PropertyEditors
 
         private void GenerateOverlay()
         {
-            Bitmap renderedMap = new Bitmap(256 * 16, 256 * 16, PixelFormat.Format32bppArgb);
+            Bitmap renderedMap = new Bitmap(Width * 16, Height * 16, PixelFormat.Format32bppArgb);
             BufferedGraphicsContext currentContext;
             BufferedGraphics mapBuffer;
             currentContext = BufferedGraphicsManager.Current;
 
-            mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, 256 * 16, 256 * 16));
+            mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, Width * 16, Height * 16));
 
             byte maxVal = ToBytes().Max();
             double factor = 0;
@@ -57,11 +57,11 @@ namespace AMMEdit.PropertyEditors
                 factor = 255.0 / Convert.ToDouble(Convert.ToInt32(maxVal) * 16);
             }
 
-            for (int x = 0; x < 256; x++)
+            for (int x = 0; x < Width; x++)
             {
-                for (int y = 0; y < 256; y++)
+                for (int y = 0; y < Height; y++)
                 {
-                    if (x >= 256 || y >= 256) continue;
+                    if (x >= Width || y >= Height) continue;
 
                     UInt16 flagID = GetFlagAtLocation(x, y).Flag;
                     int flagValueScaled = Convert.ToInt32(Math.Round(Convert.ToDouble((flagID * 16)) * factor));
