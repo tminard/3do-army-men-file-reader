@@ -41,7 +41,7 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.panelContext = new System.Windows.Forms.Panel();
             this.listBox2 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -50,7 +50,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.textureMapPreviewBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.panel2.SuspendLayout();
+            this.panelContext.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -63,6 +63,7 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
@@ -70,7 +71,7 @@
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox2.Location = new System.Drawing.Point(1195, 958);
+            this.pictureBox2.Location = new System.Drawing.Point(1150, 958);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(64, 64);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -80,7 +81,7 @@
             // numericUpDown1
             // 
             this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown1.Location = new System.Drawing.Point(1125, 1002);
+            this.numericUpDown1.Location = new System.Drawing.Point(1080, 1002);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             1,
             0,
@@ -106,7 +107,7 @@
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(12, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1236, 925);
+            this.panel1.Size = new System.Drawing.Size(1202, 925);
             this.panel1.TabIndex = 4;
             // 
             // propertyGrid1
@@ -141,7 +142,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1532, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1527, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -192,21 +193,22 @@
             this.comboBoxMode.TabIndex = 11;
             this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxMode_SelectedIndexChanged);
             // 
-            // panel2
+            // panelContext
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panelContext.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.listBox2);
-            this.panel2.Controls.Add(this.comboBoxMode);
-            this.panel2.Controls.Add(this.propertyGrid1);
-            this.panel2.Controls.Add(this.pictureBox3);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.listBox1);
-            this.panel2.Controls.Add(this.textureMapPreviewBox);
-            this.panel2.Location = new System.Drawing.Point(1256, 27);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(266, 995);
-            this.panel2.TabIndex = 12;
+            this.panelContext.AutoScroll = true;
+            this.panelContext.Controls.Add(this.listBox2);
+            this.panelContext.Controls.Add(this.comboBoxMode);
+            this.panelContext.Controls.Add(this.propertyGrid1);
+            this.panelContext.Controls.Add(this.pictureBox3);
+            this.panelContext.Controls.Add(this.label1);
+            this.panelContext.Controls.Add(this.listBox1);
+            this.panelContext.Controls.Add(this.textureMapPreviewBox);
+            this.panelContext.Location = new System.Drawing.Point(1220, 27);
+            this.panelContext.Name = "panelContext";
+            this.panelContext.Size = new System.Drawing.Size(297, 995);
+            this.panelContext.TabIndex = 12;
             // 
             // listBox2
             // 
@@ -221,8 +223,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1532, 1043);
-            this.Controls.Add(this.panel2);
+            this.ClientSize = new System.Drawing.Size(1527, 1043);
+            this.Controls.Add(this.panelContext);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.pictureBox2);
@@ -243,8 +245,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.panelContext.ResumeLayout(false);
+            this.panelContext.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -265,7 +267,7 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.ComboBox comboBoxMode;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panelContext;
         private System.Windows.Forms.ListBox listBox2;
     }
 }

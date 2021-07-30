@@ -1,6 +1,7 @@
 ﻿using AMMEdit.amm.blocks.subfields;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -15,8 +16,6 @@ namespace AMMEdit.PropertyEditors
             RawContent.AddRange(rawContent.ConvertAll(flag => new MapFlag(flag)));
             Width = width;
             Height = height;
-
-            GenerateOverlay();
         }
 
         List<MapFlag> RawContent { get; set; }
@@ -37,11 +36,12 @@ namespace AMMEdit.PropertyEditors
             }
             else
             {
-                throw new Exception("Requested map position greater than map size");
+                Debug.WriteLine("Requested map position greater than map size");
+                return new MapFlag(0b0);
             }
         }
 
-        private void GenerateOverlay()
+        public void GenerateOverlay()
         {
             Bitmap renderedMap = new Bitmap(Width * 16, Height * 16, PixelFormat.Format32bppArgb);
             BufferedGraphicsContext currentContext;
@@ -78,6 +78,11 @@ namespace AMMEdit.PropertyEditors
 
             mapBuffer.Render();
             mapBuffer.Dispose();
+
+            if (Overlay != null)
+            {
+                Overlay.Dispose();
+            }
 
             Overlay = (Bitmap)renderedMap.Clone();
 

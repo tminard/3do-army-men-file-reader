@@ -141,9 +141,6 @@
     <Compile Include="PropertyEditors\AnimatedSpriteViewer.Designer.cs">
       <DependentUpon>AnimatedSpriteViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyEditors\Components\Scene.xaml.cs">
-      <DependentUpon>Scene.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PropertyEditors\dialogs\AddUnit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +179,12 @@
     <Compile Include="PropertyEditors\TextureMap.Designer.cs">
       <DependentUpon>TextureMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditors\tools\FlagPainter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyEditors\tools\FlagPainter.Designer.cs">
+      <DependentUpon>FlagPainter.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -218,6 +221,9 @@
     <EmbeddedResource Include="PropertyEditors\TextureMap.resx">
       <DependentUpon>TextureMap.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PropertyEditors\tools\FlagPainter.resx">
+      <DependentUpon>FlagPainter.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="AMMEdit_1_TemporaryKey.pfx" />
     <None Include="AMMEdit_2_TemporaryKey.pfx" />
     <None Include="AMMEdit_TemporaryKey.pfx" />
@@ -247,11 +253,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Page Include="PropertyEditors\Components\Scene.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

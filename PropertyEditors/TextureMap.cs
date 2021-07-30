@@ -3,6 +3,7 @@ using AMMEdit.amm.blocks;
 using AMMEdit.amm.blocks.subfields;
 using AMMEdit.objects;
 using AMMEdit.PropertyEditors.dialogs;
+using AMMEdit.PropertyEditors.tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,12 +39,15 @@ namespace AMMEdit.PropertyEditors
 
         private List<Tuple<AMObject, Point>> deletedObjects = new List<Tuple<AMObject, Point>>();
 
+        private Dictionary<Point, Color> highlightedTiles = new Dictionary<Point, Color>();
+
         private enum EditorState
         {
             VIEW,
             PLACE_OBJECT,
             DELETE_OBJECT,
-            VIEW_FLAG
+            VIEW_FLAG,
+            PAINT_FLAG,
         }
 
         private EditorState editorState = EditorState.VIEW;
@@ -73,12 +77,12 @@ namespace AMMEdit.PropertyEditors
 
             propertyGrid1.SelectedObject = SelectedTile;
 
-            if (DataFileReference != null)
-            {
-                listBox1.DataSource = DataFileReference.GetPlaceableObjects();
-                listBox1.DisplayMember = "LabelText";
-            }
-            else
+            listBox1.DataSource = null;
+            listBox1.Show();
+            listBox2.DataSource = null;
+            listBox2.Hide();
+
+            if (DataFileReference == null)
             {
                 listBox1.Enabled = false;
                 listBox1.Hide();
@@ -130,6 +134,17 @@ namespace AMMEdit.PropertyEditors
             BufferedGraphicsContext currentContext;
             BufferedGraphics mapBuffer;
             currentContext = BufferedGraphicsManager.Current;
+
+            if (FlagBlocks != null)
+            {
+                FlagBlocks.ForEach(f =>
+                {
+                    if (f.FlagMap != null)
+                    {
+                        f.FlagMap.GenerateOverlay();
+                    }
+                });
+            }
 
             mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, LayerBlock.Width * 16, LayerBlock.Height * 16));
 
@@ -220,6 +235,11 @@ namespace AMMEdit.PropertyEditors
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
+            if (editorState == EditorState.PAINT_FLAG)
+            {
+                return;
+            }
+
             SelectedTile.UpdatePosition(new Point(e.X, e.Y));
 
             if (editorState == EditorState.VIEW || editorState == EditorState.DELETE_OBJECT)
@@ -304,8 +324,16 @@ namespace AMMEdit.PropertyEditors
             if (LayerBlock != null)
             {
                 ushort textureID = (ushort)(LayerBlock.GetTextureIDAtLocation(SelectedTile.Tile.X, SelectedTile.Tile.Y) + Convert.ToUInt16(1));
-                SelectedTile.UpdateRawValue(textureID);
-                numericUpDown1.Value = textureID;
+
+                if (textureID >= numericUpDown1.Minimum && textureID <= numericUpDown1.Maximum)
+                {
+                    SelectedTile.UpdateRawValue(textureID);
+                    numericUpDown1.Value = textureID;
+                }
+                else
+                {
+                    Debug.WriteLine(String.Format("WARNING - Selected texture ID {0} not within range {1} - {2}", textureID, numericUpDown1.Minimum, numericUpDown1.Maximum));
+                }
             }
             else
             {
@@ -400,7 +428,53 @@ namespace AMMEdit.PropertyEditors
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+            {
+                handlePaintAction(e);
+            }
+
             pictureBox1.Refresh();
+        }
+
+        private void handlePaintAction(MouseEventArgs e)
+        {
+            if (editorState == EditorState.PAINT_FLAG && propertyGrid1.SelectedObject is FlagPainter.Properties && propertyGrid1.SelectedObject != null)
+            {
+                Point tile = new Point((int)(e.Location.X / 16.0), (int)(e.Location.Y / 16.0));
+                FlagPainter.Properties painterProperties = (FlagPainter.Properties)propertyGrid1.SelectedObject;
+
+                var selectedFlagBlock = (GenericFieldBlock)listBox2.SelectedItem;
+
+                if (selectedFlagBlock != null && selectedFlagBlock.FlagMap != null)
+                {
+                    MapFlag selectedFlag = selectedFlagBlock.FlagMap.GetFlagAtLocation(tile.X, tile.Y);
+                    MapFlag mask = painterProperties.MapFlag;
+
+                    byte updatedValue = selectedFlag.Flag;
+
+                    switch (painterProperties.SelectedPaintMode)
+                    {
+                        case FlagPainter.Properties.PaintMode.AND:
+                            updatedValue = (byte)(selectedFlag.Flag & mask.Flag);
+                            break;
+                        case FlagPainter.Properties.PaintMode.OR:
+                            updatedValue = (byte)(selectedFlag.Flag | mask.Flag);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    int red = (updatedValue & 0b11110000);
+                    int green = (updatedValue & 0b00111100) << 2;
+                    int blue = (updatedValue & 0b00001111) << 4;
+
+                    highlightedTiles[tile] = Color.FromArgb(255, red, green, blue);
+
+                    Debug.WriteLine(String.Format("Paint tile {0} to {1} from {2}", tile, Convert.ToString(updatedValue, 2), Convert.ToString(selectedFlag.Flag, 2)));
+
+                    selectedFlag.Flag = updatedValue;
+                }
+            }
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -430,7 +504,7 @@ namespace AMMEdit.PropertyEditors
             });
 
             // draw flag map
-            if (editorState == EditorState.VIEW_FLAG)
+            if (editorState == EditorState.VIEW_FLAG || editorState == EditorState.PAINT_FLAG)
             {
                 GenericFieldBlock selectedFlagBlock = (GenericFieldBlock)listBox2.SelectedItem;
 
@@ -438,6 +512,15 @@ namespace AMMEdit.PropertyEditors
                 {
                     // TODO: render only clipped version
                     e.Graphics.DrawImage(selectedFlagBlock.FlagMap.Overlay, new Point(0, 0));
+
+                    // render edited flag list
+                    foreach (var keyValuePair in highlightedTiles)
+                    {
+                        e.Graphics.FillRectangle(
+                            new SolidBrush(keyValuePair.Value),
+                            new Rectangle(new Point(keyValuePair.Key.X * 16, keyValuePair.Key.Y * 16), new Size(16, 16))
+                       );
+                    }
                 }
             }
 
@@ -473,13 +556,22 @@ namespace AMMEdit.PropertyEditors
                 listBox2.DataSource = null;
                 listBox2.Hide();
             }
-            else if (editorState == EditorState.VIEW_FLAG)
+            else if (editorState == EditorState.VIEW_FLAG || editorState == EditorState.PAINT_FLAG)
             {
                 listBox2.DataSource = FlagBlocks;
                 listBox2.DisplayMember = "DisplayFieldName";
+                listBox2.Show();
                 listBox1.Hide();
                 listBox1.DataSource = null;
-                listBox2.Show();
+
+                if (editorState == EditorState.PAINT_FLAG)
+                {
+                    propertyGrid1.SelectedObject = new FlagPainter.Properties()
+                    {
+                        MapFlag = new MapFlag(0b0),
+                        SelectedPaintMode = FlagPainter.Properties.PaintMode.NOOP
+                    };
+                }
             }
             else
             {
@@ -493,6 +585,11 @@ namespace AMMEdit.PropertyEditors
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             // flag map selection change
+        }
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            handlePaintAction(e);
         }
     }
 

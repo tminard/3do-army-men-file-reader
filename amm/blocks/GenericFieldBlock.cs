@@ -27,7 +27,8 @@ namespace AMMEdit.amm
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
 
-            if (sizeInBytes % 2 == 0 && sizeInBytes > (128^2))
+            // TODO: maps are not always square!! Consult texture map for actual map size
+            if (sizeInBytes % 2 == 0 && sizeInBytes > (128 ^ 2))
             {
                 int gridSize = Convert.ToInt32(Math.Sqrt(sizeInBytes));
 
