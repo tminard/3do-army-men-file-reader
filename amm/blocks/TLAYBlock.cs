@@ -22,6 +22,8 @@ namespace AMMEdit.amm.blocks
 
         private List<byte> RawTileTextureIDs { get; set; }
 
+        private byte[] RawTextureIDs;
+        
         private TNAMBlock TextureNameBlock { get; set; }
 
         public TLAYBlock(BinaryReader r, TNAMBlock textureBlock)
@@ -36,6 +38,7 @@ namespace AMMEdit.amm.blocks
             UnknownField2 = r.ReadInt32();
 
             RawTileTextureIDs = new List<byte>(r.ReadBytes(Width * Height * sizeof(UInt16)));
+            RawTextureIDs = RawTileTextureIDs.ToArray();
         }
 
         public string DisplayFieldName => string.Format("Texture Layer {0}", LayerNumber);
@@ -67,7 +70,7 @@ namespace AMMEdit.amm.blocks
                 return 0;
             }
 
-            Span<byte> ranAccess = new Span<byte>(RawTileTextureIDs.ToArray());
+            Span<byte> ranAccess = new Span<byte>(RawTextureIDs);
             UInt16 id = BinaryPrimitives.ReadUInt16LittleEndian(ranAccess.Slice(seq, 2));
 
             return id;

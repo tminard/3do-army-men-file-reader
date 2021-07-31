@@ -77,7 +77,7 @@ namespace AMMEdit.PropertyEditors
                     int posY = y * 16;
 
                     mapBuffer.Graphics.FillRectangle(
-                        new SolidBrush(Color.FromArgb(215, flagValueScaled, flagValueScaled, flagValueScaled)),
+                        new SolidBrush(Color.FromArgb(200, flagValueScaled, flagValueScaled, flagValueScaled)),
                         new Rectangle(new Point(posX, posY), new Size(16, 16))
                     );
                 }

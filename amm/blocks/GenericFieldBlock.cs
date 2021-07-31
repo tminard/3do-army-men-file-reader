@@ -22,8 +22,7 @@ namespace AMMEdit.amm
         {
             this.fieldName = name;
             this.sizeInBytes = contentSizeInBytes;
-            this.content = content;
-
+            
             this.DisplayFieldName = new string(this.fieldName);
             this.FieldID = Guid.NewGuid().ToString();
 
@@ -37,6 +36,7 @@ namespace AMMEdit.amm
             }
             else
             {
+                this.content = content;
                 FlagMap = null;
             }
         }
