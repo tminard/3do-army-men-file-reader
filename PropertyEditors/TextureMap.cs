@@ -135,17 +135,6 @@ namespace AMMEdit.PropertyEditors
             BufferedGraphics mapBuffer;
             currentContext = BufferedGraphicsManager.Current;
 
-            if (FlagBlocks != null)
-            {
-                FlagBlocks.ForEach(f =>
-                {
-                    if (f.FlagMap != null)
-                    {
-                        f.FlagMap.GenerateOverlay();
-                    }
-                });
-            }
-
             mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, LayerBlock.Width * 16, LayerBlock.Height * 16));
 
             for (int x = 0; x < LayerBlock.Width; x++)
@@ -212,6 +201,17 @@ namespace AMMEdit.PropertyEditors
 
             mapBuffer.Render();
             mapBuffer.Dispose();
+
+            if (FlagBlocks != null)
+            {
+                FlagBlocks.ForEach(f =>
+                {
+                    if (f.FlagMap != null)
+                    {
+                        f.FlagMap.GenerateOverlay(renderedMap);
+                    }
+                });
+            }
 
             new Task(() =>
             {

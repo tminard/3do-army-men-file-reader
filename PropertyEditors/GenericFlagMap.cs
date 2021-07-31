@@ -41,14 +41,21 @@ namespace AMMEdit.PropertyEditors
             }
         }
 
-        public void GenerateOverlay()
+        public void GenerateOverlay(Bitmap completeMap)
         {
-            Bitmap renderedMap = new Bitmap(Width * 16, Height * 16, PixelFormat.Format32bppArgb);
+            if (Width * Height > 2048 * 2048)
+            {
+                throw new Exception(String.Format("Image size {0}x{1} too large", Width, Height));
+            }
+
+            Bitmap renderedMap = new Bitmap(Width * 16, Height * 16);
             BufferedGraphicsContext currentContext;
             BufferedGraphics mapBuffer;
             currentContext = BufferedGraphicsManager.Current;
 
             mapBuffer = currentContext.Allocate(Graphics.FromImage(renderedMap), new Rectangle(0, 0, Width * 16, Height * 16));
+
+            mapBuffer.Graphics.DrawImage(completeMap, new Point(0, 0));
 
             byte maxVal = ToBytes().Max();
             double factor = 0;
@@ -70,7 +77,7 @@ namespace AMMEdit.PropertyEditors
                     int posY = y * 16;
 
                     mapBuffer.Graphics.FillRectangle(
-                        new SolidBrush(Color.FromArgb(255, flagValueScaled, flagValueScaled, flagValueScaled)),
+                        new SolidBrush(Color.FromArgb(215, flagValueScaled, flagValueScaled, flagValueScaled)),
                         new Rectangle(new Point(posX, posY), new Size(16, 16))
                     );
                 }
