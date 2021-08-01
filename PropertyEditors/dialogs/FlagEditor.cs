@@ -74,7 +74,7 @@ namespace AMMEdit.PropertyEditors.dialogs
             }
         }
 
-        public string FormattedByte => Convert.ToString(UpdatedByte, 2).PadLeft(8, '0');
+        public string FormattedByte => String.Format("{0} ({1})", Convert.ToString(UpdatedByte, 2).PadLeft(8, '0'), Convert.ToUInt32(UpdatedByte));
 
         public FlagEditor(byte initialValue)
         {

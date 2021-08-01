@@ -591,6 +591,58 @@ namespace AMMEdit.PropertyEditors
         {
             handlePaintAction(e);
         }
+
+        private void exportStratmapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var folderBrowse = new FolderBrowserDialog();
+
+            if (folderBrowse.ShowDialog() == DialogResult.OK)
+            {
+                BufferedGraphicsContext currentContext;
+                BufferedGraphics buffer;
+                currentContext = BufferedGraphicsManager.Current;
+
+                Rectangle playableRegion = new Rectangle(
+                    new Point(12 * 16, 12 * 16), 
+                    new Size((LayerBlock.Width - 24) * 16, (LayerBlock.Height - 24) * 16)
+                );
+                Bitmap targetSurface = new Bitmap(playableRegion.Width, playableRegion.Height);
+
+                buffer = currentContext.Allocate(Graphics.FromImage(targetSurface), new Rectangle(0, 0, playableRegion.Width, playableRegion.Height));
+
+                buffer.Graphics.DrawImage(renderedMap, new Rectangle(new Point(0, 0), playableRegion.Size), playableRegion, GraphicsUnit.Pixel);
+
+                Pen sectorMarkPen = new Pen(new SolidBrush(Color.Black), 15);
+
+                for (int x = 0; x < 6; x++)
+                {
+                    int xPos = (playableRegion.Width / 6) * x;
+                    int yPos = playableRegion.Height;
+                    buffer.Graphics.DrawLine(sectorMarkPen, new Point(xPos, 0), new Point(xPos, yPos));
+                }
+
+                for (int y = 0; y < 6; y++)
+                {
+                    int yPos = (playableRegion.Height / 6) * y;
+                    int xPos = playableRegion.Width;
+                    buffer.Graphics.DrawLine(sectorMarkPen, new Point(0, yPos), new Point(xPos, yPos));
+                }
+
+                // render and persist
+
+                buffer.Render();
+                buffer.Dispose();
+
+                string outFolder = folderBrowse.SelectedPath;
+                System.IO.Directory.CreateDirectory(outFolder);
+                var outFile = System.IO.Path.Combine(outFolder, "stratmap.bmp");
+
+                Bitmap scaledTarget = new Bitmap(targetSurface, new Size(86, 86));
+
+                scaledTarget.Clone(new Rectangle(0, 0, scaledTarget.Width, scaledTarget.Height), PixelFormat.Format8bppIndexed)
+                    .Save(outFile, ImageFormat.Bmp);
+            }
+        }
     }
 
     public class SelectedTileDataSource

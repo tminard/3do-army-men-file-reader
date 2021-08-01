@@ -43,6 +43,8 @@
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
             this.panelContext = new System.Windows.Forms.Panel();
             this.listBox2 = new System.Windows.Forms.ListBox();
+            this.mapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportStratmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -139,7 +141,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.mapsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1527, 24);
@@ -157,7 +160,7 @@
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToolStripMenuItem.Text = "Export...";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -219,6 +222,21 @@
             this.listBox2.TabIndex = 12;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
+            // mapsToolStripMenuItem
+            // 
+            this.mapsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportStratmapToolStripMenuItem});
+            this.mapsToolStripMenuItem.Name = "mapsToolStripMenuItem";
+            this.mapsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.mapsToolStripMenuItem.Text = "Maps";
+            // 
+            // exportStratmapToolStripMenuItem
+            // 
+            this.exportStratmapToolStripMenuItem.Name = "exportStratmapToolStripMenuItem";
+            this.exportStratmapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportStratmapToolStripMenuItem.Text = "Export stratmap...";
+            this.exportStratmapToolStripMenuItem.Click += new System.EventHandler(this.exportStratmapToolStripMenuItem_Click);
+            // 
             // TextureMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -269,5 +287,7 @@
         private System.Windows.Forms.ComboBox comboBoxMode;
         private System.Windows.Forms.Panel panelContext;
         private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.ToolStripMenuItem mapsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportStratmapToolStripMenuItem;
     }
 }

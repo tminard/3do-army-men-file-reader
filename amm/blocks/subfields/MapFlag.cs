@@ -13,7 +13,7 @@ namespace AMMEdit.amm.blocks.subfields
 
         public override string ToString()
         {
-            return Convert.ToString(Flag, 2).PadLeft(8, '0');
+            return String.Format("{0} ({1})", Convert.ToString(Flag, 2).PadLeft(8, '0'), Convert.ToUInt32(Flag));
         }
     }
 }
