@@ -86,6 +86,17 @@ namespace AMMEdit.PropertyEditors.dialogs
 
         private void FlagEditor_Load(object sender, EventArgs e)
         {
+            updateBitArrayList();
+        }
+
+        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            BitArray.Set(7 - e.Index, e.NewValue == CheckState.Checked);
+            label1.Text = FormattedByte;
+        }
+
+        private void updateBitArrayList()
+        {
             checkedListBox1.Items.Clear();
 
             foreach (bool bitChecked in BitArray.Cast<bool>().Reverse())
@@ -94,10 +105,14 @@ namespace AMMEdit.PropertyEditors.dialogs
             }
         }
 
-        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            BitArray.Set(7 - e.Index, e.NewValue == CheckState.Checked);
-            label1.Text = FormattedByte;
+            if (numericUpDown1.Value >= 0 && numericUpDown1.Value < 256)
+            {
+                byte bValue = Convert.ToByte(numericUpDown1.Value);
+                BitArray = new BitArray(new Byte[] { bValue });
+                updateBitArrayList();
+            }
         }
     }
 }

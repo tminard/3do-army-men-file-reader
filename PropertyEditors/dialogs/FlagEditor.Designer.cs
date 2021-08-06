@@ -34,12 +34,14 @@ namespace AMMEdit.PropertyEditors.dialogs
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.buttonSaveUnit = new System.Windows.Forms.Button();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(107, 173);
+            this.label1.Location = new System.Drawing.Point(12, 177);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 10;
@@ -48,7 +50,7 @@ namespace AMMEdit.PropertyEditors.dialogs
             // checkedListBox1
             // 
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(98, 12);
+            this.checkedListBox1.Location = new System.Drawing.Point(12, 12);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(120, 139);
             this.checkedListBox1.TabIndex = 11;
@@ -74,6 +76,19 @@ namespace AMMEdit.PropertyEditors.dialogs
             this.buttonSaveUnit.Text = "Save";
             this.buttonSaveUnit.UseVisualStyleBackColor = true;
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(155, 12);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown1.TabIndex = 14;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
             // FlagEditor
             // 
             this.AcceptButton = this.buttonSaveUnit;
@@ -81,6 +96,7 @@ namespace AMMEdit.PropertyEditors.dialogs
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button1;
             this.ClientSize = new System.Drawing.Size(323, 303);
+            this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonSaveUnit);
             this.Controls.Add(this.checkedListBox1);
@@ -93,6 +109,7 @@ namespace AMMEdit.PropertyEditors.dialogs
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit flags";
             this.Load += new System.EventHandler(this.FlagEditor_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -105,5 +122,6 @@ namespace AMMEdit.PropertyEditors.dialogs
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonSaveUnit;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }

@@ -50,6 +50,11 @@ namespace AMMEdit.PropertyEditors
 
             textBox1.DataBindings.Clear();
             textBox1.DataBindings.Add("Text", (Scenario)scenarioList.SelectedItem, "Name", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            comboBox1.DataSource = ((Scenario)scenarioList.SelectedItem).m_fractions;
+            comboBox1.DisplayMember = "Name";
+
+            comboBox1.SelectedIndex = 0;
         }
 
         private void listGreenFractions_SelectedIndexChanged(object sender, EventArgs e)
@@ -144,6 +149,11 @@ namespace AMMEdit.PropertyEditors
         private void buttonRemoveGrayUnit_Click(object sender, EventArgs e)
         {
             RemoveUnitDialog(3, listGrayFractions, "Gray");
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            propertyGrid1.SelectedObject = ((Fraction)comboBox1.SelectedItem);
         }
     }
 }

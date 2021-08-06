@@ -2,6 +2,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using static AMMEdit.amm.blocks.subfields.Scenario;
 using static AMMEdit.amm.FractionUnit;
@@ -30,12 +31,18 @@ namespace AMMEdit.amm
         UInt32 unknownField1; // no impact on high value. Crash on low. Either padding, or reserved for specific maps. Perhaps for special vehicles (heli?)
 
 
+        [Category("Setup"), Description("Number of initial available airstrikes."), DisplayName("Airstrikes")]
         public UInt32 NumStartAirstrikes { get; set; }
+
+        [Category("Setup"), Description("Number of initial available paratroop drops."), DisplayName("Paratroops")]
         public UInt32 NumStartParas { get; set; }
+
+        [Category("Setup"), Description("Number of initial available air recons."), DisplayName("Air Recons")]
         public UInt32 NumStartAirSupports { get; set; }
 
         UInt32 numTotalUnits; // total number of squads in the fraction
 
+        [Browsable(false)]
         public List<FractionUnit> Units { get; }
 
         public string Name
