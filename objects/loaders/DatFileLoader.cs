@@ -214,40 +214,30 @@ namespace AMMEdit.objects.loaders
 
                         // create image
                         Bitmap spriteBitmap = new Bitmap(Convert.ToInt32(widthPadded), Convert.ToInt32(height), PixelFormat.Format32bppArgb);
-                        
-                        /*for (int x = 0; x < Convert.ToInt32(widthPadded); x++)
-                        {
-                            for (int y = 0; y < Convert.ToInt32(height); y++)
-                            {
-                                int pos = x + (y * Convert.ToInt32(widthPadded));
-                                // This is very slow.
-                                spriteBitmap.SetPixel(x, y, colorPalette[decodedBitmapData[pos]]);
-                            }
-                        }*/
-                        // Let's try lockbits instead
-                        // TODO: refactor this logic out
-                        Rectangle rect = new Rectangle(0, 0, Convert.ToInt32(widthPadded), Convert.ToInt32(height));
+                        Rectangle rect = new Rectangle(0, 0, spriteBitmap.Width, spriteBitmap.Height);
                         BitmapData bmpData = spriteBitmap.LockBits(rect, ImageLockMode.ReadWrite, spriteBitmap.PixelFormat);
-                        IntPtr ptr = bmpData.Scan0;
-                        int bytes = Math.Abs(bmpData.Stride) * spriteBitmap.Height;
-                        byte[] rgbValues = new byte[bytes];
-                        Marshal.Copy(ptr, rgbValues, 0, bytes);
-                        for (int x = 0; x < Convert.ToInt32(widthPadded); x++)
-                          {
-                              for (int y = 0; y < Convert.ToInt32(height); y++)
-                              {
-                                int pos = x + (y * Convert.ToInt32(widthPadded));
-                                int byteOffset = Math.Abs((bmpData.Stride / spriteBitmap.Width) * x) + (y * bmpData.Stride);
 
-                                Color c = colorPalette[decodedBitmapData[pos]];
-                                rgbValues[byteOffset] = c.B;
-                                rgbValues[byteOffset + 1] = c.G;
-                                rgbValues[byteOffset + 2] = c.R;
-                                rgbValues[byteOffset + 3] = (byte)((c == colorPalette[0]) ? 0 : 255);
+                        try
+                        {
+                            byte[] rgbValues = decodedBitmapData.SelectMany(index => new List<byte>{
+                                colorPalette[index].B,
+                                colorPalette[index].G,
+                                colorPalette[index].R,
+                                (byte)((index == 0) ? 0 : 255)
+                            }).ToArray();
+
+                            int expectedByteLen = Math.Abs(bmpData.Stride) * spriteBitmap.Height;
+                            if (rgbValues.Length != expectedByteLen)
+                            {
+                                throw new Exception("Byte length mismatch!");
                             }
+                            IntPtr ptr = bmpData.Scan0;
+                            Marshal.Copy(rgbValues, 0, ptr, expectedByteLen);
                         }
-                        Marshal.Copy(rgbValues, 0, ptr, bytes);
-                        spriteBitmap.UnlockBits(bmpData);
+                        finally
+                        {
+                            spriteBitmap.UnlockBits(bmpData);
+                        }
 
                         if (decodedTypeKey == 44 || decodedTypeKey == 45 || decodedTypeKey == 46 || decodedTypeKey == 47) // UI Element
                         {
