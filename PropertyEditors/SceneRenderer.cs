@@ -32,9 +32,10 @@ namespace AMMEdit.PropertyEditors
             properties.PixelSize = new SharpDX.Size2(1024, 768);
             properties.PresentOptions = PresentOptions.None;
 
-            RenderTarget2D = new WindowRenderTarget(Factory2D, new RenderTargetProperties(new PixelFormat(Format.Unknown, AlphaMode.Premultiplied)), properties);
-
-            RenderTarget2D.AntialiasMode = AntialiasMode.PerPrimitive;
+            RenderTarget2D = new WindowRenderTarget(Factory2D, new RenderTargetProperties(new PixelFormat(Format.Unknown, AlphaMode.Premultiplied)), properties)
+            {
+                AntialiasMode = AntialiasMode.PerPrimitive
+            };
         }
 
         public void BeginDraw()

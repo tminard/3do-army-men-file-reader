@@ -95,6 +95,7 @@ namespace AMMEdit.axs
                 Sprite_image.RotateFlip(RotateFlipType.RotateNoneFlipXY);
 
                 // shadow
+                // TODO: add
                 UInt32 shadowDataSize = r.ReadUInt32();
                 if (shadowDataSize > 0)
                 {

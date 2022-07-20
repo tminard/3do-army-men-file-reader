@@ -111,8 +111,12 @@ namespace AMMEdit.PropertyEditors
                         return;
                     }
 
-                    solidBrush.Color = Color.FromArgb(255, otherIndx, otherIndx, otherIndx);
-                    buffer.Graphics.FillEllipse(solidBrush, Convert.ToInt32(otherData.X) + 128, previewImage.Height - Convert.ToInt32(otherData.Y) + 128, 4, 4);
+                    solidBrush.Color = Color.ForestGreen;
+                    buffer.Graphics.FillEllipse(solidBrush,
+                        Convert.ToInt32(otherData.X) + 128,
+                        previewImage.Height - Convert.ToInt32(otherData.Y) + 128,
+                        4, 4
+                    );
                 }
                 otherIndx += 64;
             });
