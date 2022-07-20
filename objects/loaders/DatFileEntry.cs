@@ -14,8 +14,6 @@ namespace AMMEdit.objects.loaders
     {
         public delegate void ReportLoadedBytesProgressDelegate(Stream s);
 
-        public AMObject ObjectEntry { get; private set; }
-
         public Bitmap Sprite { get; private set; }
 
         public DatFileEntry(List<Color> colorPalette, UInt32 decodedTypeKey, UInt32 decodedInstance, BinaryReader br, ReportLoadedBytesProgressDelegate ReportLoadedBytes)
@@ -31,7 +29,7 @@ namespace AMMEdit.objects.loaders
 
             // read from known encodings
             byte[] decodedBitmapData;
-            var widthPadded = width;
+            var widthPadded = width + (4 - width % 4) % 4; // AM trims whitespace but all images are expected to be in units of 4
 
             if (rleEncodingMode != 0 || rleEncodingModeSecondPass == 16)
             {
@@ -75,7 +73,6 @@ namespace AMMEdit.objects.loaders
             else if (rleEncodingMode == 0 && rleEncodingModeSecondPass != 32)
             {
                 // these tend to be UI images
-                widthPadded = width + (4 - width % 4) % 4;
                 decodedBitmapData = new byte[widthPadded * height];
                 decodedBitmapData = br.ReadBytes(Convert.ToInt32(widthPadded * height));
             }
