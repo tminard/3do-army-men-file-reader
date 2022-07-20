@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="objects\AMObject.cs" />
     <Compile Include="objects\DatFile.cs" />
+    <Compile Include="objects\loaders\DatFileEntry.cs" />
     <Compile Include="objects\loaders\DatFileLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

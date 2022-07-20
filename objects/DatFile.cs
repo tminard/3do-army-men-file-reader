@@ -12,6 +12,12 @@ namespace AMMEdit.objects
         public DatFile(List<AMObject> objects)
         {
             Objects = objects;
+            BuildObjectIndexForRender(objects);
+        }
+
+        private void BuildObjectIndexForRender(List<AMObject> objects)
+        {
+            // Create an index to improve rendering time
             objects.ForEach(amObject =>
             {
                 if (ObjectsByCatAndInstance.ContainsKey(amObject.TypeKey))
