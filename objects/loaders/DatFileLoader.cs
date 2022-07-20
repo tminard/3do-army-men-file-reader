@@ -54,6 +54,7 @@ namespace AMMEdit.objects.loaders
         public DatFile Read()
         {
             List<AMObject> amObjectsList = new List<AMObject>();
+            List<DatFileEntry> DatFileEntries = new List<DatFileEntry>();
 
             using (FileStream fs = new FileStream(this.infile, FileMode.Open, FileAccess.Read))
             {
@@ -150,14 +151,17 @@ namespace AMMEdit.objects.loaders
                         // Decode and load
                         br.BaseStream.Position = dataOffset + 4; // skip first field which is just the encoded key again
                         DatFileEntry objectEntry = new DatFileEntry(colorPalette, decodedTypeKey, decodedInstance, br, reportReadProgress);
+                        DatFileEntries.Add(objectEntry);
 
                         // Add
                         if (objectEntry.Sprite != null)
                         {
                             amObjectsList.Add(
-    new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance, (Bitmap)objectEntry.Sprite.Clone(), existingInstanceCount)
-);
-                            objectEntry.Sprite.Dispose();
+                                new AMObject(encodedCategoryKey, decodedTypeKey, decodedInstance,
+                                    objectEntry.Sprite, // Note we are passing the reference
+                                    existingInstanceCount
+                                )
+                            );
                         }
 
                         reportReadProgress(fs);
