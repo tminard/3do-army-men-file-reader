@@ -112,7 +112,7 @@ namespace AMMEdit.objects.loaders
                 spriteBitmap.UnlockBits(bmpData);
             }
 
-            if (decodedTypeKey == 44 || decodedTypeKey == 45 || decodedTypeKey == 46 || decodedTypeKey == 47) // UI Element
+            if (decodedTypeKey >= 44 && decodedTypeKey <= 47) // UI Element
             {
                 spriteBitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
             }

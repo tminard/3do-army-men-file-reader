@@ -62,7 +62,7 @@ namespace AMMEdit.PropertyEditors
             AxsFile.FrameData offsetPointData = Selected_animation.AnimationData.Offset_data[frameIndex];
             Point centerPoint = new Point(128, 128);
 
-            if (centerPointData != null)
+            if (centerPointData != null && centerPointData.X <= 1024 && centerPointData.Y <= 1024)
             {
                 centerPoint.X = 128 - Convert.ToInt32(centerPointData.X);
                 centerPoint.Y = 128 - Convert.ToInt32(centerPointData.Y);
