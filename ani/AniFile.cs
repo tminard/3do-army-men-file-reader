@@ -83,7 +83,6 @@ namespace AMMEdit.ani
                 private readonly ushort m_width;
                 private readonly ushort m_height;
                 private readonly Bitmap m_sprite_image;
-                private readonly Bitmap m_shadow_image = null;
                 private readonly byte[] m_decoded_bitmap_data;
 
                 public SpriteImageData(BinaryReader reader, List<Color> colorPalette)
@@ -143,7 +142,6 @@ namespace AMMEdit.ani
 
                         // shadow
                         UInt32 shadowDataSize = reader.ReadUInt32();
-                        m_shadow_image = null;
                         if (shadowDataSize > 0)
                         {
                             ushort _width = reader.ReadUInt16();
