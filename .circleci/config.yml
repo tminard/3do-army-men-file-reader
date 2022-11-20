@@ -1,26 +1,30 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+orbs:
+  win: circleci/windows@2.4.0
+
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+  build:
+    executor:
+      name: win/default
+      size: "medium"
+
     steps:
       - checkout
+      - run: 
+          name: build
+          command: |
+            $ProgressPreference = "SilentlyContinue"
+            msbuild AMMEdit.csproj /p:Configuration=Release /p:AppxBundle=Always /p:AppxBundlePlatforms="x86|x64|ARM" /p:BuildAppxUploadPackageForUap=true /p:AppxPackageSigningEnabled=false -restore
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+          name: Compress AppPackages
+          command: Compress-Archive -Path .\bin\Release\ -DestinationPath ./Release.zip
+      - store_artifacts:
+          path: ./Release.zip
 workflows:
-  say-hello-workflow:
+  version: 2
+  build_and_upload_artifact:
     jobs:
-      - say-hello
+      - build:
+            context:
+                - dotnet_build
